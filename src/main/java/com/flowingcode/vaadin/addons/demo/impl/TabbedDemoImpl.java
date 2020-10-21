@@ -31,14 +31,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("serial")
-public class TabbedDemoImpl extends VerticalLayout implements TabbedDemo {
+public class TabbedDemoImpl<T extends Component> extends VerticalLayout implements TabbedDemo {
 
 	private Tabs tabs;
 	private HorizontalLayout footer;
 	private SplitLayoutDemo<Component> currentLayout;
 	private Map<Tab, SplitLayoutDemo<Component>> demos;
 
-	public TabbedDemoImpl(Component demo, String name, String sourceCodeUrl) {
+	public TabbedDemoImpl(T demo, String name, String sourceCodeUrl) {
 		tabs = new Tabs();
 		demos = new HashMap<>();
 		tabs.setWidthFull();
