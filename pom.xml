@@ -18,6 +18,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <vaadin.version>14.4.0</vaadin.version>
+     <jetty.version>9.4.15.v20190215</jetty.version>
   </properties>
 
   <organization>
@@ -116,6 +117,20 @@
             <licenseName>apache_v2</licenseName>
             <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
           </configuration>
+        </plugin>
+        <plugin>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-maven-plugin</artifactId>
+            <version>${jetty.version}</version>
+            <configuration>
+                <scanIntervalSeconds>3</scanIntervalSeconds>
+                <!-- Use test scope because the UI/demo classes are in
+                        the test package. -->
+                <useTestScope>true</useTestScope>
+                <supportedPackagings>
+                    <supportedPackaging>jar</supportedPackaging>
+                </supportedPackagings>
+            </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
