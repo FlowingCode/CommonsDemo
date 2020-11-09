@@ -39,6 +39,8 @@ public class TabbedDemoImpl<T extends Component> extends VerticalLayout implemen
 	private HorizontalLayout footer;
 	private SplitLayoutDemo<Component> currentLayout;
 	private Map<Tab, Component> demos;
+	private Checkbox orientationCB;
+	private Checkbox codeCB;
 
 	@SuppressWarnings("unchecked")
 	/**
@@ -53,27 +55,17 @@ public class TabbedDemoImpl<T extends Component> extends VerticalLayout implemen
 		demos = new HashMap<>();
 		tabs.setWidthFull();
 		// Footer
-		Checkbox orientationCB = new Checkbox("Toggle Orientation");
+		orientationCB = new Checkbox("Toggle Orientation");
 		orientationCB.setValue(true);
 		orientationCB.addClassName("smallcheckbox");
 		orientationCB.addValueChangeListener(cb -> {
-			if (cb.getValue()) {
-				currentLayout.setOrientation(Orientation.HORIZONTAL);
-			} else {
-				currentLayout.setOrientation(Orientation.VERTICAL);
-			}
+			updateSplitterOrientation();
 		});
-		Checkbox codeCB = new Checkbox("Show Source Code");
+		codeCB = new Checkbox("Show Source Code");
 		codeCB.setValue(true);
 		codeCB.addClassName("smallcheckbox");
 		codeCB.addValueChangeListener(cb -> {
-			if (cb.getValue()) {
-				currentLayout.setSplitterPosition(50);
-				orientationCB.setEnabled(true);
-			} else {
-				currentLayout.setSplitterPosition(100);
-				orientationCB.setEnabled(false);
-			}
+			updateSplitterPosition();
 		});
 		footer = new HorizontalLayout();
 		footer.setWidthFull();
@@ -97,6 +89,8 @@ public class TabbedDemoImpl<T extends Component> extends VerticalLayout implemen
 			else {
 				this.add(tabs, currentDemo);
 			}
+			updateSplitterPosition();
+			updateSplitterOrientation();
 		});
 
 		// If current demo is instance of SplitLayoutDemo, add footer.
@@ -123,5 +117,25 @@ public class TabbedDemoImpl<T extends Component> extends VerticalLayout implemen
 		Tab tab = new Tab(name);
 		tabs.add(tab);
 		demos.put(tab, demo);
+	}
+
+	private void updateSplitterPosition() {
+		boolean b = codeCB.getValue();
+		if (b) {
+			currentLayout.setSplitterPosition(50);
+			orientationCB.setEnabled(true);
+		} else {
+			currentLayout.setSplitterPosition(100);
+			orientationCB.setEnabled(false);
+		}
+	}
+
+	private void updateSplitterOrientation() {
+		boolean b = orientationCB.getValue();
+		if (b) {
+			currentLayout.setOrientation(Orientation.HORIZONTAL);
+		} else {
+			currentLayout.setOrientation(Orientation.VERTICAL);
+		}
 	}
 }
