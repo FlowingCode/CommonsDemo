@@ -19,27 +19,49 @@
  */
 package com.flowingcode.vaadin.addons.demo;
 
-import com.vaadin.flow.component.Composite;
-import com.vaadin.flow.component.html.IFrame;
+import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.HasSize;
+import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.dependency.JsModule;
+import com.vaadin.flow.component.dependency.NpmPackage;
+import com.vaadin.flow.component.html.Div;
 
 @SuppressWarnings("serial")
-class SourceCodeView extends Composite<IFrame> {
+@NpmPackage(value = "polymer-code-highlighter", version = "1.0.5")
+@JsModule("polymer-code-highlighter/code-highlighter.js")
+class SourceCodeView extends Div implements HasSize {
+
+  private String sourceUrl;
 
   public SourceCodeView(String sourceUrl) {
-    getContent().getElement().setAttribute("frameborder", "0");
-    getContent().setMinHeight("0");
-    getContent().setMinWidth("0");
-    getContent().getElement().setAttribute("srcdoc", getSrcdoc(sourceUrl));
-    getContent().setSizeFull();
+    this.sourceUrl = translateSource(sourceUrl);
   }
 
-  private String getSrcdoc(String sourceUrl) {
-    return "<html style=\"overflow-y:hidden; height:100%;\"><body style=\"overflow-y: scroll; height:100%;\"><script src=\"https://gist-it.appspot.com/"
-        + sourceUrl
-        + "\"></script></body></html>";
+  @Override
+  protected void onAttach(AttachEvent attachEvent) {
+    super.onAttach(attachEvent);
+
+    getElement().executeJs(
+        "var self=this;"
+      + "var xhr = new XMLHttpRequest();"
+      + "xhr.onreadystatechange = function() {"
+      + "if (this.readyState == 4 && this.status == 200) {" 
+      + "  var elem = document.createElement('code-highlighter');"
+      + "  elem.setAttribute('lang','java');"
+      + "  elem.innerHTML = this.responseText;" 
+      + "  self.appendChild(elem);"
+      + "}};"
+      + "xhr.open('GET', $0, true);"
+      +  "xhr.send();", sourceUrl);    
   }
 
-  public void setSizeFull() {
-    getContent().setSizeFull();
+  private static String translateSource(String url) {
+    if (url.startsWith("https://github.com")) {
+      url = url.replaceFirst("github.com", "raw.githubusercontent.com");
+      url = url.replaceFirst("/blob", "");
+    }
+    return url;
   }
+
 }

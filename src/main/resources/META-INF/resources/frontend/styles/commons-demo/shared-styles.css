@@ -20,3 +20,12 @@
 vaadin-checkbox.smallcheckbox {
 	font-size: small;
 }
+
+code-highlighter pre.vrPre {
+	background: unset;
+	overflow-x: unset;
+}
+
+code-highlighter code {
+	background: unset;
+}
