@@ -25,10 +25,11 @@ import com.vaadin.flow.router.PageTitle;
 
 @PageTitle("Demo 4")
 @DemoSource(
-    "https://github.com/FlowingCode/CommonsDemo/blob/master/src/test/java/com/flowingcode/vaadin/addons/demo/impl/SampleDemo.java")
+"https://github.com/FlowingCode/CommonsDemo/blob/master/src/test/java/com/flowingcode/vaadin/addons/demo/SampleDemo.java")
 public class SampleDemo extends Div {
 
   public SampleDemo() {
     add(new Span("Demo component with annotations"));
   }
+
 }

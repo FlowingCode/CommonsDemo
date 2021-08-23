@@ -29,7 +29,7 @@ public class Demo extends TabbedDemo {
 
   public Demo() {
     final String sourceCodeUrl =
-        "https://github.com/FlowingCode/CommonsDemo/blob/master/src/test/java/com/flowingcode/vaadin/addons/demo/impl/Demo.java";
+        "https://github.com/FlowingCode/CommonsDemo/blob/master/src/test/java/com/flowingcode/vaadin/addons/demo/Demo.java";
     VerticalLayout vl = new VerticalLayout();
     VerticalLayout vl2 = new VerticalLayout();
     VerticalLayout vl3 = new VerticalLayout();
