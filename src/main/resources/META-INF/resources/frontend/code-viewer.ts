@@ -3,22 +3,15 @@ import {
   customElement,
   html,
   LitElement,
-  property,
   unsafeCSS,
 } from "lit-element";
-import { unsafeHTML } from "lit-html/directives/unsafe-html";
+
 //@ts-ignore
 import * as Prism from "./prism.js";
 import prismCss from "./prism.css";
 
 @customElement("code-viewer")
 export class CodeViewer extends LitElement {
-
-  @property({ type: String })
-  contents = "";
-
-  @property({ type: String })
-  language = "none";
 
   createRenderRoot() {
     return this;
@@ -40,34 +33,30 @@ export class CodeViewer extends LitElement {
         }
       </style>
 
-      ${/*Don't reuse these elements. This is needed because Prism
-          removes the markers lit-html uses to track slots */
-      unsafeHTML(
-        `<pre><code class="language-${this.language}">${this.escapeHtml(
-          this.contents
-        )}
-        </code></pre>`
-      )}
+      <pre><code id="code"></code></pre>
     `;
   }
 
   async fetchContents(sourceUrl: string, language: string) {
     var self=this;
     var xhr = new XMLHttpRequest();
+    
     xhr.onreadystatechange = async function() {
     if (this.readyState == 4 && this.status == 200) {
-      self.contents = this.responseText;
-      self.language = language;
 	  // Wait for LitElement to finish updating the DOM before higlighting
       await self.updateComplete;
+      var code = self.querySelector("code") as HTMLElement;
 	
+      code.setAttribute("class", "language-" + language);
+      code.innerHTML = self.escapeHtml(this.responseText); 
+      
       //@ts-ignore
       Prism.highlightAllUnder(self);
     }};
     xhr.open('GET', sourceUrl, true);
     xhr.send();
   }
-   
+
   escapeHtml(unsafe: string) {
     return unsafe
       .replace(/&/g, "&amp;")
