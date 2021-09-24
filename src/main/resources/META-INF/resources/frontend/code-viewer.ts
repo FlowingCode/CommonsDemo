@@ -58,9 +58,9 @@ export class CodeViewer extends LitElement {
     if (this.readyState == 4 && this.status == 200) {
       self.contents = this.responseText;
       self.language = language;
-      // Wait for LitElement to finish updating the DOM before higlighting
+	  // Wait for LitElement to finish updating the DOM before higlighting
       await self.updateComplete;
-
+	
       //@ts-ignore
       Prism.highlightAllUnder(self);
     }};
@@ -68,10 +68,6 @@ export class CodeViewer extends LitElement {
     xhr.send();
   }
    
-  hh() {
-   Prism.highlightAllUnder(this);
-  }
-
   escapeHtml(unsafe: string) {
     return unsafe
       .replace(/&/g, "&amp;")
