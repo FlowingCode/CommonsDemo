@@ -19,6 +19,7 @@
  */
 package com.flowingcode.vaadin.addons.demo;
 
+import com.flowingcode.vaadin.addons.GithubLink;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dependency.StyleSheet;
@@ -94,10 +95,19 @@ public class TabbedDemo extends VerticalLayout {
    * @param demo the demo instance
    */
   public void addDemo(Component demo) {
-    String sourceCodeUrl =
-        Optional.ofNullable(demo.getClass().getAnnotation(DemoSource.class))
-            .map(DemoSource::value)
+    DemoSource demoSource = demo.getClass().getAnnotation(DemoSource.class);
+
+    String sourceCodeUrl = null;
+    if (demoSource != null) {
+      sourceCodeUrl = demoSource.value();
+      if (sourceCodeUrl.equals(DemoSource.GITHUB_SOURCE)) {
+        sourceCodeUrl = Optional.ofNullable(this.getClass().getAnnotation(GithubLink.class))
+            .map(githubLink -> githubLink.value() + "/blob/master/src/test/java/"
+                + demo.getClass().getName().replace('.', '/'))
             .orElse(null);
+      }
+    }
+
     String label =
         Optional.ofNullable(demo.getClass().getAnnotation(PageTitle.class))
             .map(PageTitle::value)

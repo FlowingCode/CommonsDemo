@@ -19,12 +19,14 @@
  */
 package com.flowingcode.vaadin.addons.demo;
 
+import com.flowingcode.vaadin.addons.GithubLink;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 
 /** Hello world! */
 @Route("")
+@GithubLink("https://github.com/FlowingCode/CommonsDemo")
 public class Demo extends TabbedDemo {
 
   public Demo() {
@@ -47,5 +49,6 @@ public class Demo extends TabbedDemo {
     addDemo(vl3, "Demo Without Source Code");
 
     addDemo(new SampleDemo());
+    addDemo(new SampleDemoDefault());
   }
 }

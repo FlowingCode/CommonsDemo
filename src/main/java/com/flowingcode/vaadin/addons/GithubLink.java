@@ -26,7 +26,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation is used for configuring the URL in the {@code GitHubCorner}
+ * This annotation is used for configuring the URL in the {@code GitHubCorner} and {@code DemoClass}
  *
  * @author Javier Godoy / Flowing Code
  */

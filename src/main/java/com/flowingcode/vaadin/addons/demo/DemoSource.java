@@ -25,7 +25,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation is used for configuring the source code URL in a {@link TabbedDemo}
+ * This annotation is used for configuring the source code URL in a {@link TabbedDemo}. If no
+ * {@code value} is specified, and the demo view is annotated with {@link @GithubLink}, the source
+ * URL defaults to the location of the annotated class under {@code src/java/test} in the master
+ * branch of the repository.
  *
  * @author Javier Godoy / Flowing Code
  */
@@ -33,5 +36,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface DemoSource {
 
-  String value();
+  static final String GITHUB_SOURCE = "__GITHUB__";
+
+  /** A link to the source code, if different from the annotated class. */
+  String value() default GITHUB_SOURCE;
+
 }
