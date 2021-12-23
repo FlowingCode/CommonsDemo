@@ -103,7 +103,7 @@ public class TabbedDemo extends VerticalLayout {
       if (sourceCodeUrl.equals(DemoSource.GITHUB_SOURCE)) {
         sourceCodeUrl = Optional.ofNullable(this.getClass().getAnnotation(GithubLink.class))
             .map(githubLink -> githubLink.value() + "/blob/master/src/test/java/"
-                + demo.getClass().getName().replace('.', '/'))
+                + demo.getClass().getName().replace('.', '/') + ".java")
             .orElse(null);
       }
     }
