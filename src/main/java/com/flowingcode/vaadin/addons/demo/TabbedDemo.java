@@ -111,7 +111,7 @@ public class TabbedDemo extends VerticalLayout {
     String label =
         Optional.ofNullable(demo.getClass().getAnnotation(PageTitle.class))
             .map(PageTitle::value)
-            .orElse(demo.getClass().getName());
+            .orElse(demo.getClass().getSimpleName());
 
     addDemo(demo, label, sourceCodeUrl);
   }
