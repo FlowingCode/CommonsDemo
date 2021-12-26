@@ -122,6 +122,9 @@ public class TabbedDemo extends VerticalLayout {
    * @param sourceCodeUrl the url of the demo, <b>null</b> to not show source code section.
    */
   public void addDemo(Component demo, String label, String sourceCodeUrl) {
+    if (!demo.getId().isPresent()) {
+      demo.setId("content");
+    }
     Tab tab = new Tab(label);
     if (sourceCodeUrl != null) {
       demos.put(tab, new SplitLayoutDemo(demo, sourceCodeUrl));
