@@ -22,7 +22,9 @@ package com.flowingcode.vaadin.addons.demo;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
 
+@Route(value = "demo/demo5", layout = Demo.class)
 @PageTitle("Demo 5")
 @DemoSource
 public class SampleDemoDefault extends Div {

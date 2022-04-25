@@ -19,34 +19,35 @@
  */
 package com.flowingcode.vaadin.addons.demo;
 
+import java.util.Optional;
 import com.flowingcode.vaadin.addons.GithubLink;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout.Orientation;
-import com.vaadin.flow.component.tabs.Tab;
-import com.vaadin.flow.component.tabs.Tabs;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLayout;
+import com.vaadin.flow.router.RouterLink;
 
 @StyleSheet("context://frontend/styles/commons-demo/shared-styles.css")
 @SuppressWarnings("serial")
-public class TabbedDemo extends VerticalLayout {
+public class TabbedDemo extends VerticalLayout implements RouterLayout, BeforeEnterObserver {
 
-  private Tabs tabs;
+  private RouteTabs tabs;
   private HorizontalLayout footer;
   private SplitLayoutDemo currentLayout;
-  private Map<Tab, Component> demos;
   private Checkbox orientationCB;
   private Checkbox codeCB;
 
   public TabbedDemo() {
-    tabs = new Tabs();
-    demos = new HashMap<>();
+    tabs = new RouteTabs();
     tabs.setWidthFull();
 
     // Footer
@@ -68,22 +69,10 @@ public class TabbedDemo extends VerticalLayout {
     footer.setWidthFull();
     footer.setJustifyContentMode(JustifyContentMode.END);
     footer.add(codeCB, orientationCB);
-
-    tabs.addSelectedChangeListener(
-        e -> {
-          removeAll();
-          Component currentDemo = demos.get(tabs.getSelectedTab());
-          this.add(tabs, currentDemo);
-          if (currentDemo instanceof SplitLayoutDemo) {
-            currentLayout = (SplitLayoutDemo) currentDemo;
-            this.add(footer);
-            updateSplitterPosition();
-            updateSplitterOrientation();
-          } else {
-            currentLayout = null;
-          }
-        });
-
+        
+    this.add(tabs);
+    this.add(new Div());
+    this.add(footer);
     setSizeFull();
   }
 
@@ -118,19 +107,19 @@ public class TabbedDemo extends VerticalLayout {
 
   /**
    * @param demo the demo instance
-   * @param name the demo name (tab label)
+   * @param label the demo name (tab label)
    * @param sourceCodeUrl the url of the demo, <b>null</b> to not show source code section.
    */
+  @Deprecated
   public void addDemo(Component demo, String label, String sourceCodeUrl) {
-    if (!demo.getId().isPresent()) {
-      demo.setId("content");
+    this.addDemo(demo.getClass(), label, sourceCodeUrl);
+  }
+
+  public void addDemo(Class<? extends Component> clazz, String label, String sourceCodeUrl){   
+    if(!clazz.isAnnotationPresent(Route.class)) {
+      throw new IllegalArgumentException(clazz + " must be annotated as Route");
     }
-    Tab tab = new Tab(label);
-    if (sourceCodeUrl != null) {
-      demos.put(tab, new SplitLayoutDemo(demo, sourceCodeUrl));
-    } else {
-      demos.put(tab, demo);
-    }
+    RouterLink tab = new RouterLink(label, clazz);
     tabs.add(tab);
   }
 
@@ -138,6 +127,40 @@ public class TabbedDemo extends VerticalLayout {
     addDemo(demo, label, null);
   }
 
+  @Override
+  public void showRouterLayoutContent(HasElement content) {
+    Component demo = (Component)content;
+    if (!demo.getId().isPresent()) {
+      demo.setId("content");
+    }
+
+    DemoSource demoSource = demo.getClass().getAnnotation(DemoSource.class);
+    String sourceCodeUrl = null;
+    if (demoSource != null) {
+      sourceCodeUrl = demoSource.value();
+      if (sourceCodeUrl.equals(DemoSource.GITHUB_SOURCE)) {
+        sourceCodeUrl = Optional.ofNullable(this.getClass().getAnnotation(GithubLink.class))
+            .map(githubLink -> githubLink.value() + "/blob/master/src/test/java/"
+                + demo.getClass().getName().replace('.', '/') + ".java")
+            .orElse(null);
+      }
+      content = new SplitLayoutDemo(demo, sourceCodeUrl);
+      currentLayout = (SplitLayoutDemo) content;
+      updateSplitterPosition();
+      updateSplitterOrientation();
+      this.footer.setVisible(true);
+    } else {
+      currentLayout = null;
+      this.footer.setVisible(false);
+    }    
+    this.getElement().insertChild(1, content.getElement());
+  }
+  
+  @Override
+  public void removeRouterLayoutContent(HasElement oldContent) {
+    this.getElement().removeChild(1);
+  }
+  
   private void updateSplitterPosition() {
     boolean b = codeCB.getValue();
     if (b) {
@@ -157,4 +180,15 @@ public class TabbedDemo extends VerticalLayout {
       currentLayout.setOrientation(Orientation.VERTICAL);
     }
   }
+
+  @Override
+  public void beforeEnter(BeforeEnterEvent event) {
+    if(TabbedDemo.class.isAssignableFrom(event.getNavigationTarget())) {
+      RouterLink first = tabs.getFirstRoute();
+      if(first != null) {
+        event.forwardTo(first.getHref()); 
+      }       
+    }
+  }
+ 
 }
