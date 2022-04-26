@@ -1,18 +1,21 @@
 package com.flowingcode.vaadin.addons.demo;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.HighlightConditions;
+import com.vaadin.flow.router.Location;
 import com.vaadin.flow.router.RouterLink;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Extension of Tabs in order to allow to bind tabs with Routes.
- * 
+ *
  * @see https://cookbook.vaadin.com/tabs-with-routes/a
  */
 public class RouteTabs extends Tabs implements BeforeEnterObserver {
@@ -22,13 +25,17 @@ public class RouteTabs extends Tabs implements BeforeEnterObserver {
   public void add(RouterLink routerLink) {
     routerLink.setHighlightCondition(HighlightConditions.sameLocation());
     routerLink.setHighlightAction((link, shouldHighlight) -> {
-      if (shouldHighlight)
+      if (shouldHighlight) {
         setSelectedTab(routerLinkTabMap.get(routerLink));
+      }
     });
     routerLinkTabMap.put(routerLink, new Tab(routerLink));
     add(routerLinkTabMap.get(routerLink));
   }
 
+  public void addLegacyTab(RouterLink routerLink) {
+
+  }
   @Override
   public void beforeEnter(BeforeEnterEvent event) {
     // In case no tabs will match
@@ -44,4 +51,18 @@ public class RouteTabs extends Tabs implements BeforeEnterObserver {
         routerLinkTabMap.entrySet().stream().map(Map.Entry::getKey).findFirst();
     return first.isPresent() ? first.get() : null;
   }
+
+  @Deprecated
+  public void addLegacyTab(String label, Component content) {
+    Tab tab = new Tab(label);
+    add(tab);
+    addSelectedChangeListener(ev -> {
+      if (ev.getSelectedTab() == tab) {
+        UI.getCurrent().getPage().getHistory().pushState(null, new Location(""));
+        ((TabbedDemo) getParent().get()).removeRouterLayoutContent(null);
+        ((TabbedDemo) getParent().get()).showRouterLayoutContent(content);
+      }
+    });
+  }
+
 }

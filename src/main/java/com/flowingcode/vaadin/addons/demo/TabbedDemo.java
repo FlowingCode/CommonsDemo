@@ -83,36 +83,26 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout, BeforeEn
    *
    * @param demo the demo instance
    */
+  @Deprecated
   public void addDemo(Component demo) {
     DemoSource demoSource = demo.getClass().getAnnotation(DemoSource.class);
-
-    String sourceCodeUrl = null;
-    if (demoSource != null) {
-      sourceCodeUrl = demoSource.value();
-      if (sourceCodeUrl.equals(DemoSource.GITHUB_SOURCE)) {
-        sourceCodeUrl = Optional.ofNullable(this.getClass().getAnnotation(GithubLink.class))
-            .map(githubLink -> githubLink.value() + "/blob/master/src/test/java/"
-                + demo.getClass().getName().replace('.', '/') + ".java")
-            .orElse(null);
-      }
-    }
 
     String label =
         Optional.ofNullable(demo.getClass().getAnnotation(PageTitle.class))
             .map(PageTitle::value)
             .orElse(demo.getClass().getSimpleName());
 
-    addDemo(demo, label, sourceCodeUrl);
+    addDemo(demo, label, null);
   }
 
   /**
    * @param demo the demo instance
    * @param label the demo name (tab label)
-   * @param sourceCodeUrl the url of the demo, <b>null</b> to not show source code section.
+   * @param sourceCodeUrl ignored.
    */
   @Deprecated
   public void addDemo(Component demo, String label, String sourceCodeUrl) {
-    this.addDemo(demo.getClass(), label);
+    tabs.addLegacyTab(label, demo);
   }
 
   /** Add a tab with a demo component.
@@ -143,6 +133,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout, BeforeEn
     addDemo(clazz, label);
   }
 
+  @Deprecated
   public void addDemo(Component demo, String label) {
     addDemo(demo, label, null);
   }

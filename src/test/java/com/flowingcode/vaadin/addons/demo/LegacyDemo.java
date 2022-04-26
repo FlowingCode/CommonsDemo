@@ -19,19 +19,16 @@
  */
 package com.flowingcode.vaadin.addons.demo;
 
-import com.flowingcode.vaadin.addons.GithubLink;
-import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouteAlias;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.router.PageTitle;
 
-/** Hello world! */
-@Route("")
-@RouteAlias("demo")
-@GithubLink("https://github.com/FlowingCode/CommonsDemo")
-public class Demo extends TabbedDemo {
+@PageTitle("Legacy")
+@DemoSource
+public class LegacyDemo extends Div {
 
-  public Demo() {
-    addDemo(new LegacyDemo());
-    addDemo(SampleDemo.class, "Demo");
-    addDemo(SampleDemoDefault.class);
+  public LegacyDemo() {
+    add(new Span("Legacy demo"));
   }
+
 }
