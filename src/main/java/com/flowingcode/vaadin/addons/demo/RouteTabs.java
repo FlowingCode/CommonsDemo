@@ -8,6 +8,7 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.Location;
+import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -58,9 +59,11 @@ public class RouteTabs extends Tabs implements BeforeEnterObserver {
     add(tab);
     addSelectedChangeListener(ev -> {
       if (ev.getSelectedTab() == tab) {
-        UI.getCurrent().getPage().getHistory().pushState(null, new Location(""));
-        ((TabbedDemo) getParent().get()).removeRouterLayoutContent(null);
-        ((TabbedDemo) getParent().get()).showRouterLayoutContent(content);
+        TabbedDemo tabbedDemo = (TabbedDemo) getParent().get();
+        String route = tabbedDemo.getClass().getAnnotation(Route.class).value();
+        UI.getCurrent().getPage().getHistory().pushState(null, new Location(route));
+        tabbedDemo.removeRouterLayoutContent(null);
+        tabbedDemo.showRouterLayoutContent(content);
       }
     });
   }

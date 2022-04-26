@@ -23,9 +23,8 @@ import com.flowingcode.vaadin.addons.GithubLink;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
-/** Hello world! */
-@Route("")
-@RouteAlias("demo")
+@Route("demo")
+@RouteAlias("")
 @GithubLink("https://github.com/FlowingCode/CommonsDemo")
 public class Demo extends TabbedDemo {
 
