@@ -34,9 +34,6 @@ public class RouteTabs extends Tabs implements BeforeEnterObserver {
     add(routerLinkTabMap.get(routerLink));
   }
 
-  public void addLegacyTab(RouterLink routerLink) {
-
-  }
   @Override
   public void beforeEnter(BeforeEnterEvent event) {
     // In case no tabs will match
