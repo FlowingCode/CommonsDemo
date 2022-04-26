@@ -24,8 +24,8 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-@Route(value = "demo/demo5", layout = Demo.class)
-@PageTitle("Demo 5")
+@Route(value = "demo/demo-with-source", layout = Demo.class)
+@PageTitle("Demo with source")
 @DemoSource
 public class SampleDemoDefault extends Div {
 

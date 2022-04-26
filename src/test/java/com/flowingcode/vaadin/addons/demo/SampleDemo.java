@@ -24,12 +24,12 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-@Route(value = "demo/demo4", layout = Demo.class)
-@PageTitle("Demo 4")
+@Route(value = "demo/no-source", layout = Demo.class)
+@PageTitle("Demo without source")
 public class SampleDemo extends Div {
 
   public SampleDemo() {
-    add(new Span("Demo component with annotations"));
+    add(new Span("Demo component without source"));
   }
 
 }
