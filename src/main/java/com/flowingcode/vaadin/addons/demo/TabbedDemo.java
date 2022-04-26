@@ -128,6 +128,21 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout, BeforeEn
     tabs.add(tab);
   }
 
+  /**
+   * Add a tab with a {@code demo} component. The tab label is retrieved from
+   * the {@link PageTitle} annotations in the demo class.
+   *
+   * @param clazz the class of routed demo view component
+   */
+  public void addDemo(Class<? extends Component> clazz) {
+    String label =
+        Optional.ofNullable(clazz.getClass().getAnnotation(PageTitle.class))
+            .map(PageTitle::value)
+            .orElse(clazz.getSimpleName());
+
+    addDemo(clazz, label);
+  }
+
   public void addDemo(Component demo, String label) {
     addDemo(demo, label, null);
   }
