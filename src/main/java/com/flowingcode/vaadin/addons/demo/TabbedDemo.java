@@ -112,16 +112,15 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout, BeforeEn
    */
   @Deprecated
   public void addDemo(Component demo, String label, String sourceCodeUrl) {
-    this.addDemo(demo.getClass(), label, sourceCodeUrl);
+    this.addDemo(demo.getClass(), label);
   }
 
   /** Add a tab with a demo component.
    *
    * @param clazz the class of routed demo view component
    * @param label the demo name (tab label)
-   * @param sourceCodeUrl the url of the demo, <b>null</b> to not show source code section.
    */
-  public void addDemo(Class<? extends Component> clazz, String label, String sourceCodeUrl) {
+  public void addDemo(Class<? extends Component> clazz, String label) {
     if(!clazz.isAnnotationPresent(Route.class)) {
       throw new IllegalArgumentException(clazz + " must be annotated as Route");
     }
