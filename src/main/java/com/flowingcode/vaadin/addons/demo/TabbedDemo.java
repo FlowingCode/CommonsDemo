@@ -29,8 +29,6 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout.Orientation;
-import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLayout;
@@ -38,7 +36,7 @@ import com.vaadin.flow.router.RouterLink;
 
 @StyleSheet("context://frontend/styles/commons-demo/shared-styles.css")
 @SuppressWarnings("serial")
-public class TabbedDemo extends VerticalLayout implements RouterLayout, BeforeEnterObserver {
+public class TabbedDemo extends VerticalLayout implements RouterLayout {
 
   private RouteTabs tabs;
   private HorizontalLayout footer;
@@ -192,14 +190,4 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout, BeforeEn
     }
   }
 
-  @Override
-  public void beforeEnter(BeforeEnterEvent event) {
-    if(TabbedDemo.class.isAssignableFrom(event.getNavigationTarget())) {
-      RouterLink first = tabs.getFirstRoute();
-      if(first != null) {
-        event.forwardTo(first.getHref()); 
-      }       
-    }
-  }
- 
 }
