@@ -36,8 +36,15 @@ public class RouteTabs extends Tabs implements BeforeEnterObserver {
 
   @Override
   public void beforeEnter(BeforeEnterEvent event) {
-    // In case no tabs will match
     setSelectedTab(null);
+    if (TabbedDemo.class.isAssignableFrom(event.getNavigationTarget())) {
+      RouterLink first = getFirstRoute();
+      if (first != null) {
+        event.forwardTo(first.getHref());
+      } else {
+        getChildren().findFirst().ifPresent(tab -> setSelectedTab((Tab) tab));
+      }
+    }
   }
 
   public Map<RouterLink, Tab> getRouterLinkTabMap() {
