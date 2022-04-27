@@ -124,7 +124,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
    */
   public void addDemo(Class<? extends Component> clazz) {
     String label =
-        Optional.ofNullable(clazz.getClass().getAnnotation(PageTitle.class))
+        Optional.ofNullable(clazz.getAnnotation(PageTitle.class))
             .map(PageTitle::value)
             .orElse(clazz.getSimpleName());
 
