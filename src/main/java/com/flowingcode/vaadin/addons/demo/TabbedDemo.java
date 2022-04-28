@@ -24,6 +24,7 @@ import com.flowingcode.vaadin.addons.GithubLink;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -35,6 +36,7 @@ import com.vaadin.flow.router.RouterLayout;
 import com.vaadin.flow.router.RouterLink;
 
 @StyleSheet("context://frontend/styles/commons-demo/shared-styles.css")
+@JsModule("./toggle-theme.js")
 @SuppressWarnings("serial")
 public class TabbedDemo extends VerticalLayout implements RouterLayout {
 
@@ -43,6 +45,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   private SplitLayoutDemo currentLayout;
   private Checkbox orientationCB;
   private Checkbox codeCB;
+  private Checkbox themeCB;
 
   public TabbedDemo() {
     tabs = new RouteTabs();
@@ -63,10 +66,17 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
         cb -> {
           updateSplitterPosition();
         });
+    themeCB = new Checkbox("Dark Theme");
+    themeCB.setValue(false); 
+    themeCB.addClassName("smallcheckbox");
+    themeCB.addValueChangeListener(
+        cb -> {
+          updateDemoTheme();
+        });
     footer = new HorizontalLayout();
     footer.setWidthFull();
     footer.setJustifyContentMode(JustifyContentMode.END);
-    footer.add(codeCB, orientationCB);
+    footer.add(codeCB, orientationCB, themeCB);
         
     this.add(tabs);
     this.add(new Div());
@@ -156,12 +166,12 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
       content = new SplitLayoutDemo(demo, sourceCodeUrl);
       currentLayout = (SplitLayoutDemo) content;
       updateSplitterPosition();
-      updateSplitterOrientation();
-      this.footer.setVisible(true);
+      updateSplitterOrientation();  
     } else {
-      currentLayout = null;
-      this.footer.setVisible(false);
+      currentLayout = null;  
+      demo.getElement().getStyle().set("height", "100%");
     }    
+    updateFooterButtonsVisibility();
     this.getElement().insertChild(1, content.getElement());
   }
   
@@ -190,4 +200,13 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     }
   }
 
+  private void updateDemoTheme() {
+   this.getElement().executeJs("toggleTheme.applyTheme($0)", themeCB.getValue());    
+  }
+  
+  private void updateFooterButtonsVisibility() {
+    orientationCB.setVisible(currentLayout != null);
+    codeCB.setVisible(currentLayout != null);
+  }
+  
 }
