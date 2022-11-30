@@ -1,4 +1,3 @@
-import "@vaadin/vaadin-tabs";
 import {
   customElement,
   html,
