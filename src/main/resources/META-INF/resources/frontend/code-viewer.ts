@@ -1,9 +1,10 @@
 import {
-  customElement,
   html,
   LitElement,
   unsafeCSS,
-} from "lit-element";
+} from 'lit';
+
+import {customElement} from 'lit/decorators.js';
 
 //@ts-ignore
 import * as Prism from "./prism.js";
