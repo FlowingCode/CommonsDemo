@@ -21,11 +21,13 @@ package com.flowingcode.vaadin.addons.demo;
 
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.dependency.JsModule;
+import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.dom.Element;
 
 @SuppressWarnings("serial")
 @JsModule("./code-viewer.ts")
+@NpmPackage(value = "lit", version = "2.5.0")
 class SourceCodeView extends Div implements HasSize {
 
   public SourceCodeView(String sourceUrl) {
