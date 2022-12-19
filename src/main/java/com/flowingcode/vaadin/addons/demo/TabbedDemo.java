@@ -27,6 +27,7 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout.Orientation;
@@ -77,7 +78,18 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     footer.setWidthFull();
     footer.setJustifyContentMode(JustifyContentMode.END);
     footer.add(codeCB, orientationCB, themeCB);
-        
+
+    Package pkg = this.getClass().getPackage();
+    String title = pkg.getImplementationTitle();
+    String version = pkg.getImplementationVersion();
+    if (title != null && version != null) {
+      Div footerLeft = new Div();
+      footer.setFlexGrow(1, footerLeft);
+      footer.addComponentAsFirst(footerLeft);
+
+      footerLeft.add(new Span(title + " " + version));
+    }
+
     this.add(tabs);
     this.add(new Div());
     this.add(footer);
