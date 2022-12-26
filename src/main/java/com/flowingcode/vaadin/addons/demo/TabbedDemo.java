@@ -78,6 +78,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     footer.setWidthFull();
     footer.setJustifyContentMode(JustifyContentMode.END);
     footer.add(codeCB, orientationCB, themeCB);
+    footer.setClassName("demo-footer");
 
     Package pkg = this.getClass().getPackage();
     String title = pkg.getImplementationTitle();

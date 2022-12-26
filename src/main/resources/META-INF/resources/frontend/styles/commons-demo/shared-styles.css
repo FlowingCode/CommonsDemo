@@ -29,3 +29,10 @@ code-highlighter pre.vrPre {
 code-highlighter code {
 	background: unset;
 }
+
+.demo-footer {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	background: var(--lumo-base-color);
+}
