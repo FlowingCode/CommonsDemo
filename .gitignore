@@ -8,3 +8,9 @@
 /webpack.generated.js
 /package.json
 /bin/
+/frontend/generated
+/frontend/index.html
+vite.generated.ts
+tsconfig.json
+vite.config.ts
+types.d.ts
