@@ -49,6 +49,9 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   private Checkbox codeCB;
   private Checkbox themeCB;
 
+  private Orientation orientation = Orientation.HORIZONTAL;
+  private boolean sourceVisible = true;
+
   public TabbedDemo() {
     tabs = new RouteTabs();
     tabs.setWidthFull();
@@ -58,15 +61,19 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     orientationCB.setValue(true);
     orientationCB.addClassName("smallcheckbox");
     orientationCB.addValueChangeListener(
-        cb -> {
-          updateSplitterOrientation();
+        ev -> {
+          if (ev.getValue()) {
+            setOrientation(Orientation.HORIZONTAL);
+          } else {
+            setOrientation(Orientation.VERTICAL);
+          }
         });
     codeCB = new Checkbox("Show Source Code");
     codeCB.setValue(true);
     codeCB.addClassName("smallcheckbox");
     codeCB.addValueChangeListener(
-        cb -> {
-          updateSplitterPosition();
+        ev -> {
+          setSourceVisible(ev.getValue());
         });
     themeCB = new Checkbox("Dark Theme");
     themeCB.setValue(false);
@@ -185,8 +192,8 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
       }
       content = new SplitLayoutDemo(demo, sourceCodeUrl);
       currentLayout = (SplitLayoutDemo) content;
-      updateSplitterPosition();
-      updateSplitterOrientation();
+      setSourceVisible(sourceVisible);
+      setOrientation(orientation);
     } else {
       currentLayout = null;
       demo.getElement().getStyle().set("height", "100%");
@@ -200,22 +207,11 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     getElement().removeChild(1);
   }
 
-  private void updateSplitterPosition() {
-    setSourceVisible(codeCB.getValue());
-  }
-
   public void setSourceVisible(boolean visible) {
+    sourceVisible = visible;
     if (currentLayout != null) {
       currentLayout.setSplitterPosition(visible ? 50 : 100);
       orientationCB.setEnabled(visible);
-    }
-  }
-
-  private void updateSplitterOrientation() {
-    if (orientationCB.getValue()) {
-      setOrientation(Orientation.HORIZONTAL);
-    } else {
-      setOrientation(Orientation.VERTICAL);
     }
   }
 
@@ -224,7 +220,10 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   }
 
   public void setOrientation(Orientation orientation) {
-    currentLayout.setOrientation(orientation);
+    this.orientation = orientation;
+    if (currentLayout != null) {
+      currentLayout.setOrientation(orientation);
+    }
   }
 
   public static void applyTheme(Element element, boolean useDarkTheme) {
