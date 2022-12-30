@@ -23,7 +23,6 @@ import com.flowingcode.vaadin.addons.GithubLink;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
@@ -37,7 +36,6 @@ import com.vaadin.flow.router.RouterLink;
 import java.util.Optional;
 
 @StyleSheet("context://frontend/styles/commons-demo/shared-styles.css")
-@JsModule("./toggle-theme.js")
 @SuppressWarnings("serial")
 public class TabbedDemo extends VerticalLayout implements RouterLayout {
 
@@ -72,7 +70,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     themeCB.addClassName("smallcheckbox");
     themeCB.addValueChangeListener(
         cb -> {
-          updateDemoTheme();
+          applyTheme(themeCB.getValue());
         });
     footer = new HorizontalLayout();
     footer.setWidthFull();
@@ -224,8 +222,9 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     currentLayout.setOrientation(orientation);
   }
 
-  private void updateDemoTheme() {
-    this.getElement().executeJs("toggleTheme.applyTheme($0)", themeCB.getValue());
+  private void applyTheme(boolean useDarkTheme) {
+    String theme = useDarkTheme ? "dark" : "";
+    getElement().executeJs("document.documentElement.setAttribute('theme', $0);", theme);
   }
 
   private void updateFooterButtonsVisibility() {
