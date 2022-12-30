@@ -21,6 +21,8 @@ package com.flowingcode.vaadin.addons.demo;
 
 import com.flowingcode.vaadin.addons.GithubLink;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dependency.StyleSheet;
@@ -228,7 +230,15 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   }
 
   private void updateFooterButtonsVisibility() {
-    orientationCB.setVisible(currentLayout != null);
-    codeCB.setVisible(currentLayout != null);
+    boolean hasSourceCode = currentLayout != null;
+    ComponentUtil.fireEvent(this, new TabbedDemoSourceEvent(this, hasSourceCode));
+    orientationCB.setVisible(hasSourceCode);
+    codeCB.setVisible(hasSourceCode);
   }
+
+  public void addTabbedDemoSourceListener(ComponentEventListener<TabbedDemoSourceEvent> listener) {
+    ComponentUtil.addListener(this, TabbedDemoSourceEvent.class, listener);
+    listener.onComponentEvent(new TabbedDemoSourceEvent(this, currentLayout != null));
+  }
+
 }
