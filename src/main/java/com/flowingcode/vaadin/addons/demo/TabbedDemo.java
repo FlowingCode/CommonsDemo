@@ -31,6 +31,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout.Orientation;
+import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLayout;
@@ -72,7 +73,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     themeCB.addClassName("smallcheckbox");
     themeCB.addValueChangeListener(
         cb -> {
-          applyTheme(themeCB.getValue());
+          applyTheme(getElement(), themeCB.getValue());
         });
     footer = new HorizontalLayout();
     footer.setWidthFull();
@@ -191,12 +192,12 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
       demo.getElement().getStyle().set("height", "100%");
     }
     updateFooterButtonsVisibility();
-    this.getElement().insertChild(1, content.getElement());
+    getElement().insertChild(1, content.getElement());
   }
 
   @Override
   public void removeRouterLayoutContent(HasElement oldContent) {
-    this.getElement().removeChild(1);
+    getElement().removeChild(1);
   }
 
   private void updateSplitterPosition() {
@@ -224,9 +225,9 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     currentLayout.setOrientation(orientation);
   }
 
-  private void applyTheme(boolean useDarkTheme) {
+  public static void applyTheme(Element element, boolean useDarkTheme) {
     String theme = useDarkTheme ? "dark" : "";
-    getElement().executeJs("document.documentElement.setAttribute('theme', $0);", theme);
+    element.executeJs("document.documentElement.setAttribute('theme', $0);", theme);
   }
 
   private void updateFooterButtonsVisibility() {
