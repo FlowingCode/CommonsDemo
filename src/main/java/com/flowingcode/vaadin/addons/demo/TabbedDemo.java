@@ -205,8 +205,10 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   }
 
   public void setSourceVisible(boolean visible) {
-    currentLayout.setSplitterPosition(visible ? 50 : 100);
-    orientationCB.setEnabled(visible);
+    if (currentLayout != null) {
+      currentLayout.setSplitterPosition(visible ? 50 : 100);
+      orientationCB.setEnabled(visible);
+    }
   }
 
   private void updateSplitterOrientation() {
