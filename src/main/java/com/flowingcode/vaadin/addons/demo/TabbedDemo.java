@@ -200,23 +200,28 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   }
 
   private void updateSplitterPosition() {
-    boolean b = codeCB.getValue();
-    if (b) {
-      currentLayout.setSplitterPosition(50);
-      orientationCB.setEnabled(true);
-    } else {
-      currentLayout.setSplitterPosition(100);
-      orientationCB.setEnabled(false);
-    }
+    setSourceVisible(codeCB.getValue());
+  }
+
+  public void setSourceVisible(boolean visible) {
+    currentLayout.setSplitterPosition(visible ? 50 : 100);
+    orientationCB.setEnabled(visible);
   }
 
   private void updateSplitterOrientation() {
-    boolean b = orientationCB.getValue();
-    if (b) {
-      currentLayout.setOrientation(Orientation.HORIZONTAL);
+    if (orientationCB.getValue()) {
+      setOrientation(Orientation.HORIZONTAL);
     } else {
-      currentLayout.setOrientation(Orientation.VERTICAL);
+      setOrientation(Orientation.VERTICAL);
     }
+  }
+
+  public Orientation getOrientation() {
+    return currentLayout.getOrientation();
+  }
+
+  public void setOrientation(Orientation orientation) {
+    currentLayout.setOrientation(orientation);
   }
 
   private void updateDemoTheme() {

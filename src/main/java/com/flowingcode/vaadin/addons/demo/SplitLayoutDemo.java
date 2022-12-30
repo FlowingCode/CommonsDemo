@@ -47,6 +47,10 @@ class SplitLayoutDemo extends Composite<SplitLayout> {
     code.setSizeFull();
   }
 
+  public Orientation getOrientation() {
+    return getContent().getOrientation();
+  }
+
   public void setSplitterPosition(int pos) {
     getContent().setSplitterPosition(pos);
   }
