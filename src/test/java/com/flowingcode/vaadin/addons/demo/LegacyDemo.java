@@ -30,5 +30,4 @@ public class LegacyDemo extends Div {
   public LegacyDemo() {
     add(new Span("Legacy demo"));
   }
-
 }

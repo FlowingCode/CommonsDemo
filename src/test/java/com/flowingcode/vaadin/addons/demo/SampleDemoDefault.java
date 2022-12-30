@@ -32,5 +32,4 @@ public class SampleDemoDefault extends Div {
   public SampleDemoDefault() {
     add(new Span("Demo component with defaulted @DemoSource annotation"));
   }
-
 }

@@ -31,5 +31,4 @@ public class SampleDemo extends Div {
   public SampleDemo() {
     add(new Span("Demo component without source"));
   }
-
 }

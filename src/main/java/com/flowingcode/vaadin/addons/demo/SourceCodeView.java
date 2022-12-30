@@ -36,9 +36,10 @@ class SourceCodeView extends Div implements HasSize {
     getElement().appendChild(codeViewer);
     getElement().getStyle().set("display", "flex");
     codeViewer.getStyle().set("flex-grow", "1");
-    addAttachListener(ev -> {
-      codeViewer.executeJs("this.fetchContents($0,$1)", url, "java");
-    });
+    addAttachListener(
+        ev -> {
+          codeViewer.executeJs("this.fetchContents($0,$1)", url, "java");
+        });
   }
 
   private static String translateSource(String url) {
@@ -48,5 +49,4 @@ class SourceCodeView extends Div implements HasSize {
     }
     return url;
   }
-
 }

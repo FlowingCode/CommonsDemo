@@ -25,11 +25,12 @@ public class RouteTabs extends Tabs implements BeforeEnterObserver {
 
   public void add(RouterLink routerLink) {
     routerLink.setHighlightCondition(HighlightConditions.sameLocation());
-    routerLink.setHighlightAction((link, shouldHighlight) -> {
-      if (shouldHighlight) {
-        setSelectedTab(routerLinkTabMap.get(routerLink));
-      }
-    });
+    routerLink.setHighlightAction(
+        (link, shouldHighlight) -> {
+          if (shouldHighlight) {
+            setSelectedTab(routerLinkTabMap.get(routerLink));
+          }
+        });
     routerLinkTabMap.put(routerLink, new Tab(routerLink));
     add(routerLinkTabMap.get(routerLink));
   }
@@ -61,15 +62,15 @@ public class RouteTabs extends Tabs implements BeforeEnterObserver {
   public void addLegacyTab(String label, Component content) {
     Tab tab = new Tab(label);
     add(tab);
-    addSelectedChangeListener(ev -> {
-      if (ev.getSelectedTab() == tab) {
-        TabbedDemo tabbedDemo = (TabbedDemo) getParent().get();
-        String route = tabbedDemo.getClass().getAnnotation(Route.class).value();
-        UI.getCurrent().getPage().getHistory().pushState(null, new Location(route));
-        tabbedDemo.removeRouterLayoutContent(null);
-        tabbedDemo.showRouterLayoutContent(content);
-      }
-    });
+    addSelectedChangeListener(
+        ev -> {
+          if (ev.getSelectedTab() == tab) {
+            TabbedDemo tabbedDemo = (TabbedDemo) getParent().get();
+            String route = tabbedDemo.getClass().getAnnotation(Route.class).value();
+            UI.getCurrent().getPage().getHistory().pushState(null, new Location(route));
+            tabbedDemo.removeRouterLayoutContent(null);
+            tabbedDemo.showRouterLayoutContent(content);
+          }
+        });
   }
-
 }

@@ -19,7 +19,6 @@
  */
 package com.flowingcode.vaadin.addons.demo;
 
-import java.util.Optional;
 import com.flowingcode.vaadin.addons.GithubLink;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasElement;
@@ -35,6 +34,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLayout;
 import com.vaadin.flow.router.RouterLink;
+import java.util.Optional;
 
 @StyleSheet("context://frontend/styles/commons-demo/shared-styles.css")
 @JsModule("./toggle-theme.js")
@@ -68,7 +68,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
           updateSplitterPosition();
         });
     themeCB = new Checkbox("Dark Theme");
-    themeCB.setValue(false); 
+    themeCB.setValue(false);
     themeCB.addClassName("smallcheckbox");
     themeCB.addValueChangeListener(
         cb -> {
@@ -126,13 +126,14 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     tabs.addLegacyTab(label, demo);
   }
 
-  /** Add a tab with a demo component.
+  /**
+   * Add a tab with a demo component.
    *
    * @param clazz the class of routed demo view component
    * @param label the demo name (tab label)
    */
   public void addDemo(Class<? extends Component> clazz, String label) {
-    if(!clazz.isAnnotationPresent(Route.class)) {
+    if (!clazz.isAnnotationPresent(Route.class)) {
       throw new IllegalArgumentException(clazz + " must be annotated as Route");
     }
     RouterLink tab = new RouterLink(label, clazz);
@@ -140,8 +141,8 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   }
 
   /**
-   * Add a tab with a {@code demo} component. The tab label is retrieved from
-   * the {@link PageTitle} annotations in the demo class.
+   * Add a tab with a {@code demo} component. The tab label is retrieved from the {@link PageTitle}
+   * annotations in the demo class.
    *
    * @param clazz the class of routed demo view component
    */
@@ -161,7 +162,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
 
   @Override
   public void showRouterLayoutContent(HasElement content) {
-    Component demo = (Component)content;
+    Component demo = (Component) content;
     if (!demo.getId().isPresent()) {
       demo.setId("content");
     }
@@ -171,28 +172,33 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     if (demoSource != null) {
       sourceCodeUrl = demoSource.value();
       if (sourceCodeUrl.equals(DemoSource.GITHUB_SOURCE)) {
-        sourceCodeUrl = Optional.ofNullable(this.getClass().getAnnotation(GithubLink.class))
-            .map(githubLink -> githubLink.value() + "/blob/master/src/test/java/"
-                + demo.getClass().getName().replace('.', '/') + ".java")
-            .orElse(null);
+        sourceCodeUrl =
+            Optional.ofNullable(this.getClass().getAnnotation(GithubLink.class))
+                .map(
+                    githubLink ->
+                        githubLink.value()
+                            + "/blob/master/src/test/java/"
+                            + demo.getClass().getName().replace('.', '/')
+                            + ".java")
+                .orElse(null);
       }
       content = new SplitLayoutDemo(demo, sourceCodeUrl);
       currentLayout = (SplitLayoutDemo) content;
       updateSplitterPosition();
-      updateSplitterOrientation();  
+      updateSplitterOrientation();
     } else {
-      currentLayout = null;  
+      currentLayout = null;
       demo.getElement().getStyle().set("height", "100%");
-    }    
+    }
     updateFooterButtonsVisibility();
     this.getElement().insertChild(1, content.getElement());
   }
-  
+
   @Override
   public void removeRouterLayoutContent(HasElement oldContent) {
     this.getElement().removeChild(1);
   }
-  
+
   private void updateSplitterPosition() {
     boolean b = codeCB.getValue();
     if (b) {
@@ -214,12 +220,11 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   }
 
   private void updateDemoTheme() {
-   this.getElement().executeJs("toggleTheme.applyTheme($0)", themeCB.getValue());    
+    this.getElement().executeJs("toggleTheme.applyTheme($0)", themeCB.getValue());
   }
-  
+
   private void updateFooterButtonsVisibility() {
     orientationCB.setVisible(currentLayout != null);
     codeCB.setVisible(currentLayout != null);
   }
-  
 }
