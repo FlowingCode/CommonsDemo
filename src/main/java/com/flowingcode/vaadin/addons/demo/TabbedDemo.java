@@ -25,6 +25,8 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.HasElement;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
@@ -37,11 +39,16 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLayout;
 import com.vaadin.flow.router.RouterLink;
+import java.util.Objects;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @StyleSheet("context://frontend/styles/commons-demo/shared-styles.css")
 @SuppressWarnings("serial")
 public class TabbedDemo extends VerticalLayout implements RouterLayout {
+
+  private static final Logger logger = LoggerFactory.getLogger(TabbedDemo.class);
 
   private static final int MOBILE_DEVICE_BREAKPOINT_WIDTH = 768;
   private RouteTabs tabs;
@@ -51,8 +58,12 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   private Checkbox codeCB;
   private Checkbox themeCB;
   private Orientation splitOrientation;
+  private Button helperButton;
+  private DemoHelperViewer demoHelperViewer;
 
   public TabbedDemo() {
+    demoHelperViewer = new DialogDemoHelperViewer();
+
     tabs = new RouteTabs();
     tabs.setWidthFull();
 
@@ -164,6 +175,11 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
       demo.setId("content");
     }
 
+    if (helperButton != null) {
+      remove(helperButton);
+      helperButton = null;
+    }
+
     DemoSource demoSource = demo.getClass().getAnnotation(DemoSource.class);
     String sourceCodeUrl = null;
     if (demoSource != null) {
@@ -180,9 +196,14 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
         setOrientation(splitOrientation);
         updateSplitterPosition();
       }
+
+      if (currentLayout != null) {
+        setupDemoHelperButton(currentLayout.getContent().getPrimaryComponent().getClass());
+      }
     } else {
       currentLayout = null;
       demo.getElement().getStyle().set("height", "100%");
+      setupDemoHelperButton(content.getClass());
     }
     updateFooterButtonsVisibility();
     getElement().insertChild(1, content.getElement());
@@ -264,6 +285,29 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
       this.splitOrientation = Orientation.HORIZONTAL;
     }
     setOrientation(this.splitOrientation);
+  }
+
+  public void setDemoHelperViewer(DemoHelperViewer demoHelperViewer) {
+    this.demoHelperViewer =
+        Objects.requireNonNull(demoHelperViewer, "Demo helper viewer cannot be null");
+  }
+
+  private void setupDemoHelperButton(Class<?> helperClass) {
+    if (helperClass.isAnnotationPresent(DemoHelper.class)) {
+      DemoHelper demoHelper = helperClass.getAnnotation(DemoHelper.class);
+      try {
+        final DemoHelperRenderer demoHelperRenderer = demoHelper.renderer().newInstance();
+        helperButton = new Button(demoHelper.icon().create());
+        helperButton.getElement().setAttribute("title", demoHelper.tooltipText());
+        helperButton.addClassName("helper-button");
+        helperButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_TERTIARY);
+        helperButton
+            .addClickListener(e -> demoHelperViewer.show(demoHelperRenderer.helperContent()));
+        add(helperButton);
+      } catch (Exception e) {
+        logger.error("Error creating an instance",e);
+      }
+    }
   }
 
 }

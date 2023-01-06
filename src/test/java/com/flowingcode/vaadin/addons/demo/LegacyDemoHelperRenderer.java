@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,30 +17,20 @@
  * limitations under the License.
  * #L%
  */
-vaadin-checkbox.smallcheckbox {
-	font-size: small;
-}
+package com.flowingcode.vaadin.addons.demo;
 
-code-highlighter pre.vrPre {
-	background: unset;
-	overflow-x: unset;
-}
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-code-highlighter code {
-	background: unset;
-}
+public class LegacyDemoHelperRenderer implements DemoHelperRenderer {
 
-.demo-footer {
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	background: var(--lumo-base-color);
-}
-
-.helper-button {
-	position: absolute;
-	z-index: 999;
-	right: 10px;
-	top: 10px;
-	cursor: pointer;
+  @Override
+  public Component helperContent() {
+    VerticalLayout content = new VerticalLayout();
+    content.add(new H3("Legacy Demo help"));
+    content.add(new Span("Legacy Demo help description."));
+    return content;
+  }
 }
