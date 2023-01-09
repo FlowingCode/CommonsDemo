@@ -271,7 +271,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     super.onAttach(attachEvent);
     getUI().ifPresent(ui -> ui.getPage().retrieveExtendedClientDetails(receiver -> {
       boolean mobile = receiver.getBodyClientWidth() <= MOBILE_DEVICE_BREAKPOINT_WIDTH;
-      codeCB.setValue(!mobile);
+      codeCB.setValue(codeCB.getValue() && !mobile);
 
       boolean portraitOrientation = receiver.getBodyClientHeight() > receiver.getBodyClientWidth();
       adjustSplitOrientation(portraitOrientation);
