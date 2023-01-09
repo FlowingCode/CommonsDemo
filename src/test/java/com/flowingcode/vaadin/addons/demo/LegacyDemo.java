@@ -21,8 +21,10 @@ package com.flowingcode.vaadin.addons.demo;
 
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.PageTitle;
 
+@DemoHelper(renderer = LegacyDemoHelperRenderer.class, icon = VaadinIcon.INFO_CIRCLE)
 @PageTitle("Legacy")
 @DemoSource
 public class LegacyDemo extends Div {
@@ -30,4 +32,5 @@ public class LegacyDemo extends Div {
   public LegacyDemo() {
     add(new Span("Legacy demo"));
   }
+
 }

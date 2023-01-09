@@ -24,6 +24,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+@DemoHelper(renderer = SampleDemoHelperRenderer.class, tooltipText = "Show help")
 @Route(value = "demo/no-source", layout = Demo.class)
 @PageTitle("Demo without source")
 public class SampleDemo extends Div {
@@ -31,4 +32,5 @@ public class SampleDemo extends Div {
   public SampleDemo() {
     add(new Span("Demo component without source"));
   }
+
 }
