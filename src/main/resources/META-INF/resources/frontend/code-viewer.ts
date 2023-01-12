@@ -25,8 +25,8 @@ import {
 
 import {customElement} from 'lit/decorators.js';
 
-//@ts-ignore
-import * as Prism from "./prism.js";
+import "./prism.js";
+
 @customElement("code-viewer")
 export class CodeViewer extends LitElement {
 
@@ -193,8 +193,7 @@ pre[class*="language-"] {
       code.setAttribute("class", "language-" + language);
       code.innerHTML = self.escapeHtml(this.responseText); 
       
-      //@ts-ignore
-      Prism.highlightAllUnder(self);
+      (window as any).Prism.highlightAllUnder(self);
     }};
     xhr.open('GET', sourceUrl, true);
     xhr.send();
