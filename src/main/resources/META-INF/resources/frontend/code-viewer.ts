@@ -18,12 +18,10 @@
  * #L%
  */
 import {
+  customElement,
   html,
-  LitElement,
-  unsafeCSS,
-} from 'lit';
-
-import {customElement} from 'lit/decorators.js';
+  LitElement
+} from "lit-element";
 
 import "./prism.js";
 
