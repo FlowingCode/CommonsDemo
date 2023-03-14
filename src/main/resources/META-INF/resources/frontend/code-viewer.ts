@@ -28,6 +28,8 @@ import "./prism.js";
 @customElement("code-viewer")
 export class CodeViewer extends LitElement {
 
+  private __license : Element[] = [];
+  
   createRenderRoot() {
     return this;
   }
@@ -100,6 +102,12 @@ pre[class*="language-"] {
 
 .token.namespace {
   opacity: 0.7;
+}
+    
+.token.license a {
+  color: #f8f8f2;
+  opacity: 0.7;
+  text-decoration: underline;
 }
 
 .token.property,
@@ -187,16 +195,54 @@ pre[class*="language-"] {
 	  // Wait for LitElement to finish updating the DOM before higlighting
       await self.updateComplete;
       var code = self.querySelector("code") as HTMLElement;
-	
+      var text = self.removeLicense(this.responseText);
       code.setAttribute("class", "language-" + language);
-      code.innerHTML = self.escapeHtml(this.responseText); 
+      code.innerHTML = self.escapeHtml(text);
       
       (window as any).Prism.highlightAllUnder(self);
+      self.__license.reverse().forEach(e=>self.querySelector('pre code')?.prepend(e));
     }};
     xhr.open('GET', sourceUrl, true);
     xhr.send();
   }
 
+  removeLicense(text: string) : string {
+    this.__license = [];
+    do {
+      //parse license header
+      if (!text.startsWith('/*-')) break;
+      let end = text.indexOf('*/');
+      if (end<0) break;
+      
+      let pos = text.indexOf('#%L');
+      if (pos<0 || end<pos) break;
+      
+      let license = text.substring(pos+3,end).split('%%');
+      if (license.length<3) break;
+      license[1]=license[1].trim().replace(/\*/g,'').trim();
+      license[2]=license[2].trim().replace(/\*/g,'').trim();
+      
+      if (license[1].indexOf('\n')>0) break;
+      
+      let newSpan = () => {
+        let span = document.createElement('span');
+        span.className='token comment license';
+        this.__license.push(span);
+        return span;
+      }
+      
+      if (license[2].startsWith('Licensed under the Apache License, Version 2.0')) {
+        newSpan().innerText='//'+license[1]+'\n';
+        newSpan().innerHTML = '//Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License, Version 2.0</a>\n';
+      }
+      
+      if (license.length) {
+        text = text.substring(end+2).trimStart();
+      }
+    } while (0);
+    return text;
+  }
+  
   escapeHtml(unsafe: string) {
     return unsafe
       .replace(/&/g, "&amp;")
