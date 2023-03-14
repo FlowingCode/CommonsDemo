@@ -197,7 +197,7 @@ pre[class*="language-"] {
       var code = self.querySelector("code") as HTMLElement;
       var text = self.removeLicense(this.responseText);
       code.setAttribute("class", "language-" + language);
-      code.innerHTML = self.escapeHtml(text);
+      code.innerHTML = self.escapeHtml(self.cleanupCode(text));
       
       (window as any).Prism.highlightAllUnder(self);
       self.__license.reverse().forEach(e=>self.querySelector('pre code')?.prepend(e));
@@ -241,6 +241,19 @@ pre[class*="language-"] {
       }
     } while (0);
     return text;
+  }
+  
+  cleanupCode(text: string) : string {
+    return text.split('\n').filter(line=> 
+       !line.match("//\\s*hide-source(\\s|$)")
+    && !line.startsWith('@Route')
+    && !line.startsWith('@PageTitle')
+    && !line.startsWith('@DemoSource')
+    && !line.startsWith('package ')
+    && line != 'import com.vaadin.flow.router.PageTitle;'
+    && line != 'import com.vaadin.flow.router.Route;'
+    && line != 'import com.flowingcode.vaadin.addons.demo.DemoSource;'
+    ).join('\n');
   }
   
   escapeHtml(unsafe: string) {
