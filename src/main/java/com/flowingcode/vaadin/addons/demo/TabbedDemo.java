@@ -19,6 +19,7 @@
  */
 package com.flowingcode.vaadin.addons.demo;
 
+import com.flowingcode.vaadin.addons.GithubBranch;
 import com.flowingcode.vaadin.addons.GithubLink;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
@@ -185,9 +186,11 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     if (demoSource != null) {
       sourceCodeUrl = demoSource.value();
       if (sourceCodeUrl.equals(DemoSource.GITHUB_SOURCE)) {
+        String branch = lookupGithubBranch(this.getClass());
+        String demoFile = demo.getClass().getName().replace('.', '/');
         sourceCodeUrl = Optional.ofNullable(this.getClass().getAnnotation(GithubLink.class))
-            .map(githubLink -> githubLink.value() + "/blob/master/src/test/java/"
-                + demo.getClass().getName().replace('.', '/') + ".java")
+            .map(githubLink -> String.format("%s/blob/%s/src/test/java/%s.java", githubLink.value(),
+                branch, demoFile))
             .orElse(null);
       }
       content = new SplitLayoutDemo(demo, sourceCodeUrl);
@@ -207,6 +210,17 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     }
     updateFooterButtonsVisibility();
     getElement().insertChild(1, content.getElement());
+  }
+
+  private String lookupGithubBranch(Class<? extends TabbedDemo> clazz) {
+    GithubBranch branch = clazz.getAnnotation(GithubBranch.class);
+    if (branch == null) {
+      Package pkg = clazz.getPackage();
+      if (pkg!=null) {
+        branch = pkg.getAnnotation(GithubBranch.class);
+      }
+    }
+    return Optional.ofNullable(branch).map(GithubBranch::value).orElse("master");
   }
 
   @Override
