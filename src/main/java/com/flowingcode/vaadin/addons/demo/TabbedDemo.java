@@ -238,8 +238,9 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   }
 
   private void toggleSplitterOrientation() {
-    if (currentLayout == null)
+    if (currentLayout == null) {
       return;
+    }
     if (Orientation.HORIZONTAL.equals(splitOrientation)) {
       splitOrientation = Orientation.VERTICAL;
     } else {
@@ -253,7 +254,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   }
 
   public void setOrientation(Orientation orientation) {
-    this.splitOrientation = orientation;
+    splitOrientation = orientation;
     if (currentLayout != null) {
       currentLayout.setOrientation(orientation);
     }
@@ -292,11 +293,11 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
 
   private void adjustSplitOrientation(boolean portraitOrientation) {
     if (portraitOrientation) {
-      this.splitOrientation = Orientation.VERTICAL;
+      splitOrientation = Orientation.VERTICAL;
     } else {
-      this.splitOrientation = Orientation.HORIZONTAL;
+      splitOrientation = Orientation.HORIZONTAL;
     }
-    setOrientation(this.splitOrientation);
+    setOrientation(splitOrientation);
   }
 
   public void setDemoHelperViewer(DemoHelperViewer demoHelperViewer) {
