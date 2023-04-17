@@ -212,7 +212,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     getElement().insertChild(1, content.getElement());
   }
 
-  private String lookupGithubBranch(Class<? extends TabbedDemo> clazz) {
+  public static String lookupGithubBranch(Class<? extends TabbedDemo> clazz) {
     GithubBranch branch = clazz.getAnnotation(GithubBranch.class);
     if (branch == null) {
       Package pkg = clazz.getPackage();
