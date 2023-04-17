@@ -119,8 +119,6 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
    */
   @Deprecated
   public void addDemo(Component demo) {
-    DemoSource demoSource = demo.getClass().getAnnotation(DemoSource.class);
-
     String label = Optional.ofNullable(demo.getClass().getAnnotation(PageTitle.class))
         .map(PageTitle::value).orElse(demo.getClass().getSimpleName());
 
