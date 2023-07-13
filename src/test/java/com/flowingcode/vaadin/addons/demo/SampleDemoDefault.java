@@ -33,5 +33,10 @@ public class SampleDemoDefault extends Div {
     add(new Span("Demo component with defaulted @DemoSource annotation"));
     // show-source System.out.println("this line will be displayed in the code snippet");
     this.getClass(); // hide-source (this line will not be displayed in the code snippet)
+    // #if vaadin ge 23
+    // show-source System.out.println("conditional code for Vaadin 23+");
+    // #elif vaadin ge 14
+    // show-source System.out.println("conditional code for Vaadin 14-22");
+    // #endif
   }
 }

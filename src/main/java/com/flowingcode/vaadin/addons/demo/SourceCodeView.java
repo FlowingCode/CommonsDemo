@@ -26,18 +26,28 @@ import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.server.VaadinService;
+import elemental.json.Json;
+import elemental.json.JsonObject;
+import java.util.Map;
 
 @SuppressWarnings("serial")
 @JsModule("./code-viewer.ts")
 @NpmPackage(value = "lit", version = "2.5.0")
 class SourceCodeView extends Div implements HasSize {
 
+  private final Element codeViewer;
+
   public SourceCodeView(String sourceUrl) {
+    this(sourceUrl, null);
+  }
+
+  public SourceCodeView(String sourceUrl, Map<String, String> properties) {
     String url = translateSource(sourceUrl);
-    Element codeViewer = new Element("code-viewer");
+    codeViewer = new Element("code-viewer");
     getElement().appendChild(codeViewer);
     getElement().getStyle().set("display", "flex");
     codeViewer.getStyle().set("flex-grow", "1");
+    setProperties(properties);
     addAttachListener(
         ev -> {
           codeViewer.executeJs("this.fetchContents($0,$1)", url, "java");
@@ -57,5 +67,17 @@ class SourceCodeView extends Div implements HasSize {
       url = url.replaceFirst("/blob", "");
     }
     return url;
+  }
+
+  private void setProperties(Map<String, String> properties) {
+    if (properties != null) {
+      JsonObject env = Json.createObject();
+      properties.forEach((k, v) -> {
+        if (v != null) {
+          env.put(k, Json.create(v));
+        }
+      });
+      codeViewer.setPropertyJson("env", env);
+    }
   }
 }

@@ -23,6 +23,9 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout.Orientation;
+import com.vaadin.flow.server.Version;
+import java.util.HashMap;
+import java.util.Map;
 
 @SuppressWarnings("serial")
 class SplitLayoutDemo extends Composite<SplitLayout> {
@@ -31,8 +34,12 @@ class SplitLayoutDemo extends Composite<SplitLayout> {
 
   public SplitLayoutDemo(Component demo, String sourceUrl) {
     getContent().setOrientation(Orientation.HORIZONTAL);
-    code = new SourceCodeView(sourceUrl);
 
+    Map<String, String> properties = new HashMap<>();
+    properties.put("vaadin", VaadinVersion.getVaadinVersion());
+    properties.put("flow", Version.getFullVersion());
+
+    code = new SourceCodeView(sourceUrl, properties);
     getContent().addToPrimary(demo);
     getContent().addToSecondary(code);
     getContent().setSizeFull();
