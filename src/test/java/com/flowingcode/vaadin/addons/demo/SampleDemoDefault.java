@@ -31,6 +31,7 @@ public class SampleDemoDefault extends Div {
 
   public SampleDemoDefault() {
     add(new Span("Demo component with defaulted @DemoSource annotation"));
+    // show-source System.out.println("this line will be displayed in the code snippet");
     this.getClass(); // hide-source (this line will not be displayed in the code snippet)
   }
 }
