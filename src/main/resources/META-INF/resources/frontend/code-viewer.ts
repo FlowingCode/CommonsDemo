@@ -30,6 +30,8 @@ export class CodeViewer extends LitElement {
 
   private __license : Element[] = [];
   
+  env: any = {};
+  
   createRenderRoot() {
     return this;
   }
@@ -244,7 +246,54 @@ pre[class*="language-"] {
   }
   
   cleanupCode(text: string) : string {
-    return text.split('\n').map(line=>{
+    let lines  : (string|null)[] = text.split('\n');
+    let guards : (string|undefined)[] = [];
+    let stack  : string[] = [];
+    
+    let __elif = (guard:(string|undefined),value:(string|undefined)) => {
+        return guard=='isfalse' ? value : 'wastrue';
+    };
+    
+    let transition = (top:string, next:string) => {
+        let result = stack.pop()==top;
+        stack.push(result?next:'error'); 
+        return result;
+    };
+
+    for (let i=0;i<lines.length;i++) {
+        let m = lines[i]!.match("^\\s*//\\s*#(?<directive>\\w+)\\s*(?<line>.*)");
+        if (m && m.groups) {
+            let line = m.groups.line;
+            switch (m.groups.directive) {
+                case 'if':
+                    stack.push('if');
+                    guards.push(this.__eval(line));
+                    lines[i]=null;
+                    break;
+                case 'else':
+                    if (!transition('if', 'else')) break;
+                    guards.push(__elif(guards.pop(), 'istrue'));
+                    lines[i]=null;
+                    break;
+                case 'elif':
+                    if (!transition('if', 'if')) break;
+                    guards.push(__elif(guards.pop(), this.__eval(line)));
+                    lines[i]=null;
+                    break;
+                case 'endif':
+                    stack.pop();
+                    guards.pop();
+                    lines[i]=null;
+            }
+        }
+
+        if (!guards.every(x=>x=='istrue')) {
+            lines[i] = null;
+        }
+    }
+    
+    return lines.filter(line=>line!==null)
+    .map(line=>{
         let m= line!.match("^(?<spaces>\\s*)//\\s*show-source\\s(?<line>.*)");
         return m?m.groups!.spaces+m.groups!.line : line!;
     }).filter(line=>
@@ -267,5 +316,46 @@ pre[class*="language-"] {
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#039;");
   }
+
+  __eval(line: string) : string|undefined {
+    let expr = line.split(' ');
+    if (expr.length==3) {
+        const value = this.env[expr[0]];
+        if (value==undefined) {
+            return 'isfalse';
+        }
+        
+        let op = (a:string,b:string) => { 
+            switch (expr[1]) {
+                case 'lt': return this.__compare(a,b)<0; 
+                case 'le': return this.__compare(a,b)<=0; 
+                case 'eq': return this.__compare(a,b)==0;
+                case 'ge': return this.__compare(a,b)>=0;
+                case 'gt': return this.__compare(a,b)>0;
+                case 'ne': return this.__compare(a,b)!=0;;
+                default: return undefined;
+        }};
+        
+        switch (op(value, expr[2])) {
+            case true: return 'istrue';
+            case false: return 'isfalse';
+        }
+    }
+    return undefined;
+  }
+  
+  __compare(a: string, b:string) : number {
+     let aa = a.split('.');
+     let bb = b.split('.');
+     for (let i=0; i<Math.min(aa.length,bb.length); i++) {
+         let ai = parseInt(aa[i]);
+         let bi = parseInt(bb[i]);
+         if (ai<bi) return -1;
+         if (ai>bi) return +1;
+     }
+     if (aa.length<bb.length) return -1;
+     if (aa.length<bb.length) return +1;
+     return 0;
+   }
 
 }
