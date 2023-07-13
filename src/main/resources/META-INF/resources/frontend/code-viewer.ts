@@ -244,7 +244,10 @@ pre[class*="language-"] {
   }
   
   cleanupCode(text: string) : string {
-    return text.split('\n').filter(line=> 
+    return text.split('\n').map(line=>{
+        let m= line!.match("^(?<spaces>\\s*)//\\s*show-source\\s(?<line>.*)");
+        return m?m.groups!.spaces+m.groups!.line : line!;
+    }).filter(line=>
        !line.match("//\\s*hide-source(\\s|$)")
     && !line.startsWith('@Route')
     && !line.startsWith('@PageTitle')
