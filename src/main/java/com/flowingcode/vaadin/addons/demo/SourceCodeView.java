@@ -19,11 +19,13 @@
  */
 package com.flowingcode.vaadin.addons.demo;
 
+import com.flowingcode.vaadin.addons.DevSourceRequestHandler;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.dom.Element;
+import com.vaadin.flow.server.VaadinService;
 
 @SuppressWarnings("serial")
 @JsModule("./code-viewer.ts")
@@ -43,6 +45,13 @@ class SourceCodeView extends Div implements HasSize {
   }
 
   private static String translateSource(String url) {
+    if (!VaadinService.getCurrent().getDeploymentConfiguration().isProductionMode()) {
+      String src = url.replaceFirst("^.*/src/", "/src/");
+      if (DevSourceRequestHandler.fileExists(src)) {
+        return src;
+      }
+    }
+
     if (url.startsWith("https://github.com")) {
       url = url.replaceFirst("github.com", "raw.githubusercontent.com");
       url = url.replaceFirst("/blob", "");
