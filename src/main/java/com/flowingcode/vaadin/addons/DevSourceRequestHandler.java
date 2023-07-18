@@ -8,7 +8,6 @@ import com.vaadin.flow.server.VaadinSession;
 import java.io.File;
 import java.io.IOException;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 public class DevSourceRequestHandler implements RequestHandler {
 
@@ -31,8 +30,14 @@ public class DevSourceRequestHandler implements RequestHandler {
 
     if (fileExists(path)) {
       byte file[] = FileUtils.readFileToByteArray(getFile(path));
+      int j = 0;
+      for (int i = 0; i < file.length; i++) {
+        if (file[i] != '\r') {
+          file[j++] = file[i];
+        }
+      }
       response.setStatus(SC_OK);
-      IOUtils.write(file, response.getOutputStream());
+      response.getOutputStream().write(file, 0, j);
     } else {
       response.setStatus(SC_NOT_FOUND);
     }
