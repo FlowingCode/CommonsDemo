@@ -33,15 +33,15 @@ import java.util.Map;
 @SuppressWarnings("serial")
 @JsModule("./code-viewer.ts")
 @NpmPackage(value = "lit", version = "2.5.0")
-class SourceCodeView extends Div implements HasSize {
+class SourceCodeViewer extends Div implements HasSize {
 
   private final Element codeViewer;
 
-  public SourceCodeView(String sourceUrl) {
+  public SourceCodeViewer(String sourceUrl) {
     this(sourceUrl, null);
   }
 
-  public SourceCodeView(String sourceUrl, Map<String, String> properties) {
+  public SourceCodeViewer(String sourceUrl, Map<String, String> properties) {
     String url = translateSource(sourceUrl);
     codeViewer = new Element("code-viewer");
     getElement().appendChild(codeViewer);
