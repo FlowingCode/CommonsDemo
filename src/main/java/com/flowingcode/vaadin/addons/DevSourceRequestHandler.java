@@ -41,7 +41,8 @@ public class DevSourceRequestHandler implements RequestHandler {
   }
 
   public static boolean fileExists(String path) {
-    return getFile(path).exists();
+    File file = getFile(path);
+    return file.exists() && !file.isDirectory();
   }
 
   private static File getFile(String path) {
