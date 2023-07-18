@@ -33,7 +33,7 @@ import java.util.Map;
 @SuppressWarnings("serial")
 @JsModule("./code-viewer.ts")
 @NpmPackage(value = "lit", version = "2.5.0")
-class SourceCodeViewer extends Div implements HasSize {
+public class SourceCodeViewer extends Div implements HasSize {
 
   private final Element codeViewer;
 
