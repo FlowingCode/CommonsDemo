@@ -39,7 +39,21 @@
     <developerConnection>scm:git:ssh://git@github.com:/FlowingCode/CommonsDemo.git</developerConnection>
     <tag>master</tag>
   </scm>
-	
+
+  <repositories>
+    <repository>
+      <id>central</id>
+      <url>https://repo.maven.apache.org/maven2</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>flowing-releases</id>
+      <url>https://maven.flowingcode.com/releases</url>
+    </repository>
+  </repositories>
+  	
   <dependencyManagement>
         <dependencies>
             <dependency>
@@ -97,6 +111,31 @@
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-simple</artifactId>
         <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+        <groupId>com.vaadin</groupId>
+        <artifactId>vaadin-testbench</artifactId>
+        <scope>test</scope>
+        <exclusions>
+            <exclusion>
+                <groupId>org.webjars.bowergithub.polymer</groupId>
+                <artifactId>polymer</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+    
+    <dependency>
+        <groupId>io.github.bonigarcia</groupId>
+        <artifactId>webdrivermanager</artifactId>
+        <version>5.3.0</version>
+        <scope>test</scope>
+        <exclusions>
+            <exclusion>
+                <groupId>net.java.dev.jna</groupId>
+                <artifactId>jna</artifactId>
+            </exclusion>
+        </exclusions>
     </dependency>
   </dependencies>
 
