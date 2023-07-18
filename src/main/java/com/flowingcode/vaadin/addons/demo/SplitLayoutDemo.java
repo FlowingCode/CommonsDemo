@@ -30,7 +30,7 @@ import java.util.Map;
 @SuppressWarnings("serial")
 class SplitLayoutDemo extends Composite<SplitLayout> {
 
-  private SourceCodeView code;
+  private SourceCodeViewer code;
 
   public SplitLayoutDemo(Component demo, String sourceUrl) {
     getContent().setOrientation(Orientation.HORIZONTAL);
@@ -39,7 +39,7 @@ class SplitLayoutDemo extends Composite<SplitLayout> {
     properties.put("vaadin", VaadinVersion.getVaadinVersion());
     properties.put("flow", Version.getFullVersion());
 
-    code = new SourceCodeView(sourceUrl, properties);
+    code = new SourceCodeViewer(sourceUrl, properties);
     getContent().addToPrimary(demo);
     getContent().addToSecondary(code);
     getContent().setSizeFull();
