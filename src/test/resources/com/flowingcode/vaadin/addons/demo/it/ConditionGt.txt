@@ -1,0 +1,5 @@
+class MyClass {
+  gt 22
+  gt 23.3
+  gt 23.4.4
+}

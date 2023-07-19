@@ -1,0 +1,5 @@
+class MyClass {
+  lt 24
+  lt 23.5
+  lt 23.4.6
+}

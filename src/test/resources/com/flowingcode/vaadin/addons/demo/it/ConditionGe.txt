@@ -1,0 +1,8 @@
+class MyClass {
+  ge 22
+  ge 23
+  ge 23.3
+  ge 23.4
+  ge 23.4.4
+  ge 23.4.5
+}
