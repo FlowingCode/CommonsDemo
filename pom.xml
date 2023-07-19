@@ -170,6 +170,7 @@
               <excludes>
                 <exclude>**/main/resources/META-INF/resources/frontend/prism.js</exclude>
                 <exclude>**/main/resources/META-INF/resources/frontend/prism.css</exclude>
+                <exclude>**/test/resources/**</exclude>
               </excludes>
           </configuration>
         </plugin>
