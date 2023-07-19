@@ -5,6 +5,7 @@ import com.vaadin.flow.router.Route;
 @Route
 @PageTitle("pagetitle")
 @DemoSource
+@SuppressWarnings
 class MyClass {
 
 }

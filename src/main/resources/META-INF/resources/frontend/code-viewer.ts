@@ -301,6 +301,7 @@ pre[class*="language-"] {
     && !line.startsWith('@Route')
     && !line.startsWith('@PageTitle')
     && !line.startsWith('@DemoSource')
+    && !line.startsWith('@SuppressWarnings')
     && !line.startsWith('package ')
     && line != 'import com.vaadin.flow.router.PageTitle;'
     && line != 'import com.vaadin.flow.router.Route;'
