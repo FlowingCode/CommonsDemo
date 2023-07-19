@@ -41,7 +41,7 @@ public abstract class AbstractSourceCodeViewerIT extends AbstractViewTest {
     return method.replaceFirst("^test", "");
   }
 
-  protected void open(String... args) {
+  protected String open(String... args) {
     String resource = getResourceName();
 
     if (viewer != null) {
@@ -52,6 +52,7 @@ public abstract class AbstractSourceCodeViewerIT extends AbstractViewTest {
     String params = Stream.of(args).map(Object::toString).collect(Collectors.joining(";"));
     getDriver().get(getURL(String.format("it/view/%s?src/test/resources/%s.java", params, path)));
     viewer = $(SourceCodeViewerElement.class).waitForFirst();
+    return viewer.getText();
   }
 
   private String getExpectedText(String resource) {
@@ -69,10 +70,6 @@ public abstract class AbstractSourceCodeViewerIT extends AbstractViewTest {
 
   protected final String expected() {
     return getExpectedText(getResourceName());
-  }
-
-  protected String getText() {
-    return viewer.getText();
   }
 
 }

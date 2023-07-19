@@ -26,38 +26,32 @@ public class SourceCodeViewerIT extends AbstractSourceCodeViewerIT {
 
   @Test
   public void testSimpleSource() {
-    open();
-    assertEquals(expected(), getText());
+    assertEquals(expected(), open());
   }
 
   @Test
   public void testHideSource() {
-    open();
-    assertEquals(expected(), getText());
+    assertEquals(expected(), open());
   }
 
   @Test
   public void testShowSource() {
-    open();
-    assertEquals(expected(), getText());
+    assertEquals(expected(), open());
   }
 
   @Test
   public void testPackageCleanup() {
-    open();
-    assertEquals(expected(), getText());
+    assertEquals(expected(), open());
   }
 
   @Test
   public void testAnnotationCleanup() {
-    open();
-    assertEquals(expected(), getText());
+    assertEquals(expected(), open());
   }
 
   @Test
   public void testLicenseCleanup() {
-    open();
-    assertEquals(expected(), getText());
+    assertEquals(expected(), open());
   }
 
 }
