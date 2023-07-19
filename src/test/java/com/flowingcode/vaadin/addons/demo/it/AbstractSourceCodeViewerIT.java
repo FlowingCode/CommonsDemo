@@ -36,11 +36,17 @@ public abstract class AbstractSourceCodeViewerIT extends AbstractViewTest {
     super(null);
   }
 
-  protected void open(String resource, String... args) {
+  private String getResourceName() {
+    String method = new Throwable().getStackTrace()[2].getMethodName();
+    return method.replaceFirst("^test", "");
+  }
+
+  protected void open(String... args) {
+    String resource = getResourceName();
+
     if (viewer != null) {
       throw new IllegalStateException();
     }
-    expected = getExpectedText(resource);
 
     String path = "com/flowingcode/vaadin/addons/demo/it/" + resource;
     String params = Stream.of(args).map(Object::toString).collect(Collectors.joining(";"));
@@ -62,7 +68,7 @@ public abstract class AbstractSourceCodeViewerIT extends AbstractViewTest {
   }
 
   protected final String expected() {
-    return expected;
+    return getExpectedText(getResourceName());
   }
 
   protected String getText() {
