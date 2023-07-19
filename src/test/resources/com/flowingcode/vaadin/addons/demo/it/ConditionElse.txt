@@ -1,0 +1,4 @@
+class MyClass {
+  else not 22
+  then 23
+}
