@@ -354,7 +354,7 @@ pre[class*="language-"] {
          if (ai>bi) return +1;
      }
      if (aa.length<bb.length) return -1;
-     if (aa.length<bb.length) return +1;
+     if (aa.length>bb.length) return +1;
      return 0;
    }
 
