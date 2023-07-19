@@ -47,4 +47,8 @@ public class ConditionalSourceCodeViewerIT extends AbstractSourceCodeViewerIT {
     assertEquals(expected(), open(VAADIN_VERSION));
   }
 
+  @Test
+  public void testConditionNested() {
+    assertEquals(expected(), open(VAADIN_VERSION));
+  }
 }
