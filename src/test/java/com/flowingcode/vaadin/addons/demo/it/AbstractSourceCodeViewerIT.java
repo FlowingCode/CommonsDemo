@@ -21,6 +21,7 @@ package com.flowingcode.vaadin.addons.demo.it;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.MissingResourceException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.io.IOUtils;
@@ -47,8 +48,12 @@ public abstract class AbstractSourceCodeViewerIT extends AbstractViewTest {
     viewer = $(SourceCodeViewerElement.class).waitForFirst();
   }
 
-  private static String getExpectedText(String resource) {
-    InputStream in = AbstractSourceCodeViewerIT.class.getResourceAsStream(resource + ".txt");
+  private String getExpectedText(String resource) {
+    resource += ".txt";
+    InputStream in = this.getClass().getResourceAsStream(resource);
+    if (in == null) {
+      throw new MissingResourceException(resource, null, null);
+    }
     try {
       return new String(IOUtils.toByteArray(in), "UTF-8").trim().replaceAll("\r", "");
     } catch (IOException e) {
