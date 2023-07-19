@@ -35,14 +35,11 @@ public class SourceCodeViewerView extends Div implements HasUrlParameter<String>
   public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
     Map<String, String> properties = null;
     if (parameter != null) {
-      String[] ss = parameter.split(";");
-
       properties = new HashMap<>();
-      for (int i = 1; i < ss.length; i++) {
-        String param[] = ss[i].split("=");
+      for (String s : parameter.split(";")) {
+        String param[] = s.split("=");
         properties.put(param[0], param[1]);
       }
-
       if (properties.isEmpty()) {
         properties = null;
       }
