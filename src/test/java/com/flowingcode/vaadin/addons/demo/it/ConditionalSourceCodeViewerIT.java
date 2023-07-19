@@ -36,4 +36,15 @@ public class ConditionalSourceCodeViewerIT extends AbstractSourceCodeViewerIT {
   public void testConditionGe() {
     assertEquals(expected(), open(VAADIN_VERSION));
   }
+
+  @Test
+  public void testConditionElse() {
+    assertEquals(expected(), open(VAADIN_VERSION));
+  }
+
+  @Test
+  public void testConditionElif() {
+    assertEquals(expected(), open(VAADIN_VERSION));
+  }
+
 }
