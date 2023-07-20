@@ -5,7 +5,7 @@
 
   <groupId>com.flowingcode.vaadin.addons.demo</groupId>
   <artifactId>commons-demo</artifactId>
-  <version>3.7.0</version>
+  <version>3.7.1-SNAPSHOT</version>
   
   <name>Commons Demo</name>
     
@@ -37,7 +37,7 @@
     <url>https://github.com/FlowingCode/CommonsDemo</url>
     <connection>scm:git:git://github.com/FlowingCode/CommonsDemo.git</connection>
     <developerConnection>scm:git:ssh://git@github.com:/FlowingCode/CommonsDemo.git</developerConnection>
-    <tag>commons-demo-3.7.0</tag>
+    <tag>master</tag>
   </scm>
 
   <repositories>
