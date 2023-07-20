@@ -19,19 +19,18 @@
  */
 package com.flowingcode.vaadin.addons.demo;
 
-import com.flowingcode.vaadin.addons.GithubLink;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouteAlias;
 
-@Route("demo")
-@RouteAlias("")
-@GithubLink("https://github.com/FlowingCode/CommonsDemo")
-public class Demo extends TabbedDemo {
+@Route(value = "demo/demo-with-adhoc-source", layout = Demo.class)
+@PageTitle("Demo with source in a different file")
+@DemoSource("/src/test/java/com/flowingcode/vaadin/addons/demo/AdHocSource.java")
+public class AdHocDemo extends Div {
 
-  public Demo() {
-    addDemo(new LegacyDemo());
-    addDemo(SampleDemo.class, "Demo");
-    addDemo(SampleDemoDefault.class);
-    addDemo(AdHocDemo.class);
+  public AdHocDemo() {
+    add(new Span("This span is added to the demo view"));
   }
+
 }
