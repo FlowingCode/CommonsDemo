@@ -183,11 +183,21 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     String sourceCodeUrl = null;
     if (demoSource != null) {
       sourceCodeUrl = demoSource.value();
+
+      String demoFile;
       if (sourceCodeUrl.equals(DemoSource.GITHUB_SOURCE)) {
+        String className = demo.getClass().getName().replace('.', '/');
+        demoFile = "src/test/java/" + className + ".java";
+      } else if (sourceCodeUrl.startsWith("/src/test/")) {
+        demoFile = sourceCodeUrl.substring(1);
+      } else {
+        demoFile = null;
+      }
+
+      if (demoFile != null) {
         String branch = lookupGithubBranch(this.getClass());
-        String demoFile = demo.getClass().getName().replace('.', '/');
         sourceCodeUrl = Optional.ofNullable(this.getClass().getAnnotation(GithubLink.class))
-            .map(githubLink -> String.format("%s/blob/%s/src/test/java/%s.java", githubLink.value(),
+            .map(githubLink -> String.format("%s/blob/%s/%s", githubLink.value(),
                 branch, demoFile))
             .orElse(null);
       }
