@@ -293,10 +293,8 @@ pre[class*="language-"] {
     }
     
     return lines.filter(line=>line!==null)
-    .map(line=>{
-        let m= line!.match("^(?<spaces>\\s*)//\\s*show-source\\s(?<line>.*)");
-        return m?m.groups!.spaces+m.groups!.line : line!;
-    }).filter(line=>
+    .map(line=>line!)
+    .filter(line=>
        !line.match("//\\s*hide-source(\\s|$)")
     && !line.startsWith('@Route')
     && !line.startsWith('@PageTitle')
@@ -306,7 +304,11 @@ pre[class*="language-"] {
     && line != 'import com.vaadin.flow.router.PageTitle;'
     && line != 'import com.vaadin.flow.router.Route;'
     && line != 'import com.flowingcode.vaadin.addons.demo.DemoSource;'
-    ).join('\n');
+    ).map(line=>{
+        let m= line!.match("^(?<spaces>\\s*)//\\s*show-source\\s(?<line>.*)");
+        return m?m.groups!.spaces+m.groups!.line : line;
+    })
+    .join('\n');
   }
   
   escapeHtml(unsafe: string) {

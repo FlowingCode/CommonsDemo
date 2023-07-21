@@ -1,0 +1,4 @@
+@Route("show")
+class MyClass {
+
+}
