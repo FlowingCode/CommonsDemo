@@ -54,4 +54,9 @@ public class SourceCodeViewerIT extends AbstractSourceCodeViewerIT {
     assertEquals(expected(), open());
   }
 
+  @Test
+  public void testCleanupOverride() {
+    assertEquals(expected(), open());
+  }
+
 }
