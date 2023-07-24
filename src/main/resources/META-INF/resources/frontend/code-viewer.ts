@@ -300,10 +300,12 @@ pre[class*="language-"] {
     && !line.startsWith('@PageTitle')
     && !line.startsWith('@DemoSource')
     && !line.startsWith('@SuppressWarnings')
+    && !line.startsWith('@Ignore')
     && !line.startsWith('package ')
     && line != 'import com.vaadin.flow.router.PageTitle;'
     && line != 'import com.vaadin.flow.router.Route;'
     && line != 'import com.flowingcode.vaadin.addons.demo.DemoSource;'
+    && line != 'import org.junit.Ignore;'
     ).map(line=>{
         let m= line!.match("^(?<spaces>\\s*)//\\s*show-source\\s(?<line>.*)");
         return m?m.groups!.spaces+m.groups!.line : line;
