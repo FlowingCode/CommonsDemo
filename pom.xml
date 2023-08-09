@@ -8,7 +8,15 @@
   <version>3.7.2-SNAPSHOT</version>
   
   <name>Commons Demo</name>
-    
+
+  <developers>
+    <developer>
+      <id>flowingcode</id>
+      <organization>Flowing Code</organization>
+      <organizationUrl>https://www.flowingcode.com</organizationUrl>
+    </developer>
+  </developers>
+
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
