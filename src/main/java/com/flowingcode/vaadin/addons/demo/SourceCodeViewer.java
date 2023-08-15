@@ -20,7 +20,9 @@
 package com.flowingcode.vaadin.addons.demo;
 
 import com.flowingcode.vaadin.addons.DevSourceRequestHandler;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasSize;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.Div;
@@ -80,4 +82,15 @@ public class SourceCodeViewer extends Div implements HasSize {
       codeViewer.setPropertyJson("env", env);
     }
   }
+
+  public static void highlightOnHover(Component c, String id) {
+    c.addAttachListener(ev -> {
+      c.getElement().executeJs("Vaadin.Flow.fcCodeViewerConnector.highlightOnHover(this,$0)", id);
+    });
+  }
+
+  public static void highlight(String id) {
+    UI.getCurrent().getElement().executeJs("Vaadin.Flow.fcCodeViewerConnector.highlight($0)", id);
+  }
+
 }

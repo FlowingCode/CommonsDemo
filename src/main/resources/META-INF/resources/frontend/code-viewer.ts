@@ -25,6 +25,27 @@ import {
 
 import "./prism.js";
 
+(function () { 
+  (window as any).Vaadin.Flow.fcCodeViewerConnector = {
+      
+      //highlight a marked block in the single code-viewer of the UI
+      highlight: (id:string|null) => {
+        const viewer = document.querySelector("code-viewer") as CodeViewer;
+        if (viewer) viewer.highligth(id);
+      },
+
+      //highlight a marked block in the single code-viewer of the UI, on hover of element
+      highlightOnHover: (element : HTMLElement, id:string) => {
+        element.addEventListener('mouseenter', ()=>{
+            (window as any).Vaadin.Flow.fcCodeViewerConnector.highlight(id);
+        });
+        element.addEventListener('mouseleave', ()=>{
+            (window as any).Vaadin.Flow.fcCodeViewerConnector.highlight(null);
+        });
+      }
+  }
+})();
+
 @customElement("code-viewer")
 export class CodeViewer extends LitElement {
 
@@ -177,13 +198,22 @@ pre[class*="language-"] {
           display: block;
           background-color: #272822;
           font-size: 10pt;
+          position: relative;
         }
 
 		pre[class*="language-"] {
           background: inherit;
         }
+        
+        .highlight {
+            position: absolute;
+            background: rgba(255,255,128,25%);
+            right: 0;
+            left: 0;
+        }
       </style>
 
+      <div class='highlight'></div>
       <pre><code id="code"></code></pre>
     `;
   }
@@ -203,6 +233,7 @@ pre[class*="language-"] {
       
       (window as any).Prism.highlightAllUnder(self);
       self.__license.reverse().forEach(e=>self.querySelector('pre code')?.prepend(e));
+      self.process(code);
     }};
     xhr.open('GET', sourceUrl, true);
     xhr.send();
@@ -302,6 +333,8 @@ pre[class*="language-"] {
     && !line.startsWith('@SuppressWarnings')
     && !line.startsWith('@Ignore')
     && !line.startsWith('package ')
+    && !line.trim().startsWith('SourceCodeViewer.highlightOnHover(')
+    && !line.trim().startsWith('SourceCodeViewer.highlight(')
     && line != 'import com.vaadin.flow.router.PageTitle;'
     && line != 'import com.vaadin.flow.router.Route;'
     && line != 'import com.flowingcode.vaadin.addons.demo.DemoSource;'
@@ -361,4 +394,68 @@ pre[class*="language-"] {
      return 0;
    }
 
+
+  //process begin-block and end-block instructions 
+  process(code : HTMLElement) {
+    var nodes = code.childNodes;
+    
+    var trimEnd = (i:number) => {
+        //remove trailing \n and spaces from text node i
+        const node = nodes[i]
+        if (node && node.nodeType==3) {
+            node.textContent=(node.textContent as any).replaceAll(/\n[\t\x20]+$/g,'');
+        }
+    }
+      
+    var last : string|undefined;
+    for (var i=0; i<nodes.length; i++) {
+        //process instructions in element nodes
+        if (nodes[i].nodeType!=1) continue;
+          
+        const text = nodes[i].textContent!;
+        var m = text.match("^//\\s*begin-block\\s+(\\S+)\\s*");
+        
+        if (m) {
+            last = m[1];
+            (nodes[i] as HTMLElement).classList.add('begin-'+m[1]);
+            nodes[i].textContent='';
+            trimEnd(i-1);
+            continue;
+        }
+        
+        if (text.match("^//\\s*end-block\\s*") && last) {
+            (nodes[i] as HTMLElement).classList.add('end-'+last);
+            nodes[i].textContent='';
+            trimEnd(i-1);
+            continue;
+        }
+    }
+   
+  }
+  
+  //highligth a marked block
+  highligth(id:string|null) {
+    const div = this.querySelector('.highlight') as HTMLElement;
+    
+    div.style.removeProperty('top');
+    div.style.removeProperty('height');
+    if (id!==null) {
+        var begin = this.querySelector('.begin-'+id) as HTMLElement;
+        var end = this.querySelector('.end-'+id) as HTMLElement;
+        if (begin && end && begin.offsetTop<=end.offsetTop) {
+            var top = begin.offsetTop;
+            var height = end.offsetTop+end.offsetHeight-top;
+            div.style.top= `calc( ${top}px + 0.75em)`;
+            div.style.height= `${height}px`;
+            
+            //scroll to the begin of the marked block
+            if ((begin as any).scrollIntoViewIfNeeded) {
+                (begin as any).scrollIntoViewIfNeeded();
+            }  else {
+                (begin as any).scrollIntoView()
+            }
+        }
+    }
+  }
 }
+

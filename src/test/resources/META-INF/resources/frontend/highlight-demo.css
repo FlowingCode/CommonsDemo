@@ -1,0 +1,9 @@
+.dashed {
+	border: 1px dashed black;
+	padding: 1ex;
+	margin: 1ex;
+}
+
+.dashed:hover {
+    background: var(--lumo-contrast-10pct);
+}
