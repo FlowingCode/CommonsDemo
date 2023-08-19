@@ -30,8 +30,8 @@ import java.lang.annotation.Target;
 /**
  * This annotation is used for configuring the default branch for {@link TabbedDemo} code snippets.
  *
- * The annotation can be placed in either the demo class or its containing package. Class-level
- * annotations take precedence over package level annotations.
+ * The annotation can be placed in either the {@link TabbedDemo} or its containing package.
+ * Class-level annotations take precedence over package level annotations.
  *
  * @author Javier Godoy / Flowing Code
  * @see DemoSource
