@@ -54,9 +54,9 @@ public class SampleDemoHighlight extends Div {
     HorizontalLayout hl = new HorizontalLayout();
 
     // begin-block button
-    hl.add(new Button("Click me", ev -> {
-      SourceCodeViewer.highlight("button");
-    }));
+    Button button = new Button("Click me");
+    SourceCodeViewer.highlightOnClick(button, "button");
+    add(button);
     // end-block
 
     hl.add(new Button("Highlight Off", ev -> {
