@@ -334,6 +334,7 @@ pre[class*="language-"] {
     && !line.startsWith('@Ignore')
     && !line.startsWith('package ')
     && !line.trim().startsWith('SourceCodeViewer.highlightOnHover(')
+    && !line.trim().startsWith('SourceCodeViewer.highlightOnClick(')
     && !line.trim().startsWith('SourceCodeViewer.highlight(')
     && line != 'import com.vaadin.flow.router.PageTitle;'
     && line != 'import com.vaadin.flow.router.Route;'

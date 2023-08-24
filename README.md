@@ -113,7 +113,7 @@ Commonly used boilerplate code from source snippets is automatically hidden:
   - `@com.flowingcode.vaadin.addons.demo.DemoSource`
   - `@java.lang.SupressWarning`
   - `@org.junit.Ignore`
-- Calls to `SourceCodeViewer.highlightOnHover` and `SourceCodeViewer.highlight`
+- Calls to `SourceCodeViewer.highlight`, `SourceCodeViewer.highlightOnHover` and `SourceCodeViewer.highlightOnClick`
 
 This feature cannot be disabled.
 
@@ -167,6 +167,7 @@ This feature supports highlighting a source code fragment in order to emphasize 
 The highlighted fragment is automatically scrolled into view.
 
 A fragment is highlighted either by calling `SourceCodeViewer.highlight(name)` or when hovering a component that has been configured with `SourceCodeViewer.highlightOnHover(component,name)`, where `name` is the name of the fragment. `SourceCodeViewer.highlight(null)` turn off the highlighting.
+`SourceCodeViewer.highlightOnClick` allows configuring a click listener that turns highlight on.
 
 In the source code, a fragment is delimited by `// begin-block name` and `// end-block` comments. Nested fragments are not supported.
 The `// begin-block` and `// end-block` comments are removed after post-processing.
