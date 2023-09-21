@@ -24,13 +24,15 @@ import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout.Orientation;
 import com.vaadin.flow.server.Version;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("serial")
 class SplitLayoutDemo extends Composite<SplitLayout> {
 
-  private SourceCodeViewer code;
+  private MultiSourceCodeViewer code;
 
   public SplitLayoutDemo(Component demo, String sourceUrl) {
     getContent().setOrientation(Orientation.HORIZONTAL);
@@ -39,7 +41,9 @@ class SplitLayoutDemo extends Composite<SplitLayout> {
     properties.put("vaadin", VaadinVersion.getVaadinVersion());
     properties.put("flow", Version.getFullVersion());
 
-    code = new SourceCodeViewer(sourceUrl, properties);
+    List<SourceCodeTab> tabs = new ArrayList<>();
+    tabs.add(new SourceCodeTab(sourceUrl));
+    code = new MultiSourceCodeViewer(tabs, properties);
     getContent().addToPrimary(demo);
     getContent().addToSecondary(code);
     getContent().setSizeFull();
