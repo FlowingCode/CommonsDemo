@@ -45,13 +45,17 @@ public class SourceCodeViewer extends Div implements HasSize {
     this(sourceUrl, null);
   }
 
-  public SourceCodeViewer(String url, Map<String, String> properties) {
+  public SourceCodeViewer(String sourceUrl, Map<String, String> properties) {
+    this(sourceUrl, "java", properties);
+  }
+
+  public SourceCodeViewer(String url, String language, Map<String, String> properties) {
     codeViewer = new Element("code-viewer");
     getElement().appendChild(codeViewer);
     getElement().getStyle().set("display", "flex");
     codeViewer.getStyle().set("flex-grow", "1");
     setProperties(properties);
-    addAttachListener(ev -> fetchContents(url, "java"));
+    addAttachListener(ev -> fetchContents(url, language));
   }
 
   public void fetchContents(String url, String language) {
