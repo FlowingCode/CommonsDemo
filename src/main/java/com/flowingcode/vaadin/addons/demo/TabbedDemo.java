@@ -40,6 +40,8 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLayout;
 import com.vaadin.flow.router.RouterLink;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -179,29 +181,14 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
       helperButton = null;
     }
 
-    DemoSource demoSource = demo.getClass().getAnnotation(DemoSource.class);
-    String sourceCodeUrl = null;
-    if (demoSource != null) {
-      sourceCodeUrl = demoSource.value();
-
-      String demoFile;
-      if (sourceCodeUrl.equals(DemoSource.GITHUB_SOURCE)) {
-        String className = demo.getClass().getName().replace('.', '/');
-        demoFile = "src/test/java/" + className + ".java";
-      } else if (sourceCodeUrl.startsWith("/src/test/")) {
-        demoFile = sourceCodeUrl.substring(1);
-      } else {
-        demoFile = null;
-      }
-
-      if (demoFile != null) {
-        String branch = lookupGithubBranch(this.getClass());
-        sourceCodeUrl = Optional.ofNullable(this.getClass().getAnnotation(GithubLink.class))
-            .map(githubLink -> String.format("%s/blob/%s/%s", githubLink.value(),
-                branch, demoFile))
-            .orElse(null);
-      }
-      content = new SplitLayoutDemo(demo, sourceCodeUrl);
+    DemoSource demoSources[] = demo.getClass().getAnnotationsByType(DemoSource.class);
+    List<SourceCodeTab> tabs = new ArrayList<>(demoSources.length);
+    for (DemoSource demoSource : demoSources) {
+      createSourceCodeTab(demo.getClass(), demoSource).ifPresent(tabs::add);
+    }
+    
+    if (!tabs.isEmpty()) {
+      content = new SplitLayoutDemo(demo, tabs);
       currentLayout = (SplitLayoutDemo) content;
       if (splitOrientation != null) {
         setOrientation(splitOrientation);
@@ -216,10 +203,49 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
       demo.getElement().getStyle().set("height", "100%");
       setupDemoHelperButton(content.getClass());
     }
+    
     updateFooterButtonsVisibility();
     getElement().insertChild(1, content.getElement());
   }
 
+  private Optional<SourceCodeTab> createSourceCodeTab(Class<?> annotatedClass, DemoSource annotation) {
+    String demoFile;
+    String url = annotation.value();
+    if (url.equals(DemoSource.GITHUB_SOURCE)) {
+      String className = annotatedClass.getName().replace('.', '/');
+      demoFile = "src/test/java/" + className + ".java";
+    } else if (url.startsWith("/src/test/")) {
+      demoFile = url.substring(1);
+    } else {
+      demoFile = null;
+    }
+
+    if (demoFile != null) {
+      String branch = lookupGithubBranch(this.getClass());
+      url = Optional.ofNullable(this.getClass().getAnnotation(GithubLink.class))
+          .map(githubLink -> String.format("%s/blob/%s/%s", githubLink.value(),
+              branch, demoFile))
+          .orElse(null);
+    }
+    
+    if (url==null) {
+      return Optional.empty();
+    }
+
+    SourceCodeTab.SourceCodeTabBuilder builder = SourceCodeTab.builder();
+    builder.url(url);
+    
+    if (!annotation.caption().equals(DemoSource.DEFAULT_VALUE)) {
+      builder.caption(annotation.caption());
+    }
+    
+    if (!annotation.language().equals(DemoSource.DEFAULT_VALUE)) {
+      builder.language(annotation.caption());
+    }
+    
+    return Optional.of(builder.build());
+  }
+  
   public static String lookupGithubBranch(Class<? extends TabbedDemo> clazz) {
     GithubBranch branch = clazz.getAnnotation(GithubBranch.class);
     if (branch == null) {

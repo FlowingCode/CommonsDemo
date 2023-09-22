@@ -1,6 +1,5 @@
 /*-
  * #%L
- * Commons Demo
  * %%
  * Copyright (C) 2020 - 2023 Flowing Code
  * %%
@@ -19,21 +18,22 @@
  */
 package com.flowingcode.vaadin.addons.demo;
 
-import com.flowingcode.vaadin.addons.GithubLink;
+import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouteAlias;
 
-@Route("demo")
-@RouteAlias("")
-@GithubLink("https://github.com/FlowingCode/CommonsDemo")
-public class Demo extends TabbedDemo {
-
-  public Demo() {
-    addDemo(new LegacyDemo());
-    addDemo(SampleDemo.class, "Demo");
-    addDemo(SampleDemoDefault.class);
-    addDemo(SampleDemoHighlight.class);
-    addDemo(AdHocDemo.class);
-    addDemo(MultiSourceDemo.class);
+@Route(value = "demo/multisource", layout = Demo.class)
+@PageTitle("Demo with multiple sources")
+@DemoSource
+@DemoSource(value = "/src/test/resources/META-INF/resources/frontend/multi-source-demo.css")
+@StyleSheet("./multi-source-demo.css")
+public class MultiSourceDemo extends Div {
+  public MultiSourceDemo() {
+    Span span = new Span("This is the main source");
+    span.addClassName("custom-style");
+    add(span);
   }
+
 }
