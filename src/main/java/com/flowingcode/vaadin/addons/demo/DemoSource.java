@@ -22,6 +22,7 @@ package com.flowingcode.vaadin.addons.demo;
 import com.flowingcode.vaadin.addons.GithubBranch;
 import com.flowingcode.vaadin.addons.GithubLink;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -37,12 +38,28 @@ import java.lang.annotation.Target;
  *
  * @author Javier Godoy / Flowing Code
  */
+@Repeatable(DemoSources.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface DemoSource {
 
   static final String GITHUB_SOURCE = "__GITHUB__";
 
+  static final String DEFAULT_VALUE = "__DEFAULT__";
+
   /** A link to the source code, if different from the annotated class. */
   String value() default GITHUB_SOURCE;
+
+  /**
+   * The caption of the source tab (displayed if several sources are provided). Default to the file
+   * name.
+   */
+  String caption() default DEFAULT_VALUE;
+
+  /**
+   * The language used to format the sources. By default the language is inferred from the file
+   * extension.
+   */
+  String language() default DEFAULT_VALUE;
+
 }
