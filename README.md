@@ -35,7 +35,7 @@ public class SampleDemoDefault extends Div {
 }
 ```
 
-The demo view can be annotated with `@DemoSource`, in order to configure the URL for retrieving the source code. An optional `value` allows providing a link to the source code, in cases where it differs from the annotated class. When this annotation is used without a value, and the tabbed demo is annotated with `@GithubLink`, the source URL is automatically set to the location of the annotated class under `src/test/java` in the specified GitHub repository. The branch information is derived from the value specified in `@GithubBranch` within the tabbed demo or its containing package. If the source URL is defaulted and no `@GithubBranch` annotation is present either in the tabbed demo or its containing package, then the branch defaults to `master`.
+The demo view can be annotated with `@DemoSource`, in order to configure the URL for retrieving the source code. An optional `value` allows providing a link to the source code, in cases where it differs from the annotated class. When this annotation is used without a value, and the tabbed demo is annotated with `@GithubLink`, the source URL is automatically set to the location of the annotated class under `src/test/java` in the specified GitHub repository. The branch information is derived from the value specified in `@GithubBranch` within the tabbed demo or its containing package. If the source URL is defaulted and no `@GithubBranch` annotation is present either in the tabbed demo or its containing package, then the branch defaults to `master`. The `@DemoSource` annotation is repeatable (see [multiple sources](#multiple-sources)).
 
 The `@DemoHelper` annotation can be used to link demo views with associated help content provided by `DemoHelperRenderer`.
 The handling of how this help content is presented is managed by `DemoHelperViewer`, which is configured on the `TabbedDemo`.
@@ -182,4 +182,10 @@ The `// begin-block` and `// end-block` comments are removed after post-processi
 
 <!-- FROM https://github.com/FlowingCode/CommonsDemo/pull/62 -->
 ![image](https://github.com/FlowingCode/CommonsDemo/assets/11554739/02063272-029f-4b4b-bd6f-821f2f8a0158)
+
+### Multiple sources
+
+If several `@DemoSource` annotations are present, the layout will include a tab sheet for navigating among them. When the demo is rendered, the first `@DemoSource` will be displayed. The annotation allows customizing the caption of the source tab (which defaults to the file name) and the the language used to format the sources (which is otherwise inferred from the file extension).
+
+![image](https://github.com/FlowingCode/CommonsDemo/assets/11554739/3c3e2094-3ddc-457c-934c-ebd1120592f5)
 
