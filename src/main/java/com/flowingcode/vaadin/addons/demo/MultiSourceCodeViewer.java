@@ -43,14 +43,15 @@ public class MultiSourceCodeViewer extends Div {
   private Tab createTab(SourceCodeTab sourceCodeTab) {
     String url = sourceCodeTab.getUrl();
     String language = sourceCodeTab.getLanguage();
-
     String caption = sourceCodeTab.getCaption();
+
+    String filename = getFilename(url);
     if (caption == null) {
-      caption = url.replaceAll(".*/", "");
+      caption = filename;
     }
 
     if (language == null) {
-      String ext = url.replaceAll(".*\\.", "");
+      String ext = getExtension(filename);
       switch (ext) {
         case "java":
           language = "java";
@@ -74,6 +75,16 @@ public class MultiSourceCodeViewer extends Div {
     ComponentUtil.setData(tab, DATA_URL, url);
     ComponentUtil.setData(tab, DATA_LANGUAGE, language);
     return tab;
+  }
+
+  private String getFilename(String url) {
+    int i = url.lastIndexOf('/');
+    return i >= 0 ? url.substring(i + 1) : url;
+  }
+
+  private String getExtension(String filename) {
+    int i = filename.lastIndexOf('.');
+    return i >= 0 ? filename.substring(i + 1) : filename;
   }
 
   private void onTabSelected(Tab tab) {
