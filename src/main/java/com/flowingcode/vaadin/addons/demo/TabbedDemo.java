@@ -181,14 +181,14 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
       helperButton = null;
     }
 
-    DemoSource demoSources[] = demo.getClass().getAnnotationsByType(DemoSource.class);
-    List<SourceCodeTab> tabs = new ArrayList<>(demoSources.length);
+    DemoSource[] demoSources = demo.getClass().getAnnotationsByType(DemoSource.class);
+    List<SourceCodeTab> sourceTabs = new ArrayList<>(demoSources.length);
     for (DemoSource demoSource : demoSources) {
-      createSourceCodeTab(demo.getClass(), demoSource).ifPresent(tabs::add);
+      createSourceCodeTab(demo.getClass(), demoSource).ifPresent(sourceTabs::add);
     }
-    
-    if (!tabs.isEmpty()) {
-      content = new SplitLayoutDemo(demo, tabs);
+
+    if (!sourceTabs.isEmpty()) {
+      content = new SplitLayoutDemo(demo, sourceTabs);
       currentLayout = (SplitLayoutDemo) content;
       if (splitOrientation != null) {
         setOrientation(splitOrientation);
