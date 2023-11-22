@@ -17,5 +17,7 @@ public class SourceCodeTab {
   private final String url;
   private String caption;
   private String language;
+  @NonNull
+  private final SourcePosition sourcePosition;
   
 }

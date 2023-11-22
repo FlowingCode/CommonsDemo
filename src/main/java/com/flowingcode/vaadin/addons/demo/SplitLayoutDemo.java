@@ -28,14 +28,18 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import org.apache.commons.lang3.StringUtils;
 
 @SuppressWarnings("serial")
 class SplitLayoutDemo extends Composite<SplitLayout> {
 
   private MultiSourceCodeViewer code;
+  private SourcePosition sourcePosition;
 
-  public SplitLayoutDemo(Component demo, String sourceUrl) {
-    this(demo, Arrays.asList(new SourceCodeTab(sourceUrl)));
+  public SplitLayoutDemo(Component demo, String sourceUrl, SourcePosition sourcePosition) {
+    this(demo, Arrays.asList(new SourceCodeTab(sourceUrl, sourcePosition)));
   }
 
   public SplitLayoutDemo(Component demo, List<SourceCodeTab> tabs) {
@@ -46,9 +50,35 @@ class SplitLayoutDemo extends Composite<SplitLayout> {
     properties.put("flow", Version.getFullVersion());
 
     code = new MultiSourceCodeViewer(tabs, properties);
-    getContent().addToPrimary(demo);
-    getContent().addToSecondary(code);
+
+    this.sourcePosition = code.getSourcePosition();
+    switch (this.sourcePosition) {
+      case PRIMARY:
+        getContent().addToPrimary(code);
+        getContent().addToSecondary(demo);
+        break;
+      case SECONDARY:
+      default:
+        getContent().addToPrimary(demo);
+        getContent().addToSecondary(code);
+    }
+
     getContent().setSizeFull();
+  }
+
+  public void switchSourcePosition(SourcePosition position) {
+    if (!this.sourcePosition.equals(position)) {
+      toggleSourcePosition();
+    }
+  }
+
+  public void toggleSourcePosition() {
+    Component primary = getContent().getPrimaryComponent();
+    Component secondary = getContent().getSecondaryComponent();
+    getContent().removeAll();
+    getContent().addToPrimary(secondary);
+    getContent().addToSecondary(primary);
+    this.sourcePosition = this.sourcePosition.toggle();
   }
 
   public void setOrientation(Orientation o) {
@@ -71,4 +101,20 @@ class SplitLayoutDemo extends Composite<SplitLayout> {
   public void setSizeFull() {
     getContent().setSizeFull();
   }
+
+  public void showSourceCode() {
+    getContent().setSplitterPosition(50);
+  }
+
+  public void hideSourceCode() {
+    switch (sourcePosition) {
+      case PRIMARY:
+        getContent().setSplitterPosition(0);
+        break;
+      case SECONDARY:
+        getContent().setSplitterPosition(100);
+        break;
+    }
+  }
+
 }
