@@ -59,6 +59,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   private SplitLayoutDemo currentLayout;
   private Checkbox orientationCB;
   private Checkbox codeCB;
+  private Checkbox codePositionCB;
   private Checkbox themeCB;
   private Orientation splitOrientation;
   private Button helperButton;
@@ -83,6 +84,10 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     codeCB.setValue(true);
     codeCB.addClassName("smallcheckbox");
     codeCB.addValueChangeListener(ev -> updateSplitterPosition());
+    codePositionCB = new Checkbox("Toggle Code Position");
+    codePositionCB.setValue(true);
+    codePositionCB.addClassName("smallcheckbox");
+    codePositionCB.addValueChangeListener(ev -> toggleSourcePosition());
     themeCB = new Checkbox("Dark Theme");
     themeCB.setValue(false);
     themeCB.addClassName("smallcheckbox");
@@ -92,7 +97,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     footer = new HorizontalLayout();
     footer.setWidthFull();
     footer.setJustifyContentMode(JustifyContentMode.END);
-    footer.add(codeCB, orientationCB, themeCB);
+    footer.add(codeCB, codePositionCB, orientationCB, themeCB);
     footer.setClassName("demo-footer");
 
     Package pkg = this.getClass().getPackage();
@@ -242,6 +247,8 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     if (!annotation.language().equals(DemoSource.DEFAULT_VALUE)) {
       builder.language(annotation.caption());
     }
+
+    builder.sourcePosition(annotation.sourcePosition());
     
     return Optional.of(builder.build());
   }
@@ -264,13 +271,25 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
 
   private void updateSplitterPosition() {
     if (currentLayout != null) {
-      currentLayout.setSplitterPosition(codeCB.getValue() ? 50 : 100);
+      if (codeCB.getValue()) {
+        currentLayout.showSourceCode();
+      } else {
+        currentLayout.hideSourceCode();
+      }
       orientationCB.setEnabled(codeCB.getValue());
+      codePositionCB.setEnabled(codeCB.getValue());
     }
   }
 
   public void setSourceVisible(boolean visible) {
     codeCB.setValue(visible);
+    codePositionCB.setVisible(visible);
+  }
+
+  public void toggleSourcePosition() {
+    if (currentLayout != null) {
+      currentLayout.toggleSourcePosition();
+    }
   }
 
   private void toggleSplitterOrientation() {
@@ -307,6 +326,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     ComponentUtil.fireEvent(this, new TabbedDemoSourceEvent(this, hasSourceCode));
     orientationCB.setVisible(hasSourceCode);
     codeCB.setVisible(hasSourceCode);
+    codePositionCB.setVisible(hasSourceCode);
   }
 
   public void addTabbedDemoSourceListener(ComponentEventListener<TabbedDemoSourceEvent> listener) {
@@ -321,6 +341,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     getUI().ifPresent(ui -> ui.getPage().retrieveExtendedClientDetails(receiver -> {
       boolean mobile = receiver.getBodyClientWidth() <= MOBILE_DEVICE_BREAKPOINT_WIDTH;
       codeCB.setValue(codeCB.getValue() && !mobile);
+      codePositionCB.setValue(codeCB.getValue() && !mobile);
 
       boolean portraitOrientation = receiver.getBodyClientHeight() > receiver.getBodyClientWidth();
       adjustSplitOrientation(portraitOrientation);

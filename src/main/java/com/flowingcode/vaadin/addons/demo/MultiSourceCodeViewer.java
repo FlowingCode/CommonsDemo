@@ -11,23 +11,23 @@ public class MultiSourceCodeViewer extends Div {
 
   private static final String DATA_URL = "source-url";
   private static final String DATA_LANGUAGE = "source-language";
+  private static final String DATA_POSITION = "source-position";
 
   private SourceCodeViewer codeViewer;
+  private Tab selectedTab;
 
   public MultiSourceCodeViewer(List<SourceCodeTab> sourceCodeTabs, Map<String, String> properties) {
-
-    Tab tab;
     if (sourceCodeTabs.size() > 1) {
       Tabs tabs = new Tabs(createTabs(sourceCodeTabs));
       tabs.addSelectedChangeListener(ev -> onTabSelected(ev.getSelectedTab()));
       add(tabs);
-      tab = tabs.getSelectedTab();
+      selectedTab = tabs.getSelectedTab();
     } else {
-      tab = createTab(sourceCodeTabs.get(0));
+      selectedTab = createTab(sourceCodeTabs.get(0));
     }
 
-    String url = (String) ComponentUtil.getData(tab, DATA_URL);
-    String language = (String) ComponentUtil.getData(tab, DATA_LANGUAGE);
+    String url = (String) ComponentUtil.getData(selectedTab, DATA_URL);
+    String language = (String) ComponentUtil.getData(selectedTab, DATA_LANGUAGE);
     codeViewer = new SourceCodeViewer(url, language, properties);
 
     add(codeViewer);
@@ -74,6 +74,7 @@ public class MultiSourceCodeViewer extends Div {
     Tab tab = new Tab(caption);
     ComponentUtil.setData(tab, DATA_URL, url);
     ComponentUtil.setData(tab, DATA_LANGUAGE, language);
+    ComponentUtil.setData(tab, DATA_POSITION, sourceCodeTab.getSourcePosition());
     return tab;
   }
 
@@ -88,6 +89,8 @@ public class MultiSourceCodeViewer extends Div {
   }
 
   private void onTabSelected(Tab tab) {
+    this.selectedTab = tab;
+
     String url = (String) ComponentUtil.getData(tab, DATA_URL);
     String language = (String) ComponentUtil.getData(tab, DATA_LANGUAGE);
     fetchContents(url, language);
@@ -95,6 +98,10 @@ public class MultiSourceCodeViewer extends Div {
 
   private void fetchContents(String url, String language) {
     codeViewer.fetchContents(url, language);
+  }
+
+  public SourcePosition getSourcePosition() {
+    return (SourcePosition) ComponentUtil.getData(selectedTab, DATA_POSITION);
   }
 
 }

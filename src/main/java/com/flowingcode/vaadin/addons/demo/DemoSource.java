@@ -62,4 +62,7 @@ public @interface DemoSource {
    */
   String language() default DEFAULT_VALUE;
 
+  /** Source code position in the layout */
+  SourcePosition sourcePosition() default SourcePosition.SECONDARY;
+
 }
