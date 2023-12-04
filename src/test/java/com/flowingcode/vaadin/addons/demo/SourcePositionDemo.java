@@ -19,22 +19,18 @@
  */
 package com.flowingcode.vaadin.addons.demo;
 
-import com.flowingcode.vaadin.addons.GithubLink;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouteAlias;
 
-@Route("demo")
-@RouteAlias("")
-@GithubLink("https://github.com/FlowingCode/CommonsDemo")
-public class Demo extends TabbedDemo {
+@Route(value = "demo/source-position", layout = Demo.class)
+@PageTitle("Reversed orientation")
+@DemoSource(sourcePosition = SourcePosition.PRIMARY)
+// show-source @DemoSource(sourcePosition = SourcePosition.PRIMARY)
+public class SourcePositionDemo extends Div {
 
-  public Demo() {
-    addDemo(new LegacyDemo());
-    addDemo(SampleDemo.class, "Demo");
-    addDemo(SampleDemoDefault.class);
-    addDemo(SampleDemoHighlight.class);
-    addDemo(AdHocDemo.class);
-    addDemo(MultiSourceDemo.class);
-    addDemo(SourcePositionDemo.class);
+  public SourcePositionDemo() {
+    add(new Span("Demo component with source defaulted to primary position"));
   }
 }
