@@ -312,6 +312,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     splitOrientation = orientation;
     if (currentLayout != null) {
       currentLayout.setOrientation(orientation);
+      currentLayout.setSplitterPosition(50);
     }
     orientationCB.setValue(Orientation.HORIZONTAL.equals(orientation));
   }
