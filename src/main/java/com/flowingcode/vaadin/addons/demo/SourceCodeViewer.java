@@ -26,7 +26,6 @@ import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.JsModule;
-import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.server.VaadinService;
@@ -36,7 +35,6 @@ import java.util.Map;
 
 @SuppressWarnings("serial")
 @JsModule("./code-viewer.ts")
-@NpmPackage(value = "lit", version = "2.5.0")
 public class SourceCodeViewer extends Div implements HasSize {
 
   private final Element codeViewer;
