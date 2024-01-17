@@ -449,12 +449,16 @@ pre[class*="language-"] {
             div.style.top= `calc( ${top}px + 0.75em)`;
             div.style.height= `${height}px`;
             
-            //scroll to the begin of the marked block
-            if ((begin as any).scrollIntoViewIfNeeded) {
-                (begin as any).scrollIntoViewIfNeeded();
-            }  else {
-                (begin as any).scrollIntoView()
+            const scrollIntoView = elem => {
+                if ((elem as any).scrollIntoViewIfNeeded) {
+                    (elem as any).scrollIntoViewIfNeeded();
+                }  else {
+                    (elem as any).scrollIntoView()
+                }
             }
+            
+            scrollIntoView(end);
+            scrollIntoView(begin);
         }
     }
   }
