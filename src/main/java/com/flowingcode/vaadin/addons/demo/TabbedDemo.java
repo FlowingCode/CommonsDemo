@@ -371,7 +371,8 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
         helperButton = new Button(demoHelper.icon().create());
         helperButton.getElement().setAttribute("title", demoHelper.tooltipText());
         helperButton.addClassName("helper-button");
-        helperButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_TERTIARY);
+        helperButton.getThemeNames().add(ButtonVariant.LUMO_ICON.getVariantName());
+        helperButton.getThemeNames().add(ButtonVariant.LUMO_TERTIARY.getVariantName());
         helperButton
             .addClickListener(e -> demoHelperViewer.show(demoHelperRenderer.helperContent()));
         add(helperButton);
