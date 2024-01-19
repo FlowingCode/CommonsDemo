@@ -449,11 +449,11 @@ pre[class*="language-"] {
             div.style.top= `calc( ${top}px + 0.75em)`;
             div.style.height= `${height}px`;
             
-            const scrollIntoView = elem => {
-                if ((elem as any).scrollIntoViewIfNeeded) {
-                    (elem as any).scrollIntoViewIfNeeded();
+            const scrollIntoView = (elem : any) => {
+                if (elem.scrollIntoViewIfNeeded) {
+                    elem.scrollIntoViewIfNeeded();
                 }  else {
-                    (elem as any).scrollIntoView()
+                    elem.scrollIntoView();
                 }
             }
             
