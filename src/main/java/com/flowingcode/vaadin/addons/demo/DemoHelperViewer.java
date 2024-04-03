@@ -20,13 +20,14 @@
 package com.flowingcode.vaadin.addons.demo;
 
 import com.vaadin.flow.component.Component;
+import java.io.Serializable;
 
 /**
  * Implementations of this interface can be used to display content rendered by
  * {@link DemoHelperRenderer}.
  *
  */
-public interface DemoHelperViewer {
+public interface DemoHelperViewer extends Serializable {
 
   /**
    * Shows help content.
