@@ -27,6 +27,7 @@ import com.vaadin.flow.component.dialog.Dialog;
  * {@link Dialog}.
  * 
  */
+@SuppressWarnings("serial")
 public class DialogDemoHelperViewer implements DemoHelperViewer {
 
   @Override
