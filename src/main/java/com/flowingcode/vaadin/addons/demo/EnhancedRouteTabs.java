@@ -42,7 +42,8 @@ public class EnhancedRouteTabs extends EnhancedTabs implements BeforeEnterObserv
 
   private final Map<RouterLink, Tab> routerLinkTabMap = new LinkedHashMap<>();
 
-  public void add(RouterLink routerLink) {
+  public void add(String text, Class<? extends Component> target) {
+    RouterLink routerLink = super.addRouterLink(text, target);
     routerLink.setHighlightCondition(HighlightConditions.sameLocation());
     routerLink.setHighlightAction(
         (link, shouldHighlight) -> {
@@ -50,8 +51,9 @@ public class EnhancedRouteTabs extends EnhancedTabs implements BeforeEnterObserv
             setSelectedTab(routerLinkTabMap.get(routerLink));
           }
         });
-    routerLinkTabMap.put(routerLink, new Tab(routerLink));
-    add(routerLinkTabMap.get(routerLink));
+
+    Tab tab = getTabAt(getTabCount() - 1);
+    routerLinkTabMap.put(routerLink, tab);
   }
 
   @Override
