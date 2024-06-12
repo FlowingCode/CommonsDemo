@@ -42,7 +42,19 @@ public class EnhancedRouteTabs extends EnhancedTabs implements BeforeEnterObserv
 
   private final Map<RouterLink, Tab> routerLinkTabMap = new LinkedHashMap<>();
 
-  public void add(RouterLink routerLink) {
+  public void addRouterLink(String label, Class<? extends Component> target) {
+    RouterLink routerLink = new RouterLink(label, target);
+    routerLink.getElement().executeJs("""
+        this.addEventListener("click", e => {
+            e.preventDefault();
+            this.dispatchEvent(new CustomEvent('client-side-click'));
+        });
+        """);
+
+    routerLink.getElement().addEventListener("client-side-click", event -> {
+      UI.getCurrent().navigate(target);
+    });
+
     routerLink.setHighlightCondition(HighlightConditions.sameLocation());
     routerLink.setHighlightAction(
         (link, shouldHighlight) -> {

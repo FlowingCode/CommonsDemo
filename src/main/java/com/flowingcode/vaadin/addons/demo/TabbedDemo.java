@@ -39,7 +39,6 @@ import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLayout;
-import com.vaadin.flow.router.RouterLink;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -152,8 +151,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     if (!clazz.isAnnotationPresent(Route.class)) {
       throw new IllegalArgumentException(clazz + " must be annotated as Route");
     }
-    RouterLink tab = new RouterLink(label, clazz);
-    tabs.add(tab);
+    tabs.addRouterLink(label, clazz);
   }
 
   /**
