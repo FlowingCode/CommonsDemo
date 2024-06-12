@@ -2,7 +2,7 @@
  * #%L
  * Commons Demo
  * %%
- * Copyright (C) 2020 - 2023 Flowing Code
+ * Copyright (C) 2020 - 2024 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   private static final Logger logger = LoggerFactory.getLogger(TabbedDemo.class);
 
   private static final int MOBILE_DEVICE_BREAKPOINT_WIDTH = 768;
-  private RouteTabs tabs;
+  private EnhancedRouteTabs tabs;
   private HorizontalLayout footer;
   private SplitLayoutDemo currentLayout;
   private Checkbox orientationCB;
@@ -68,7 +68,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   public TabbedDemo() {
     demoHelperViewer = new DialogDemoHelperViewer();
 
-    tabs = new RouteTabs();
+    tabs = new EnhancedRouteTabs();
     tabs.setWidthFull();
 
     // Footer
