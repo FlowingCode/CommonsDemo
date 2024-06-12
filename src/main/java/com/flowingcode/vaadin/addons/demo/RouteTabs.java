@@ -2,7 +2,7 @@
  * #%L
  * Commons Demo
  * %%
- * Copyright (C) 2020 - 2023 Flowing Code
+ * Copyright (C) 2020 - 2024 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,10 @@ import java.util.Optional;
  * Extension of Tabs in order to allow to bind tabs with Routes.
  *
  * @see https://cookbook.vaadin.com/tabs-with-routes/a
+ * @deprecated Deprecated for removal. Use {@link EnhancedRouteTabs} instead.
  */
+@SuppressWarnings("serial")
+@Deprecated(forRemoval = true)
 public class RouteTabs extends Tabs implements BeforeEnterObserver {
 
   private final Map<RouterLink, Tab> routerLinkTabMap = new LinkedHashMap<>();
