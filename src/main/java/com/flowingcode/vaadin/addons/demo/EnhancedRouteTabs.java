@@ -21,6 +21,7 @@ package com.flowingcode.vaadin.addons.demo;
 
 import com.flowingcode.vaadin.addons.enhancedtabs.EnhancedTabs;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -38,12 +39,12 @@ import java.util.Optional;
  *
  * @see https://cookbook.vaadin.com/tabs-with-routes/a
  */
-public class EnhancedRouteTabs extends EnhancedTabs implements BeforeEnterObserver {
+public class EnhancedRouteTabs extends Composite<EnhancedTabs> implements BeforeEnterObserver {
 
   private final Map<RouterLink, Tab> routerLinkTabMap = new LinkedHashMap<>();
 
   public void add(String text, Class<? extends Component> target) {
-    RouterLink routerLink = super.addRouterLink(text, target);
+    RouterLink routerLink = getContent().addRouterLink(text, target);
     routerLink.setHighlightCondition(HighlightConditions.sameLocation());
     routerLink.setHighlightAction(
         (link, shouldHighlight) -> {
@@ -52,8 +53,12 @@ public class EnhancedRouteTabs extends EnhancedTabs implements BeforeEnterObserv
           }
         });
 
-    Tab tab = getTabAt(getTabCount() - 1);
+    Tab tab = getContent().getTabAt(getContent().getTabCount() - 1);
     routerLinkTabMap.put(routerLink, tab);
+  }
+
+  private void setSelectedTab(Tab tab) {
+    getContent().setSelectedTab(tab);
   }
 
   @Override
@@ -82,8 +87,8 @@ public class EnhancedRouteTabs extends EnhancedTabs implements BeforeEnterObserv
   @Deprecated
   public void addLegacyTab(String label, Component content) {
     Tab tab = new Tab(label);
-    add(tab);
-    addSelectedChangeListener(
+    getContent().add(tab);
+    getContent().addSelectedChangeListener(
         ev -> {
           if (ev.getSelectedTab() == tab) {
             TabbedDemo tabbedDemo = (TabbedDemo) getParent().get();
