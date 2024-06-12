@@ -68,7 +68,6 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     demoHelperViewer = new DialogDemoHelperViewer();
 
     tabs = new EnhancedRouteTabs();
-    tabs.setWidthFull();
 
     // Footer
     orientationCB = new Checkbox("Toggle Orientation");
