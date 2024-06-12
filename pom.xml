@@ -91,6 +91,12 @@
 	</dependency>
 	
     <dependency>
+        <groupId>com.flowingcode.vaadin.addons</groupId>
+        <artifactId>enhanced-tabs-addon</artifactId>
+        <version>1.0.0</version>
+    </dependency>
+    
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.11</version>
