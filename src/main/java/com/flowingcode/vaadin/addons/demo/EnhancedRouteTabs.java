@@ -74,11 +74,7 @@ public class EnhancedRouteTabs extends Composite<EnhancedTabs> implements Before
     }
   }
 
-  public Map<RouterLink, Tab> getRouterLinkTabMap() {
-    return routerLinkTabMap;
-  }
-
-  public RouterLink getFirstRoute() {
+  private RouterLink getFirstRoute() {
     Optional<RouterLink> first =
         routerLinkTabMap.entrySet().stream().map(Map.Entry::getKey).findFirst();
     return first.isPresent() ? first.get() : null;
