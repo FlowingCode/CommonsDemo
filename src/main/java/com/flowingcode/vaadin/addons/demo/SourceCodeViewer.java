@@ -50,6 +50,7 @@ public class SourceCodeViewer extends Div implements HasSize {
   public SourceCodeViewer(String url, String language, Map<String, String> properties) {
     codeViewer = new Element("code-viewer");
     getElement().appendChild(codeViewer);
+    getElement().getStyle().set("overflow", "auto");
     getElement().getStyle().set("display", "flex");
     codeViewer.getStyle().set("flex-grow", "1");
     setProperties(properties);
