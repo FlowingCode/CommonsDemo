@@ -26,8 +26,12 @@ import com.vaadin.flow.router.Route;
 
 @Route(value = "demo/multisource", layout = Demo.class)
 @PageTitle("Demo with multiple sources")
+// show-source @DemoSource
+// show-source @DemoSource("/src/test/resources/META-INF/resources/frontend/multi-source-demo.css")
+// show-source @DemoSource(clazz = Demo.class)
 @DemoSource
-@DemoSource(value = "/src/test/resources/META-INF/resources/frontend/multi-source-demo.css")
+@DemoSource("/src/test/resources/META-INF/resources/frontend/multi-source-demo.css")
+@DemoSource(clazz = Demo.class)
 @StyleSheet("./multi-source-demo.css")
 public class MultiSourceDemo extends Div {
   public MultiSourceDemo() {
