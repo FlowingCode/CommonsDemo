@@ -214,7 +214,12 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     String demoFile;
     String url = annotation.value();
     if (url.equals(DemoSource.GITHUB_SOURCE)) {
-      String className = annotatedClass.getName().replace('.', '/');
+      String className;
+      if (annotation.clazz() == DemoSource.class) {
+        className = annotatedClass.getName().replace('.', '/');
+      } else {
+        className = annotation.clazz().getName().replace('.', '/');
+      }
       demoFile = "src/test/java/" + className + ".java";
     } else if (url.startsWith("/src/test/")) {
       demoFile = url.substring(1);

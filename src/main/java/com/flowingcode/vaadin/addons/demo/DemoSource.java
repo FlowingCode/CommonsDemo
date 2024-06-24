@@ -2,7 +2,7 @@
  * #%L
  * Commons Demo
  * %%
- * Copyright (C) 2020 - 2023 Flowing Code
+ * Copyright (C) 2020 - 2024 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,12 +29,12 @@ import java.lang.annotation.Target;
 
 /**
  * This annotation is used for configuring the source code URL in a {@link TabbedDemo}. If no {@code
- * value} is specified, and the demo view is annotated with {@link GithubLink}, then the source URL
- * defaults to the location of the annotated class under {@code src/test/java} and the branch is
- * determined from the value of {@link GithubBranch} in the demo view class (if the annotation is
- * present) or the containing package of the demo view class. If the source URL is defaulted and no
- * {@code GithubBranch} annotation is present either in the demo view class or its containing
- * package, then the branch defaults to {@code master}.
+ * value} or {@code clazz} is specified, and the demo view is annotated with {@link GithubLink},
+ * then the source URL defaults to the location of the annotated class under {@code src/test/java}
+ * and the branch is determined from the value of {@link GithubBranch} in the demo view class (if
+ * the annotation is present) or the containing package of the demo view class. If the source URL is
+ * defaulted and no {@code GithubBranch} annotation is present either in the demo view class or its
+ * containing package, then the branch defaults to {@code master}.
  *
  * @author Javier Godoy / Flowing Code
  */
@@ -47,8 +47,19 @@ public @interface DemoSource {
 
   static final String DEFAULT_VALUE = "__DEFAULT__";
 
-  /** A link to the source code, if different from the annotated class. */
+  /**
+   * A link to the source code, if different from the annotated class.
+   * <p>
+   * It is an error if both {@code value} and {@link #clazz()} are specified.
+   */
   String value() default GITHUB_SOURCE;
+
+  /**
+   * The class to display, if different from the annotated class.
+   * <p>
+   * It is an error if both {@link #value()} and {@code clazz} are specified.
+   */
+  Class<?> clazz() default DemoSource.class;
 
   /**
    * The caption of the source tab (displayed if several sources are provided). Default to the file
