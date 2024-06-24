@@ -93,7 +93,7 @@
     <dependency>
         <groupId>com.flowingcode.vaadin.addons</groupId>
         <artifactId>enhanced-tabs-addon</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.1.0</version>
     </dependency>
     
     <dependency>
