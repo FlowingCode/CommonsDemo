@@ -2,7 +2,7 @@
  * #%L
  * Commons Demo
  * %%
- * Copyright (C) 2020 - 2023 Flowing Code
+ * Copyright (C) 2020 - 2024 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,6 +51,8 @@ export class CodeViewer extends LitElement {
 
   private __license : Element[] = [];
   
+  private __highlightedBlock : string | null = null;
+    
   env: any = {};
   
   createRenderRoot() {
@@ -234,6 +236,7 @@ pre[class*="language-"] {
       (window as any).Prism.highlightAllUnder(self);
       self.__license.reverse().forEach(e=>self.querySelector('pre code')?.prepend(e));
       self.process(code);
+      self._highlight(self.__highlightedBlock, false);
     }};
     xhr.open('GET', sourceUrl, true);
     xhr.send();
@@ -435,20 +438,35 @@ pre[class*="language-"] {
   }
   
   /** @deprecated Use highlight(id: string|null) instead */
-  highligth(id:string|null) {
-    this.highlight(id);
+  highligth(filenameAndId:string|null) {
+    this.highlight(filenameAndId);
   }
   
   //highlight a marked block
-  highlight(id:string|null) {
+  highlight(filenameAndId:string|null) {
+	this._highlight(filenameAndId, true);
+  }
+  
+  //highlight a marked block. If request is true, dispatch a fragment request if the block is not found.
+  private _highlight(filenameAndId:string|null, request:boolean) {
+    this.__highlightedBlock=filenameAndId;
     const div = this.querySelector('.highlight') as HTMLElement;
     
     div.style.removeProperty('top');
     div.style.removeProperty('height');
-    if (id!==null) {
+    if (filenameAndId!==null) {
+		
+		var ss = filenameAndId!.split('#',2);
+		var id = ss!.pop();
+		var filename = ss!.pop();
+		
         var begin = this.querySelector('.begin-'+id) as HTMLElement;
         var end = this.querySelector('.end-'+id) as HTMLElement;
-        if (begin && end && begin.offsetTop<=end.offsetTop) {
+        if (!begin || !end) {
+			if (request) {
+			  this.dispatchEvent(new CustomEvent('fragment-request', {bubbles: true, detail: {filename}}));
+			}			
+		} else if (begin.offsetTop<=end.offsetTop) {
             var top = begin.offsetTop;
             var height = end.offsetTop+end.offsetHeight-top;
             div.style.top= `calc( ${top}px + 0.75em)`;

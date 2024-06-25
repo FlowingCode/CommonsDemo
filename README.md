@@ -166,18 +166,21 @@ Strictly, the constructor of `SourceCodeViewer` receives a map with arbitrary va
 This feature supports highlighting a source code fragment in order to emphasize a section of the code snippet.
 The highlighted fragment is automatically scrolled into view.
 
-A fragment is highlighted either by calling `SourceCodeViewer.highlight(name)` or when hovering a component that has been configured with `SourceCodeViewer.highlightOnHover(component,name)`, where `name` is the name of the fragment. `SourceCodeViewer.highlight(null)` turn off the highlighting.
-`SourceCodeViewer.highlightOnClick` allows configuring a click listener that turns highlight on.
+A fragment is highlighted either by calling `SourceCodeViewer.highlight(filenameAndId)` or when clicking/hovering a component that has been configured with `SourceCodeViewer.highlightOnClick` or `SourceCodeViewer.highlightOnHover`, where `filenameAndId` is the name of the fragment. If the component is in an additional source file, `filenameAndId` can be given as a string in the format `filename#id`. If no `'#'` is present, it is assumed that the identifier corresponds to a block in the first source panel. `SourceCodeViewer.highlight(null)` turns off the highlighting.
 
-In the source code, a fragment is delimited by `// begin-block name` and `// end-block` comments. Nested fragments are not supported.
+In the source code, a fragment is delimited by `// begin-block filenameAndId` and `// end-block` comments. Nested fragments are not supported.
 The `// begin-block` and `// end-block` comments are removed after post-processing.
 
 ```
     // begin-block first
-    Div first = new Div(new Text("First"));
+    Div first = new Div(new Text("Highlight block in first panel"));
     SourceCodeViewer.highlightOnHover(first, "first");
     add(first);
     // end-block
+    
+    Div other = new Div(new Text("Highlight additional source"));
+    SourceCodeViewer.highlightOnHover(other, "AdditionalSource.java#other");
+    add(other);
 ```
 
 <!-- FROM https://github.com/FlowingCode/CommonsDemo/pull/62 -->
