@@ -18,26 +18,34 @@
  */
 package com.flowingcode.vaadin.addons.demo;
 
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 @Route(value = "demo/multisource", layout = Demo.class)
 @PageTitle("Demo with multiple sources")
 // show-source @DemoSource
+// show-source @DemoSource(clazz = AdditionalSources.class)
 // show-source @DemoSource("/src/test/resources/META-INF/resources/frontend/multi-source-demo.css")
-// show-source @DemoSource(clazz = Demo.class)
 @DemoSource
+@DemoSource(clazz = AdditionalSources.class)
 @DemoSource("/src/test/resources/META-INF/resources/frontend/multi-source-demo.css")
-@DemoSource(clazz = Demo.class)
 @StyleSheet("./multi-source-demo.css")
 public class MultiSourceDemo extends Div {
   public MultiSourceDemo() {
-    Span span = new Span("This is the main source");
-    span.addClassName("custom-style");
-    add(span);
+
+    // begin-block main
+    Div div = new Div("This is the main source");
+    div.addClassName("custom-style");
+    SourceCodeViewer.highlightOnHover(div, "main");
+    add(div);
+    // end-block
+
+    Button button1 = new Button("Highlight code in AdditionalSources");
+    SourceCodeViewer.highlightOnClick(button1, "AdditionalSources.java#fragment");
+    add(button1);
   }
 
 }

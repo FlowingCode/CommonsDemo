@@ -89,20 +89,54 @@ public class SourceCodeViewer extends Div implements HasSize {
     }
   }
 
-  public static void highlightOnHover(Component c, String id) {
+  /**
+   * Highlights the block identified by {@code filenameAndId} when the component is hovered over.
+   * <p>
+   * If the component is in an additional source, {@code filenameAndId} can be given as a string in
+   * the format {@code filename#id}. If no {@code '#'} is present, it is assumed that the identifier
+   * corresponds to a block in the first source panel.
+   *
+   * @param c The component that triggers the highlight action when hovered over.
+   * @param filenameAndId The identifier string that combines filename and id separated by
+   *        {@code '#'}.
+   */
+  public static void highlightOnHover(Component c, String filenameAndId) {
     c.addAttachListener(ev -> {
-      c.getElement().executeJs("Vaadin.Flow.fcCodeViewerConnector.highlightOnHover(this,$0)", id);
+      c.getElement().executeJs("Vaadin.Flow.fcCodeViewerConnector.highlightOnHover(this,$0)", filenameAndId);
     });
   }
 
-  public static <T extends HasElement & ClickNotifier<?>> void highlightOnClick(T c, String id) {
+  /**
+   * Highlight block {@code id} when the component is clicked.
+   * <p>
+   * If the component is in an additional source, {@code filenameAndId} can be given as a string in
+   * the format {@code filename#id}. If no {@code '#'} is present, it is assumed that the identifier
+   * corresponds to a block in the first source panel.
+   *
+   * @param c The component that triggers the highlight action when clicked.
+   * @param filenameAndId The identifier string that combines filename and id separated by
+   *        {@code '#'}.
+   */
+  public static <T extends HasElement & ClickNotifier<?>> void highlightOnClick(T c,
+      String filenameAndId) {
     c.addClickListener(ev -> {
-      c.getElement().executeJs("Vaadin.Flow.fcCodeViewerConnector.highlight($0)", id);
+      c.getElement().executeJs("Vaadin.Flow.fcCodeViewerConnector.highlight($0)", filenameAndId);
     });
   }
 
-  public static void highlight(String id) {
-    UI.getCurrent().getElement().executeJs("Vaadin.Flow.fcCodeViewerConnector.highlight($0)", id);
+  /**
+   * Highlights the block identified by {@code filenameAndId}.
+   * <p>
+   * If the component is in an additional source, {@code filenameAndId} can be given as a string in
+   * the format {@code filename#id}. If no {@code '#'} is present, it is assumed that the identifier
+   * corresponds to a block in the first source panel.
+   *
+   * @param filenameAndId The identifier string that combines filename and id separated by
+   *        {@code '#'}.
+   */
+
+  public static void highlight(String filenameAndId) {
+    UI.getCurrent().getElement().executeJs("Vaadin.Flow.fcCodeViewerConnector.highlight($0)", filenameAndId);
   }
 
 }

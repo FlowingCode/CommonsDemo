@@ -6,6 +6,7 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class MultiSourceCodeViewer extends Div {
 
@@ -15,13 +16,21 @@ public class MultiSourceCodeViewer extends Div {
 
   private SourceCodeViewer codeViewer;
   private Tab selectedTab;
+  private Tabs tabs;
 
   public MultiSourceCodeViewer(List<SourceCodeTab> sourceCodeTabs, Map<String, String> properties) {
     if (sourceCodeTabs.size() > 1) {
-      Tabs tabs = new Tabs(createTabs(sourceCodeTabs));
+      tabs = new Tabs(createTabs(sourceCodeTabs));
       tabs.addSelectedChangeListener(ev -> onTabSelected(ev.getSelectedTab()));
       add(tabs);
       selectedTab = tabs.getSelectedTab();
+
+      getElement().addEventListener("fragment-request", ev -> {
+        String filename = ev.getEventData().get("event.detail.filename").asString();
+        findTabWithFilename(filename).ifPresent(tab -> {
+          tabs.setSelectedTab(tab);
+        });
+      }).addEventData("event.detail.filename");
     } else {
       selectedTab = createTab(sourceCodeTabs.get(0));
     }
@@ -89,7 +98,7 @@ public class MultiSourceCodeViewer extends Div {
   }
 
   private void onTabSelected(Tab tab) {
-    this.selectedTab = tab;
+    selectedTab = tab;
 
     String url = (String) ComponentUtil.getData(tab, DATA_URL);
     String language = (String) ComponentUtil.getData(tab, DATA_LANGUAGE);
@@ -102,6 +111,17 @@ public class MultiSourceCodeViewer extends Div {
 
   public SourcePosition getSourcePosition() {
     return (SourcePosition) ComponentUtil.getData(selectedTab, DATA_POSITION);
+  }
+
+  private Optional<Tab> findTabWithFilename(String filename) {
+    if (tabs != null) {
+      return tabs.getChildren().filter(Tab.class::isInstance).map(Tab.class::cast).filter(tab -> {
+        String url = (String) ComponentUtil.getData(tab, DATA_URL);
+        return filename == null || getFilename(url).equals(filename);
+      }).findFirst();
+    } else {
+      return Optional.empty();
+    }
   }
 
 }
