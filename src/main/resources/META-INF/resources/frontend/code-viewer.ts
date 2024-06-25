@@ -31,7 +31,7 @@ import "./prism.js";
       //highlight a marked block in the single code-viewer of the UI
       highlight: (id:string|null) => {
         const viewer = document.querySelector("code-viewer") as CodeViewer;
-        if (viewer) viewer.highligth(id);
+        if (viewer) viewer.highlight(id);
       },
 
       //highlight a marked block in the single code-viewer of the UI, on hover of element
@@ -434,8 +434,13 @@ pre[class*="language-"] {
    
   }
   
-  //highligth a marked block
+  /** @deprecated Use highlight(id: string|null) instead */
   highligth(id:string|null) {
+    this.highlight(id);
+  }
+  
+  //highlight a marked block
+  highlight(id:string|null) {
     const div = this.querySelector('.highlight') as HTMLElement;
     
     div.style.removeProperty('top');
