@@ -4,6 +4,7 @@ import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
+import elemental.json.JsonValue;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,8 +27,9 @@ public class MultiSourceCodeViewer extends Div {
       selectedTab = tabs.getSelectedTab();
 
       getElement().addEventListener("fragment-request", ev -> {
-        String filename = ev.getEventData().get("event.detail.filename").asString();
-        findTabWithFilename(filename).ifPresent(tab -> {
+        JsonValue filename = ev.getEventData().get("event.detail.filename");
+        findTabWithFilename(Optional.ofNullable(filename).map(JsonValue::asString).orElse(null))
+            .ifPresent(tab -> {
           tabs.setSelectedTab(tab);
         });
       }).addEventData("event.detail.filename");
