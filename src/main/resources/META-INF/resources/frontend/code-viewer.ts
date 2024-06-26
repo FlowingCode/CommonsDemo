@@ -416,7 +416,11 @@ pre[class*="language-"] {
         //process instructions in element nodes
         if (nodes[i].nodeType!=1) continue;
           
-        const text = nodes[i].textContent!;
+        var text = nodes[i].textContent!;
+        
+        var blockComment = text.match("^/\\*(?<content>(\\*(?!\/)|[^\\*])*)\\*\/");
+        if (blockComment) text = blockComment.groups!.content;
+        
         var m = text.match("^//\\s*begin-block\\s+(\\S+)\\s*");
         
         if (m) {

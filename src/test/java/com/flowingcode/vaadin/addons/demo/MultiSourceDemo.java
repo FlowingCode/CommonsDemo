@@ -41,11 +41,15 @@ public class MultiSourceDemo extends Div {
     div.addClassName("custom-style");
     SourceCodeViewer.highlightOnHover(div, "main");
     add(div);
-    // end-block
 
     Button button1 = new Button("Highlight code in AdditionalSources");
     SourceCodeViewer.highlightOnClick(button1, "AdditionalSources.java#fragment");
-    add(button1);
+    add(new Div(button1));
+
+    Button button2 = new Button("Highlight code in CSS");
+    SourceCodeViewer.highlightOnClick(button2, "multi-source-demo.css#css-fragment");
+    add(new Div(button2));
+    // end-block
   }
 
 }

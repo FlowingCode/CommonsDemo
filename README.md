@@ -183,6 +183,8 @@ The `// begin-block` and `// end-block` comments are removed after post-processi
     add(other);
 ```
 
+For highlighting code in CSS, use `/*// begin-block filenameAndId */`
+
 <!-- FROM https://github.com/FlowingCode/CommonsDemo/pull/62 -->
 ![image](https://github.com/FlowingCode/CommonsDemo/assets/11554739/02063272-029f-4b4b-bd6f-821f2f8a0158)
 
