@@ -250,7 +250,7 @@ pre[class*="language-"] {
       let end = text.indexOf('*/');
       if (end<0) break;
       
-      let pos = text.indexOf('#%L');
+      let pos = text.indexOf('#'+'%L');
       if (pos<0 || end<pos) break;
       
       let license = text.substring(pos+3,end).split('%%');
