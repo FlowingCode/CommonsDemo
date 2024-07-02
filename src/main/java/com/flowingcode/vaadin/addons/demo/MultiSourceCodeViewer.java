@@ -1,9 +1,9 @@
 package com.flowingcode.vaadin.addons.demo;
 
+import com.flowingcode.vaadin.addons.enhancedtabs.EnhancedTabs;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.tabs.Tab;
-import com.vaadin.flow.component.tabs.Tabs;
 import elemental.json.JsonValue;
 import java.util.List;
 import java.util.Map;
@@ -17,11 +17,11 @@ public class MultiSourceCodeViewer extends Div {
 
   private SourceCodeViewer codeViewer;
   private Tab selectedTab;
-  private Tabs tabs;
+  private EnhancedTabs tabs;
 
   public MultiSourceCodeViewer(List<SourceCodeTab> sourceCodeTabs, Map<String, String> properties) {
     if (sourceCodeTabs.size() > 1) {
-      tabs = new Tabs(createTabs(sourceCodeTabs));
+      tabs = new EnhancedTabs(createTabs(sourceCodeTabs));
       tabs.addSelectedChangeListener(ev -> onTabSelected(ev.getSelectedTab()));
       add(tabs);
       selectedTab = tabs.getSelectedTab();
