@@ -30,7 +30,7 @@ public class Demo extends TabbedDemo {
 
   public Demo() {
     addDemo(new LegacyDemo());
-    addDemo(SampleDemo.class, "Demo");
+    addDemo(SampleDemo.class);
     addDemo(SampleDemoDefault.class);
     addDemo(SampleDemoHighlight.class);
     addDemo(AdHocDemo.class);
