@@ -44,7 +44,7 @@ public class EnhancedRouteTabs extends Composite<EnhancedTabs> implements Before
   private final Map<RouterLink, Tab> routerLinkTabMap = new LinkedHashMap<>();
 
   public void add(String text, Class<? extends Component> target) {
-    text = text.replaceFirst("\\s*+[Dd]emo$", "");
+    text = text.replaceFirst("\\s++[Dd]emo$", "");
     RouterLink routerLink = getContent().addRouterLink(text, target);
     routerLink.setHighlightCondition(HighlightConditions.sameLocation());
     routerLink.setHighlightAction(
