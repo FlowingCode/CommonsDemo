@@ -53,6 +53,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   private static final Logger logger = LoggerFactory.getLogger(TabbedDemo.class);
 
   private static final int MOBILE_DEVICE_BREAKPOINT_WIDTH = 768;
+  private boolean autoVisibility;
   private EnhancedRouteTabs tabs;
   private HorizontalLayout footer;
   private SplitLayoutDemo currentLayout;
@@ -138,6 +139,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   @Deprecated
   public void addDemo(Component demo, String label, String sourceCodeUrl) {
     tabs.addLegacyTab(label, demo);
+    updateVisibility();
   }
 
   /**
@@ -151,6 +153,22 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
       throw new IllegalArgumentException(clazz + " must be annotated as Route");
     }
     tabs.add(label, clazz);
+    updateVisibility();
+  }
+
+  private void updateVisibility() {
+    if (autoVisibility) {
+      tabs.setVisible(tabs.getContent().getTabCount() > 1);
+    }
+  }
+
+  /**
+   * Sets the autovisibility mode. When autovisibility is enabled, the tabs component is hidden
+   * unless it contains two or more tabs.
+   */
+  public void setAutoVisibility(boolean autoVisibility) {
+    this.autoVisibility = autoVisibility;
+    updateVisibility();
   }
 
   /**
