@@ -136,7 +136,7 @@ public class MultiSourceCodeViewer extends Div {
 
   private Optional<Tab> findTabWithFilename(String filename) {
     if (tabs != null) {
-      return tabs.getChildren().filter(Tab.class::isInstance).map(Tab.class::cast).filter(tab -> {
+      return tabs.getTabs().filter(tab -> {
         String url = (String) ComponentUtil.getData(tab, DATA_URL);
         return filename == null || getFilename(url).equals(filename);
       }).findFirst();
