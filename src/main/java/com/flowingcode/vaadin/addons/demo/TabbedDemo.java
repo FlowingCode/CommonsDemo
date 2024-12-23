@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -340,6 +341,15 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   public static void applyTheme(Element element, boolean useDarkTheme) {
     String theme = useDarkTheme ? "dark" : "";
     element.executeJs("document.documentElement.setAttribute('theme', $0);", theme);
+
+    Component c = element.getComponent().get();
+    collectThemeChangeObservers(c).forEach(observer -> observer.onThemeChange(theme));
+  }
+
+  private static Stream<ThemeChangeObserver> collectThemeChangeObservers(Component c) {
+    Stream<ThemeChangeObserver> children =
+        c.getChildren().flatMap(child -> collectThemeChangeObservers(child));
+    return c instanceof ThemeChangeObserver o ? Stream.concat(Stream.of(o), children) : children;
   }
 
   private void updateFooterButtonsVisibility() {
