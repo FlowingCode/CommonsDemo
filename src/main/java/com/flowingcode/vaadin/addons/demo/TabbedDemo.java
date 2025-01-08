@@ -39,6 +39,7 @@ import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLayout;
+import com.vaadin.flow.server.VaadinSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -227,6 +228,8 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     
     updateFooterButtonsVisibility();
     getElement().insertChild(1, content.getElement());
+
+    applyTheme(getElement(), getThemeName());
   }
 
   private Optional<SourceCodeTab> createSourceCodeTab(Class<?> annotatedClass, DemoSource annotation) {
@@ -338,8 +341,22 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     orientationCB.setValue(Orientation.HORIZONTAL.equals(orientation));
   }
 
+  private static final String THEME_NAME = TabbedDemo.class.getName() + "#THEME_NAME";
+
+  public static String getThemeName() {
+    return (String) Optional.ofNullable(VaadinSession.getCurrent().getAttribute(THEME_NAME))
+        .orElse("");
+  }
+
+  @Deprecated
   public static void applyTheme(Element element, boolean useDarkTheme) {
     String theme = useDarkTheme ? "dark" : "";
+    applyTheme(element, theme);
+  }
+
+  public static void applyTheme(Element element, String theme) {
+    VaadinSession.getCurrent().setAttribute(THEME_NAME, theme);
+
     element.executeJs("document.documentElement.setAttribute('theme', $0);", theme);
 
     Component c = element.getComponent().get();
