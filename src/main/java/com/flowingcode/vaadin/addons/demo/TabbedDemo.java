@@ -357,7 +357,14 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   public static void applyTheme(Element element, String theme) {
     VaadinSession.getCurrent().setAttribute(THEME_NAME, theme);
 
-    element.executeJs("document.body.setAttribute('theme', $0);", theme);
+    String script;
+    if (element.getTag().equalsIgnoreCase("iframe")) {
+      script = "this.contentWindow.document.body.setAttribute('theme', $0)";
+    } else {
+      script = "document.body.setAttribute('theme', $0);";
+    }
+
+    element.executeJs(script, theme);
 
     Component c = element.getComponent().get();
     collectThemeChangeObservers(c).forEach(observer -> observer.onThemeChange(theme));
