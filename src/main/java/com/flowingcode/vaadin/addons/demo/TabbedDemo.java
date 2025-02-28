@@ -235,7 +235,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   private Optional<SourceCodeTab> createSourceCodeTab(Class<?> annotatedClass, DemoSource annotation) {
     String demoFile;
     String url = annotation.value();
-    if (url.equals(DemoSource.GITHUB_SOURCE)) {
+    if (url.equals(DemoSource.GITHUB_SOURCE) || url.equals(DemoSource.DEFAULT_VALUE)) {
       String className;
       if (annotation.clazz() == DemoSource.class) {
         className = annotatedClass.getName().replace('.', '/');

@@ -43,6 +43,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface DemoSource {
 
+  /** @deprecated. Use {@link #DEFAULT_VALUE} */
+  @Deprecated
   static final String GITHUB_SOURCE = "__GITHUB__";
 
   static final String DEFAULT_VALUE = "__DEFAULT__";
@@ -52,7 +54,7 @@ public @interface DemoSource {
    * <p>
    * It is an error if both {@code value} and {@link #clazz()} are specified.
    */
-  String value() default GITHUB_SOURCE;
+  String value() default DEFAULT_VALUE;
 
   /**
    * The class to display, if different from the annotated class.
