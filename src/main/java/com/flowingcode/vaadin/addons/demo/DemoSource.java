@@ -36,7 +36,10 @@ import java.lang.annotation.Target;
  * defaulted and no {@code GithubBranch} annotation is present either in the demo view class or its
  * containing package, then the branch defaults to {@code master}.
  *
+ * This behavior can be globally overridden by configuring a {@link SourceUrlResolver}.
+ *
  * @author Javier Godoy / Flowing Code
+ * @see TabbedDemo#configureSourceUrlResolver(SourceUrlResolver)
  */
 @Repeatable(DemoSources.class)
 @Retention(RetentionPolicy.RUNTIME)

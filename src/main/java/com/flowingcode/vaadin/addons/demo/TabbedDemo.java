@@ -20,7 +20,6 @@
 package com.flowingcode.vaadin.addons.demo;
 
 import com.flowingcode.vaadin.addons.GithubBranch;
-import com.flowingcode.vaadin.addons.GithubLink;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -45,6 +44,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
+import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -232,31 +232,33 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     applyTheme(getElement(), getThemeName());
   }
 
-  private Optional<SourceCodeTab> createSourceCodeTab(Class<?> annotatedClass, DemoSource annotation) {
-    String demoFile;
-    String url = annotation.value();
-    if (url.equals(DemoSource.GITHUB_SOURCE) || url.equals(DemoSource.DEFAULT_VALUE)) {
-      String className;
-      if (annotation.clazz() == DemoSource.class) {
-        className = annotatedClass.getName().replace('.', '/');
-      } else {
-        className = annotation.clazz().getName().replace('.', '/');
-      }
-      demoFile = "src/test/java/" + className + ".java";
-    } else if (url.startsWith("/src/test/")) {
-      demoFile = url.substring(1);
-    } else {
-      demoFile = null;
-    }
+  private static SourceUrlResolver resolver = null;
 
-    if (demoFile != null) {
-      String branch = lookupGithubBranch(this.getClass());
-      url = Optional.ofNullable(this.getClass().getAnnotation(GithubLink.class))
-          .map(githubLink -> String.format("%s/blob/%s/%s", githubLink.value(),
-              branch, demoFile))
-          .orElse(null);
+  /**
+   * Configures the {@code SourceUrlResolver} for resolving source URLs. This method can only be
+   * called once; subsequent calls will result in an exception.
+   *
+   * @param resolver The {@code SourceUrlResolver} to be used. Must not be {@code null}.
+   * @throws IllegalStateException if a resolver has already been set.
+   * @throws NullPointerException if the provided {@code resolver} is {@code null}.
+   */
+  public static void configureSourceUrlResolver(@NonNull SourceUrlResolver resolver) {
+    if (TabbedDemo.resolver != null) {
+      throw new IllegalStateException();
     }
-    
+    TabbedDemo.resolver = resolver;
+  }
+
+  private static SourceUrlResolver getResolver() {
+    if (resolver == null) {
+      resolver = new DefaultSourceUrlResolver();
+    }
+    return resolver;
+  }
+
+  private Optional<SourceCodeTab> createSourceCodeTab(Class<?> annotatedClass, DemoSource annotation) {
+    String url = getResolver().resolveURL(this, annotatedClass, annotation).orElse(null);
+
     if (url==null) {
       return Optional.empty();
     }
