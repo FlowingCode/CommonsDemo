@@ -55,8 +55,26 @@ The rendering process consists of the following steps:
 5. Post-processing (fragment highlighting)
 
 ### Source code retrieval
-The specified URL (refer to the explanation of `@DemoSource` above) will be used to fetch sources. URLs pointing to `github.com` will be rewritten into `raw.githubusercontent.com` URLs. In development mode, sources will be retrieved from the local `src` directory (if available).
+The specified URL (refer to the explanation of `@DemoSource` above) will be used to fetch sources. In development mode, sources will be retrieved from the local `src` directory (if available).
 
+By default, URLs pointing to `github.com` will be rewritten into `raw.githubusercontent.com` URLs. A custom `SourceUrlResolver` can be configured to modify this behavior. 
+
+```java
+@Component
+public final class SourceUrlResolverImpl implements SourceUrlResolver, VaadinServiceInitListener {
+
+  @Override
+  public void serviceInit(ServiceInitEvent event) {
+    TabbedDemo.configureSourceUrlResolver(this);
+  }
+
+  @Override
+  public Optional<String> resolveURL(TabbedDemo demo, Class<?> annotatedClass, DemoSource annotation) {
+    return ...;
+  }
+
+}
+```
 ### License abbreviation
 
 A license comment block at the beginning of the file will be replaced with a short two-lines comment (author, year and link to the license terms), provided that:
