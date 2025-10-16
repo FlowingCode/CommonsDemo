@@ -167,6 +167,7 @@
             <licenseName>apache_v2</licenseName>
             <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
               <excludes>
+                <exclude>**/AppShellConfiguratorImpl.class</exclude>
                 <exclude>**/main/resources/META-INF/resources/frontend/prism.js</exclude>
                 <exclude>**/main/resources/META-INF/resources/frontend/prism.css</exclude>
                 <exclude>**/test/resources/**</exclude>
