@@ -2,7 +2,7 @@
  * #%L
  * Commons Demo
  * %%
- * Copyright (C) 2020 - 2024 Flowing Code
+ * Copyright (C) 2020 - 2025 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 package com.flowingcode.vaadin.addons.demo;
 
 import com.flowingcode.vaadin.addons.enhancedtabs.EnhancedTabs;
+import com.flowingcode.vaadin.jsonmigration.JsonMigration;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.tabs.Tab;
@@ -46,7 +47,8 @@ public class MultiSourceCodeViewer extends Div {
       selectedTab = tabs.getSelectedTab();
 
       getElement().addEventListener("fragment-request", ev -> {
-        JsonValue filename = ev.getEventData().get("event.detail.filename");
+        JsonValue filename =
+            JsonMigration.convertToJsonValue(ev.getEventData().get("event.detail.filename"));
         findTabWithFilename(Optional.ofNullable(filename).map(JsonValue::asString).orElse(null))
             .ifPresent(tab -> {
           tabs.setSelectedTab(tab);
