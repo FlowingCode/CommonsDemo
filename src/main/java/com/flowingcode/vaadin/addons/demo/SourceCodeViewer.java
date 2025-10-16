@@ -2,7 +2,7 @@
  * #%L
  * Commons Demo
  * %%
- * Copyright (C) 2020 - 2024 Flowing Code
+ * Copyright (C) 2020 - 2025 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 package com.flowingcode.vaadin.addons.demo;
 
 import com.flowingcode.vaadin.addons.DevSourceRequestHandler;
+import com.flowingcode.vaadin.jsonmigration.JsonMigration;
 import com.vaadin.flow.component.ClickNotifier;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasElement;
@@ -85,7 +86,7 @@ public class SourceCodeViewer extends Div implements HasSize {
           env.put(k, Json.create(v));
         }
       });
-      codeViewer.setPropertyJson("env", env);
+      JsonMigration.setPropertyJson(codeViewer, "env", env);
     }
   }
 
