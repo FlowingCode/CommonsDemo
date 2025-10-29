@@ -47,8 +47,7 @@ public class MultiSourceCodeViewer extends Div {
       selectedTab = tabs.getSelectedTab();
 
       getElement().addEventListener("fragment-request", ev -> {
-        JsonValue filename =
-            JsonMigration.convertToJsonValue(ev.getEventData().get("event.detail.filename"));
+        JsonValue filename = JsonMigration.getEventData(ev).get("event.detail.filename");
         findTabWithFilename(Optional.ofNullable(filename).map(JsonValue::asString).orElse(null))
             .ifPresent(tab -> {
           tabs.setSelectedTab(tab);
