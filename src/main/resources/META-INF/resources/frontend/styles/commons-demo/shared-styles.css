@@ -44,3 +44,63 @@ code-highlighter code {
 	top: 10px;
 	cursor: pointer;
 }
+
+.commons-demo-code-toolbar {
+    position: absolute;
+    top: 0;
+    width: 355.75px;
+    display: flex;
+    justify-content: end;
+    flex-direction: row;
+    z-index: 1;
+}
+
+.commons-demo-code-toolbar-buttons {
+    gap: var(--lumo-space-xs);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.commons-demo-code-toolbar vaadin-button {
+    color: var(--lumo-tint-90pct);
+    background: rgba(39, 40, 34, 0.5);
+    filter: contrast(0.8);
+}
+
+
+#commons-demo-split-layout.hide-source::part(splitter) {
+    display: none;
+}
+    
+#commons-demo-split-layout.hide-source .commons-demo-code-toolbar vaadin-button:not(#show-source),
+#commons-demo-split-layout:not(.hide-source) .commons-demo-code-toolbar vaadin-button#show-source,
+#commons-demo-split-layout:not(.hide-source) .commons-demo-code-toolbar.narrow vaadin-button:not(#hide-source) {
+    display: none;
+}
+    
+#commons-demo-split-layout[orientation="vertical"] .commons-demo-code-toolbar vaadin-button#flip vaadin-icon,
+#commons-demo-split-layout[orientation="vertical"] .commons-demo-code-toolbar vaadin-button#rotate vaadin-icon {
+    rotate: 90deg;
+}
+
+#commons-demo-split-layout.source-primary >[slot="primary"],
+#commons-demo-split-layout.source-secondary >[slot="secondary"] {
+    display: flex;
+    /*position: relative;*/
+}
+ 
+#commons-demo-split-layout.source-secondary[orientation="vertical"] .commons-demo-code-toolbar vaadin-button#hide-source vaadin-icon,
+#commons-demo-split-layout.source-secondary[orientation="vertical"] .commons-demo-code-toolbar vaadin-button#show-source vaadin-icon {
+    rotate: 90deg;
+}
+
+#commons-demo-split-layout.source-primary[orientation="horizontal"] .commons-demo-code-toolbar vaadin-button#hide-source vaadin-icon,
+#commons-demo-split-layout.source-primary[orientation="horizontal"] .commons-demo-code-toolbar vaadin-button#show-source vaadin-icon {
+    rotate: 180deg;
+}
+
+#commons-demo-split-layout.source-primary[orientation="vertical"] .commons-demo-code-toolbar vaadin-button#hide-source vaadin-icon,
+#commons-demo-split-layout.source-primary[orientation="vertical"] .commons-demo-code-toolbar vaadin-button#show-source vaadin-icon {
+    rotate: 270deg;
+}

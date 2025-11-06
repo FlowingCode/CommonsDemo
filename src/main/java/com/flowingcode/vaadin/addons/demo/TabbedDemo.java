@@ -2,7 +2,7 @@
  * #%L
  * Commons Demo
  * %%
- * Copyright (C) 2020 - 2024 Flowing Code
+ * Copyright (C) 2020 - 2025 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -212,6 +212,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     if (!sourceTabs.isEmpty()) {
       content = new SplitLayoutDemo(demo, sourceTabs);
       currentLayout = (SplitLayoutDemo) content;
+      currentLayout.addSourceRotateListener(ev -> toggleSplitterOrientation());
       if (splitOrientation != null) {
         setOrientation(splitOrientation);
         updateSplitterPosition();
@@ -225,7 +226,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
       demo.getElement().getStyle().set("height", "100%");
       setupDemoHelperButton(content.getClass());
     }
-    
+
     updateFooterButtonsVisibility();
     getElement().insertChild(1, content.getElement());
 
@@ -265,20 +266,20 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
 
     SourceCodeTab.SourceCodeTabBuilder builder = SourceCodeTab.builder();
     builder.url(url);
-    
+
     if (!annotation.caption().equals(DemoSource.DEFAULT_VALUE)) {
       builder.caption(annotation.caption());
     }
-    
+
     if (!annotation.language().equals(DemoSource.DEFAULT_VALUE)) {
       builder.language(annotation.caption());
     }
 
     builder.sourcePosition(annotation.sourcePosition());
-    
+
     return Optional.of(builder.build());
   }
-  
+
   public static String lookupGithubBranch(Class<? extends TabbedDemo> clazz) {
     GithubBranch branch = clazz.getAnnotation(GithubBranch.class);
     if (branch == null) {

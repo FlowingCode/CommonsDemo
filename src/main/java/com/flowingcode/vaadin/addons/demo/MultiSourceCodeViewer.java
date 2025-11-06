@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,8 +19,10 @@
  */
 package com.flowingcode.vaadin.addons.demo;
 
+import com.flowingcode.vaadin.addons.demo.events.HasCodeViewerEvents;
 import com.flowingcode.vaadin.addons.enhancedtabs.EnhancedTabs;
 import com.flowingcode.vaadin.jsonmigration.JsonMigration;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.tabs.Tab;
@@ -28,13 +30,15 @@ import elemental.json.JsonValue;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import lombok.experimental.Delegate;
 
-public class MultiSourceCodeViewer extends Div {
+public class MultiSourceCodeViewer extends Div implements HasCodeViewerEvents {
 
   private static final String DATA_URL = "source-url";
   private static final String DATA_LANGUAGE = "source-language";
   private static final String DATA_POSITION = "source-position";
 
+  @Delegate(types = HasCodeViewerEvents.class)
   private SourceCodeViewer codeViewer;
   private Tab selectedTab;
   private EnhancedTabs tabs;
@@ -144,6 +148,23 @@ public class MultiSourceCodeViewer extends Div {
     } else {
       return Optional.empty();
     }
+  }
+
+  /**
+   * Attaches a toolbar with viewer manipulation controls.
+   * <p>
+   * The toolbar includes buttons for Rotate, Flip, and Hide/Show Code.
+   * <p>
+   * <b>Important:</b> This method only constructs the toolbar UI. The caller is responsible for
+   * adding listeners and implementing the logic.
+   *
+   * @see #addSourceRotateListener(ComponentEventListener)
+   * @see #addSourceFlipListener(ComponentEventListener)
+   * @see #addSourceCollapseListener(ComponentEventListener)
+   *
+   */
+  public void createToolbar() {
+    codeViewer.createToolbar();
   }
 
 }

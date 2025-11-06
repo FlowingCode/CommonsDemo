@@ -2,7 +2,7 @@
  * #%L
  * Commons Demo
  * %%
- * Copyright (C) 2020 - 2023 Flowing Code
+ * Copyright (C) 2020 - 2025 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,19 +19,27 @@
  */
 package com.flowingcode.vaadin.addons.demo;
 
+import com.flowingcode.vaadin.addons.demo.events.HasCodeViewerEvents;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout.Orientation;
+import com.vaadin.flow.dom.Style.Display;
 import com.vaadin.flow.server.Version;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.experimental.Delegate;
 
 @SuppressWarnings("serial")
-class SplitLayoutDemo extends Composite<SplitLayout> {
+class SplitLayoutDemo extends Composite<SplitLayout> implements HasCodeViewerEvents {
 
+  private static final String HIDE_SOURCE_CLASS = "hide-source";
+  private static final String SOURCE_PRIMARY_CLASS = "source-primary";
+  private static final String SOURCE_SECONDARY_CLASS = "source-secondary";
+
+  @Delegate(types = HasCodeViewerEvents.class)
   private MultiSourceCodeViewer code;
   private Component demo;
   private SourcePosition sourcePosition;
@@ -43,13 +51,26 @@ class SplitLayoutDemo extends Composite<SplitLayout> {
   public SplitLayoutDemo(Component demo, List<SourceCodeTab> tabs) {
     getContent().setOrientation(Orientation.HORIZONTAL);
 
+    setId("commons-demo-split-layout");
     Map<String, String> properties = new HashMap<>();
     properties.put("vaadin", VaadinVersion.getVaadinVersion());
     properties.put("flow", Version.getFullVersion());
 
     code = new MultiSourceCodeViewer(tabs, properties);
+    
+    code.createToolbar();
+    
+    code.addSourceCollapseListener(ev -> {
+      if (ev.isCollapsed()) {
+        hideSourceCode();
+      } else {
+        showSourceCode();
+      }
+    });
 
-    }
+    code.addSourceFlipListener(ev -> {
+      toggleSourcePosition();
+    });
 
     this.demo = demo;
     setSourcePosition(code.getSourcePosition());
@@ -64,16 +85,20 @@ class SplitLayoutDemo extends Composite<SplitLayout> {
         case PRIMARY:
           getContent().addToPrimary(code);
           getContent().addToSecondary(demo);
+          addClassName(SOURCE_PRIMARY_CLASS);
+          removeClassName(SOURCE_SECONDARY_CLASS);
           break;
         case SECONDARY:
         default:
           getContent().addToPrimary(demo);
           getContent().addToSecondary(code);
+          removeClassName(SOURCE_PRIMARY_CLASS);
+          addClassName(SOURCE_SECONDARY_CLASS);
       }
       sourcePosition = position;
     }
   }
-
+  
   public void toggleSourcePosition() {
     setSourcePosition(sourcePosition.toggle());
   }
@@ -100,10 +125,12 @@ class SplitLayoutDemo extends Composite<SplitLayout> {
   }
 
   public void showSourceCode() {
+    getClassNames().remove(HIDE_SOURCE_CLASS);
     getContent().setSplitterPosition(50);
   }
 
   public void hideSourceCode() {
+    getClassNames().add(HIDE_SOURCE_CLASS);
     switch (sourcePosition) {
       case PRIMARY:
         getContent().setSplitterPosition(0);
