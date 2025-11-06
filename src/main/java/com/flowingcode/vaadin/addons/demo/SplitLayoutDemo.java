@@ -48,8 +48,8 @@ class SplitLayoutDemo extends Composite<SplitLayout> {
 
     code = new MultiSourceCodeViewer(tabs, properties);
 
-    this.sourcePosition = code.getSourcePosition();
-    switch (this.sourcePosition) {
+    sourcePosition = code.getSourcePosition();
+    switch (sourcePosition) {
       case PRIMARY:
         getContent().addToPrimary(code);
         getContent().addToSecondary(demo);
@@ -64,7 +64,7 @@ class SplitLayoutDemo extends Composite<SplitLayout> {
   }
 
   public void switchSourcePosition(SourcePosition position) {
-    if (!this.sourcePosition.equals(position)) {
+    if (!sourcePosition.equals(position)) {
       toggleSourcePosition();
     }
   }
@@ -75,7 +75,7 @@ class SplitLayoutDemo extends Composite<SplitLayout> {
     getContent().removeAll();
     getContent().addToPrimary(secondary);
     getContent().addToSecondary(primary);
-    this.sourcePosition = this.sourcePosition.toggle();
+    sourcePosition = sourcePosition.toggle();
   }
 
   public void setOrientation(Orientation o) {
