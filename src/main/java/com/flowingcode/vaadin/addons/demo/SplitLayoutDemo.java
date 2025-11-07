@@ -63,7 +63,7 @@ class SplitLayoutDemo extends Composite<SplitLayout> {
     getContent().setSizeFull();
   }
 
-  public void switchSourcePosition(SourcePosition position) {
+  private void setSourcePosition(SourcePosition position) {
     if (!sourcePosition.equals(position)) {
       toggleSourcePosition();
     }
