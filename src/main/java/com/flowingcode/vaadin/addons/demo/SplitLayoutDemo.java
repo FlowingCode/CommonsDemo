@@ -33,6 +33,7 @@ import java.util.Map;
 class SplitLayoutDemo extends Composite<SplitLayout> {
 
   private MultiSourceCodeViewer code;
+  private Component demo;
   private SourcePosition sourcePosition;
 
   public SplitLayoutDemo(Component demo, String sourceUrl, SourcePosition sourcePosition) {
@@ -47,35 +48,31 @@ class SplitLayoutDemo extends Composite<SplitLayout> {
     properties.put("flow", Version.getFullVersion());
 
     code = new MultiSourceCodeViewer(tabs, properties);
-
-    sourcePosition = code.getSourcePosition();
-    switch (sourcePosition) {
-      case PRIMARY:
-        getContent().addToPrimary(code);
-        getContent().addToSecondary(demo);
-        break;
-      case SECONDARY:
-      default:
-        getContent().addToPrimary(demo);
-        getContent().addToSecondary(code);
-    }
+    this.demo = demo;
+    setSourcePosition(code.getSourcePosition());
 
     getContent().setSizeFull();
   }
 
   private void setSourcePosition(SourcePosition position) {
-    if (!sourcePosition.equals(position)) {
-      toggleSourcePosition();
+    if (!position.equals(sourcePosition)) {
+      getContent().removeAll();
+      switch (position) {
+        case PRIMARY:
+          getContent().addToPrimary(code);
+          getContent().addToSecondary(demo);
+          break;
+        case SECONDARY:
+        default:
+          getContent().addToPrimary(demo);
+          getContent().addToSecondary(code);
+      }
+      sourcePosition = position;
     }
   }
 
   public void toggleSourcePosition() {
-    Component primary = getContent().getPrimaryComponent();
-    Component secondary = getContent().getSecondaryComponent();
-    getContent().removeAll();
-    getContent().addToPrimary(secondary);
-    getContent().addToSecondary(primary);
-    sourcePosition = sourcePosition.toggle();
+    setSourcePosition(sourcePosition.toggle());
   }
 
   public void setOrientation(Orientation o) {
