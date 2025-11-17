@@ -28,7 +28,9 @@ import elemental.json.JsonValue;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import lombok.experimental.ExtensionMethod;
 
+@ExtensionMethod(value = JsonMigration.class, suppressBaseMethods = true)
 public class MultiSourceCodeViewer extends Div {
 
   private static final String DATA_URL = "source-url";
@@ -47,7 +49,7 @@ public class MultiSourceCodeViewer extends Div {
       selectedTab = tabs.getSelectedTab();
 
       getElement().addEventListener("fragment-request", ev -> {
-        JsonValue filename = JsonMigration.getEventData(ev).get("event.detail.filename");
+        JsonValue filename = ev.getEventData().get("event.detail.filename");
         findTabWithFilename(Optional.ofNullable(filename).map(JsonValue::asString).orElse(null))
             .ifPresent(tab -> {
           tabs.setSelectedTab(tab);

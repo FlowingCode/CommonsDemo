@@ -33,9 +33,11 @@ import com.vaadin.flow.server.VaadinService;
 import elemental.json.Json;
 import elemental.json.JsonObject;
 import java.util.Map;
+import lombok.experimental.ExtensionMethod;
 
 @SuppressWarnings("serial")
 @JsModule("./code-viewer.ts")
+@ExtensionMethod(value = JsonMigration.class, suppressBaseMethods = true)
 public class SourceCodeViewer extends Div implements HasSize {
 
   private final Element codeViewer;
@@ -86,7 +88,7 @@ public class SourceCodeViewer extends Div implements HasSize {
           env.put(k, Json.create(v));
         }
       });
-      JsonMigration.setPropertyJson(codeViewer, "env", env);
+      codeViewer.setPropertyJson("env", env);
     }
   }
 
