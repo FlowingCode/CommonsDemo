@@ -2,7 +2,7 @@
  * #%L
  * Commons Demo
  * %%
- * Copyright (C) 2020 - 2024 Flowing Code
+ * Copyright (C) 2020 - 2025 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,10 +45,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface DemoSource {
-
-  /** @deprecated. Use {@link #DEFAULT_VALUE} */
-  @Deprecated
-  static final String GITHUB_SOURCE = "__GITHUB__";
 
   static final String DEFAULT_VALUE = "__DEFAULT__";
 

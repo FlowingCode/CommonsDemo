@@ -2,7 +2,7 @@
  * #%L
  * Commons Demo
  * %%
- * Copyright (C) 2020 - 2024 Flowing Code
+ * Copyright (C) 2020 - 2025 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -121,32 +121,6 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   }
 
   /**
-   * Add a tab with a {@code demo} component. The tab label and source code URL are retrieved from
-   * the {@link PageTitle} (required) and {@link DemoSource} (optional) annotations in the demo
-   * class, respectively.
-   *
-   * @param demo the demo instance
-   */
-  @Deprecated
-  public void addDemo(Component demo) {
-    String label = Optional.ofNullable(demo.getClass().getAnnotation(PageTitle.class))
-        .map(PageTitle::value).orElse(demo.getClass().getSimpleName());
-
-    addDemo(demo, label, null);
-  }
-
-  /**
-   * @param demo the demo instance
-   * @param label the demo name (tab label)
-   * @param sourceCodeUrl ignored.
-   */
-  @Deprecated
-  public void addDemo(Component demo, String label, String sourceCodeUrl) {
-    tabs.addLegacyTab(label, demo);
-    updateVisibility();
-  }
-
-  /**
    * Add a tab with a demo component.
    *
    * @param clazz the class of routed demo view component
@@ -186,11 +160,6 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
         .orElse(clazz.getSimpleName());
 
     addDemo(clazz, label);
-  }
-
-  @Deprecated
-  public void addDemo(Component demo, String label) {
-    addDemo(demo, label, null);
   }
 
   @Override
@@ -347,25 +316,9 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
 
   private static final String THEME_NAME = TabbedDemo.class.getName() + "#THEME_NAME";
 
-  @Deprecated
-  public static String getThemeName() {
-    return getThemeAttribute();
-  }
-
   public static String getThemeAttribute() {
     return (String) Optional.ofNullable(VaadinSession.getCurrent().getAttribute(THEME_NAME))
         .orElse("");
-  }
-
-  @Deprecated
-  public static void applyTheme(Element element, boolean useDarkTheme) {
-    String theme = useDarkTheme ? "dark" : "";
-    applyTheme(element, theme);
-  }
-
-  @Deprecated
-  public static void applyTheme(Element element, String theme) {
-    applyThemeAttribute(element, theme);
   }
 
   public static void applyThemeAttribute(Element element, String theme) {
