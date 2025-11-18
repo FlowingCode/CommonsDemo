@@ -42,7 +42,7 @@ class DefaultSourceUrlResolver implements SourceUrlResolver {
       DemoSource annotation) {
     String demoFile;
     String url = annotation.value();
-    if (url.equals(DemoSource.GITHUB_SOURCE) || url.equals(DemoSource.DEFAULT_VALUE)) {
+    if (url.equals(DemoSource.DEFAULT_VALUE)) {
       String className;
       if (annotation.clazz() == DemoSource.class) {
         className = annotatedClass.getName().replace('.', '/');
