@@ -93,7 +93,9 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     themeCB.setValue(false);
     themeCB.addClassName("smallcheckbox");
     themeCB.addValueChangeListener(cb -> {
-      applyTheme(getElement(), themeCB.getValue());
+      boolean useDarkTheme = themeCB.getValue();
+      String theme = useDarkTheme ? "dark" : "";
+      applyThemeAttribute(getElement(), theme);
     });
     footer = new HorizontalLayout();
     footer.setWidthFull();
@@ -229,7 +231,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     updateFooterButtonsVisibility();
     getElement().insertChild(1, content.getElement());
 
-    applyTheme(getElement(), getThemeName());
+    applyThemeAttribute(getElement(), getThemeAttribute());
   }
 
   private static SourceUrlResolver resolver = null;
@@ -345,7 +347,12 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
 
   private static final String THEME_NAME = TabbedDemo.class.getName() + "#THEME_NAME";
 
+  @Deprecated
   public static String getThemeName() {
+    return getThemeAttribute();
+  }
+
+  public static String getThemeAttribute() {
     return (String) Optional.ofNullable(VaadinSession.getCurrent().getAttribute(THEME_NAME))
         .orElse("");
   }
@@ -356,7 +363,12 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     applyTheme(element, theme);
   }
 
+  @Deprecated
   public static void applyTheme(Element element, String theme) {
+    applyThemeAttribute(element, theme);
+  }
+
+  public static void applyThemeAttribute(Element element, String theme) {
     VaadinSession.getCurrent().setAttribute(THEME_NAME, theme);
 
     String script;
