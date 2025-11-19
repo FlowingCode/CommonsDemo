@@ -29,7 +29,6 @@ import com.vaadin.flow.router.RouteAlias;
 public class Demo extends TabbedDemo {
 
   public Demo() {
-    addDemo(new LegacyDemo());
     addDemo(SampleDemo.class);
     addDemo(SampleDemoDefault.class);
     addDemo(SampleDemoHighlight.class);
