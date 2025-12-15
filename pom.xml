@@ -55,13 +55,6 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
-    <repository>
-      <id>flowing-snapshots</id>
-      <url>https://maven.flowingcode.com/snapshots</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
   </repositories>
   	
   <dependencyManagement>
