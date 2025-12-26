@@ -2,7 +2,7 @@
  * #%L
  * Commons Demo
  * %%
- * Copyright (C) 2020 - 2023 Flowing Code
+ * Copyright (C) 2020 - 2025 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
 import java.io.File;
 import java.io.IOException;
-import org.apache.commons.io.FileUtils;
+import java.nio.file.Files;
 
 public class DevSourceRequestHandler implements RequestHandler {
 
@@ -48,7 +48,7 @@ public class DevSourceRequestHandler implements RequestHandler {
     }
 
     if (fileExists(path)) {
-      byte file[] = FileUtils.readFileToByteArray(getFile(path));
+      byte file[] = Files.readAllBytes(getFile(path).toPath());
       int j = 0;
       for (int i = 0; i < file.length; i++) {
         if (file[i] != '\r') {
