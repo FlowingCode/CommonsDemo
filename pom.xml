@@ -316,6 +316,13 @@
                <maven.compiler.target>21</maven.compiler.target>
                <vaadin.version>25.0.0</vaadin.version>
            </properties>
+           <dependencies>
+               <dependency>
+                   <groupId>com.vaadin</groupId>
+                   <artifactId>vaadin-dev</artifactId>
+                   <optional>true</optional>
+               </dependency>
+           </dependencies>
        </profile>
 
   </profiles>
