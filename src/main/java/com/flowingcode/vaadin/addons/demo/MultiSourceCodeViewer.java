@@ -2,7 +2,7 @@
  * #%L
  * Commons Demo
  * %%
- * Copyright (C) 2020 - 2025 Flowing Code
+ * Copyright (C) 2020 - 2026 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.tabs.Tab;
 import elemental.json.JsonValue;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -42,6 +43,12 @@ public class MultiSourceCodeViewer extends Div {
   private EnhancedTabs tabs;
 
   public MultiSourceCodeViewer(List<SourceCodeTab> sourceCodeTabs, Map<String, String> properties) {
+    sourceCodeTabs = new ArrayList<>(sourceCodeTabs);
+    sourceCodeTabs.removeIf(tab -> !DemoSourceConditionHelper.eval(tab.getCondition(), properties));
+    if (sourceCodeTabs.isEmpty()) {
+      return;
+    }
+
     if (sourceCodeTabs.size() > 1) {
       tabs = new EnhancedTabs(createTabs(sourceCodeTabs));
       tabs.addSelectedChangeListener(ev -> onTabSelected(ev.getSelectedTab()));
@@ -67,6 +74,10 @@ public class MultiSourceCodeViewer extends Div {
     codeViewer.getStyle().set("flex-grow", "1");
     getStyle().set("display", "flex");
     getStyle().set("flex-direction", "column");
+  }
+
+  public boolean isEmpty() {
+    return selectedTab == null;
   }
 
   private Tab[] createTabs(List<SourceCodeTab> sourceCodeTabs) {
@@ -134,7 +145,12 @@ public class MultiSourceCodeViewer extends Div {
   }
 
   public SourcePosition getSourcePosition() {
-    return (SourcePosition) ComponentUtil.getData(selectedTab, DATA_POSITION);
+    if (selectedTab != null) {
+      return (SourcePosition) ComponentUtil.getData(selectedTab, DATA_POSITION);
+    } else {
+      return SourcePosition.SECONDARY;
+    }
+
   }
 
   private Optional<Tab> findTabWithFilename(String filename) {

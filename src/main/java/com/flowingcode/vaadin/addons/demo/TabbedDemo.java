@@ -2,7 +2,7 @@
  * #%L
  * Commons Demo
  * %%
- * Copyright (C) 2020 - 2025 Flowing Code
+ * Copyright (C) 2020 - 2026 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -181,16 +181,21 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     }
 
     if (!sourceTabs.isEmpty()) {
-      content = new SplitLayoutDemo(demo, sourceTabs);
-      currentLayout = (SplitLayoutDemo) content;
+      currentLayout = new SplitLayoutDemo(demo, sourceTabs);
+      if (currentLayout.isEmpty()) {
+        demo.getElement().removeAttribute("slot");
+        currentLayout = null;
+      }
+    }
+
+    if (currentLayout != null) {
+      content = currentLayout;
       if (splitOrientation != null) {
         setOrientation(splitOrientation);
         updateSplitterPosition();
       }
 
-      if (currentLayout != null) {
-        setupDemoHelperButton(currentLayout.getContent().getPrimaryComponent().getClass());
-      }
+      setupDemoHelperButton(currentLayout.getContent().getPrimaryComponent().getClass());
     } else {
       currentLayout = null;
       demo.getElement().getStyle().set("height", "100%");
@@ -243,6 +248,10 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     
     if (!annotation.language().equals(DemoSource.DEFAULT_VALUE)) {
       builder.language(annotation.caption());
+    }
+
+    if (!annotation.condition().isEmpty()) {
+      builder.condition(annotation.condition());
     }
 
     builder.sourcePosition(annotation.sourcePosition());

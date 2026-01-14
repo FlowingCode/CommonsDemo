@@ -179,6 +179,16 @@ For instance, the following source would be rendered as `foo();` in Vaadin 23+, 
 
 Strictly, the constructor of `SourceCodeViewer` receives a map with arbitrary variables defined by the caller, and `TabbedDemo` defines "vaadin" and "flow" variables. Implementation details in PR https://github.com/FlowingCode/CommonsDemo/pull/44.
 
+The `@DemoSource` annotation also supports a `condition` attribute to control the visibility of the source tab based on the environment. This feature uses the same syntax and operators as the conditional directives.
+
+
+```java
+@DemoSource(value = "/src/test/resources/META-INF/resources/frontend/example.css", condition = "vaadin ge 24")
+public class MyDemo extends Div {
+ ...
+}
+```
+
 ### Fragment highlighting 
 
 This feature supports highlighting a source code fragment in order to emphasize a section of the code snippet.
