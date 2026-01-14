@@ -2,7 +2,7 @@
  * #%L
  * Commons Demo
  * %%
- * Copyright (C) 2020 - 2023 Flowing Code
+ * Copyright (C) 2020 - 2026 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,10 @@ class SplitLayoutDemo extends Composite<SplitLayout> {
     setSourcePosition(code.getSourcePosition());
 
     getContent().setSizeFull();
+  }
+
+  public boolean isEmpty() {
+    return code.isEmpty();
   }
 
   private void setSourcePosition(SourcePosition position) {

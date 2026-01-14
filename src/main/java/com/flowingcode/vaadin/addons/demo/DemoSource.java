@@ -2,7 +2,7 @@
  * #%L
  * Commons Demo
  * %%
- * Copyright (C) 2020 - 2025 Flowing Code
+ * Copyright (C) 2020 - 2026 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,5 +76,7 @@ public @interface DemoSource {
 
   /** Source code position in the layout */
   SourcePosition sourcePosition() default SourcePosition.SECONDARY;
+
+  String condition() default "";
 
 }

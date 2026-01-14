@@ -1,7 +1,7 @@
 /*-
  * #%L
  * %%
- * Copyright (C) 2020 - 2024 Flowing Code
+ * Copyright (C) 2020 - 2026 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,13 @@ import com.vaadin.flow.router.Route;
 // show-source @DemoSource
 // show-source @DemoSource(clazz = AdditionalSources.class)
 // show-source @DemoSource("/src/test/resources/META-INF/resources/frontend/multi-source-demo.css")
+// show-source @DemoSource(value="/src/test/resources/META-INF/resources/frontend/condition-true.css", condition = "vaadin ge 14")
+// show-source @DemoSource(value="/src/test/resources/META-INF/resources/frontend/condition-false.css", condition = "vaadin eq 0")
 @DemoSource
 @DemoSource(clazz = AdditionalSources.class)
 @DemoSource("/src/test/resources/META-INF/resources/frontend/multi-source-demo.css")
+@DemoSource(value="/src/test/resources/META-INF/resources/frontend/condition-true.css", condition = "vaadin ge 14")
+@DemoSource(value="/src/test/resources/META-INF/resources/frontend/condition-false.css", condition = "vaadin eq 0")
 @StyleSheet("./multi-source-demo.css")
 public class MultiSourceDemo extends Div {
   public MultiSourceDemo() {
