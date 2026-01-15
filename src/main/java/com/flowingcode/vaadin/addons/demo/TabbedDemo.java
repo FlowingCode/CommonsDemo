@@ -242,7 +242,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     }
     
     if (!annotation.language().equals(DemoSource.DEFAULT_VALUE)) {
-      builder.language(annotation.caption());
+      builder.language(annotation.language());
     }
 
     builder.sourcePosition(annotation.sourcePosition());
