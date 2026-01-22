@@ -44,3 +44,6 @@ code-highlighter code {
 	top: 10px;
 	cursor: pointer;
 }
+
+.commons-demo-split-layout { overflow: hidden }
+.commons-demo-split-layout > [slot] { overflow: auto; }
