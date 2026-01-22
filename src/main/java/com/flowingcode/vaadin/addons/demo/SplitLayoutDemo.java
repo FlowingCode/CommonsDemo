@@ -41,6 +41,7 @@ class SplitLayoutDemo extends Composite<SplitLayout> {
   }
 
   public SplitLayoutDemo(Component demo, List<SourceCodeTab> tabs) {
+    setClassName("commons-demo-split-layout");
     getContent().setOrientation(Orientation.HORIZONTAL);
 
     Map<String, String> properties = new HashMap<>();
