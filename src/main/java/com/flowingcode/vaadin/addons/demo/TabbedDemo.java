@@ -335,10 +335,12 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
 
     String script;
     if (element.getTag().equalsIgnoreCase("iframe")) {
-      script = "this.contentWindow.document.documentElement.setAttribute('theme', $0)";
+      script = "let e = this.contentWindow.document.documentElement;";
     } else {
-      script = "document.documentElement.setAttribute('theme', $0);";
+      script = "let e = document.documentElement;";
     }
+
+    script += "e.setAttribute('theme', $0);";
 
     element.executeJs(script, theme);
 
