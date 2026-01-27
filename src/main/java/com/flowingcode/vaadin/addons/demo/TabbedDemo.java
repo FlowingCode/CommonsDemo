@@ -340,7 +340,10 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
       script = "let e = document.documentElement;";
     }
 
-    script += "e.setAttribute('theme', $0);";
+    script += """
+        e.setAttribute('theme', $0);
+        e.style.colorScheme = $0;
+        """;
 
     element.executeJs(script, theme);
 
