@@ -48,6 +48,15 @@ import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A layout for displaying a tabbed demo with source code integration.
+ * <p>
+ * This layout consists of a set of tabs for navigating between different demos,
+ * a content area for displaying the current demo, and a footer with controls
+ * for
+ * toggling the source code visibility, orientation, and theme.
+ * </p>
+ */
 @StyleSheet("context://frontend/styles/commons-demo/shared-styles.css")
 @SuppressWarnings("serial")
 public class TabbedDemo extends VerticalLayout implements RouterLayout {
@@ -67,6 +76,9 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   private Button helperButton;
   private DemoHelperViewer demoHelperViewer;
 
+  /**
+   * Constructs a new TabbedDemo instance.
+   */
   public TabbedDemo() {
     demoHelperViewer = new DialogDemoHelperViewer();
 
@@ -124,6 +136,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
    *
    * @param clazz the class of routed demo view component
    * @param label the demo name (tab label)
+   * @throws IllegalArgumentException if the class is not annotated with {@link Route}
    */
   public void addDemo(Class<? extends Component> clazz, String label) {
     if (!clazz.isAnnotationPresent(Route.class)) {
@@ -142,6 +155,8 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   /**
    * Sets the autovisibility mode. When autovisibility is enabled, the tabs component is hidden
    * unless it contains two or more tabs.
+   *
+   * @param autoVisibility {@code true} to enable autovisibility, {@code false} to disable it
    */
   public void setAutoVisibility(boolean autoVisibility) {
     this.autoVisibility = autoVisibility;
@@ -215,7 +230,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
    *
    * @param resolver The {@code SourceUrlResolver} to be used. Must not be {@code null}.
    * @throws IllegalStateException if a resolver has already been set.
-   * @throws NullPointerException if the provided {@code resolver} is {@code null}.
+   * @throws NullPointerException if the provided {@code resolver} is  {@code null}.
    */
   public static void configureSourceUrlResolver(@NonNull SourceUrlResolver resolver) {
     if (TabbedDemo.resolver != null) {
@@ -234,7 +249,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   private Optional<SourceCodeTab> createSourceCodeTab(Class<?> annotatedClass, DemoSource annotation) {
     String url = getResolver().resolveURL(this, annotatedClass, annotation).orElse(null);
 
-    if (url==null) {
+    if (url == null) {
       return Optional.empty();
     }
 
@@ -258,11 +273,17 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     return Optional.of(builder.build());
   }
 
+  /**
+   * Looks up the GitHub branch name associated with the given TabbedDemo class.
+   *
+   * @param clazz the TabbedDemo class to inspect
+   * @return the GitHub branch name, or "master" if the annotation is not found
+   */
   public static String lookupGithubBranch(Class<? extends TabbedDemo> clazz) {
     GithubBranch branch = clazz.getAnnotation(GithubBranch.class);
     if (branch == null) {
       Package pkg = clazz.getPackage();
-      if (pkg!=null) {
+      if (pkg != null) {
         branch = pkg.getAnnotation(GithubBranch.class);
       }
     }
@@ -286,11 +307,19 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     }
   }
 
+  /**
+   * Sets the visibility of the source code.
+   *
+   * @param visible {@code true} to make the source code visible, {@code false} otherwise
+   */
   public void setSourceVisible(boolean visible) {
     codeCB.setValue(visible);
     codePositionCB.setVisible(visible);
   }
 
+  /**
+   * Toggles the position of the source code relative to the demo content.
+   */
   public void toggleSourcePosition() {
     if (currentLayout != null) {
       currentLayout.toggleSourcePosition();
@@ -309,10 +338,20 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     setOrientation(splitOrientation);
   }
 
+  /**
+   * Returns the current orientation of the split layout.
+   *
+   * @return the current orientation
+   */
   public Orientation getOrientation() {
     return currentLayout.getOrientation();
   }
 
+  /**
+   * Sets the orientation of the split layout.
+   *
+   * @param orientation the new orientation
+   */
   public void setOrientation(Orientation orientation) {
     splitOrientation = orientation;
     if (currentLayout != null) {
@@ -409,6 +448,11 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     codePositionCB.setVisible(hasSourceCode);
   }
 
+  /**
+   * Adds a listener for {@link TabbedDemoSourceEvent}.
+   *
+   * @param listener the listener to add
+   */
   public void addTabbedDemoSourceListener(ComponentEventListener<TabbedDemoSourceEvent> listener) {
     ComponentUtil.addListener(this, TabbedDemoSourceEvent.class, listener);
     listener.onComponentEvent(new TabbedDemoSourceEvent(this, currentLayout != null));
@@ -437,6 +481,11 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     setOrientation(splitOrientation);
   }
 
+  /**
+   * Sets the {@link DemoHelperViewer} to be used for displaying demo helpers.
+   *
+   * @param demoHelperViewer the viewer to set
+   */
   public void setDemoHelperViewer(DemoHelperViewer demoHelperViewer) {
     this.demoHelperViewer =
         Objects.requireNonNull(demoHelperViewer, "Demo helper viewer cannot be null");
@@ -455,7 +504,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
             .addClickListener(e -> demoHelperViewer.show(demoHelperRenderer.helperContent()));
         add(helperButton);
       } catch (Exception e) {
-        logger.error("Error creating an instance",e);
+        logger.error("Error creating an instance", e);
       }
     }
   }
