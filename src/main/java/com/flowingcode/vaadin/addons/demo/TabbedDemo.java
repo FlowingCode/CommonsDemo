@@ -94,8 +94,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     themeCB.addClassName("smallcheckbox");
     themeCB.addValueChangeListener(cb -> {
       boolean useDarkTheme = themeCB.getValue();
-      String theme = useDarkTheme ? "dark" : "";
-      applyThemeAttribute(getElement(), theme);
+      setColorScheme(this, useDarkTheme ? ColorScheme.DARK : ColorScheme.LIGHT);
     });
     footer = new HorizontalLayout();
     footer.setWidthFull();
@@ -201,11 +200,11 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
       demo.getElement().getStyle().set("height", "100%");
       setupDemoHelperButton(content.getClass());
     }
-    
+
     updateFooterButtonsVisibility();
     getElement().insertChild(1, content.getElement());
 
-    applyThemeAttribute(getElement(), getThemeAttribute());
+    setColorScheme(this, getColorScheme());
   }
 
   private static SourceUrlResolver resolver = null;
@@ -241,11 +240,11 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
 
     SourceCodeTab.SourceCodeTabBuilder builder = SourceCodeTab.builder();
     builder.url(url);
-    
+
     if (!annotation.caption().equals(DemoSource.DEFAULT_VALUE)) {
       builder.caption(annotation.caption());
     }
-    
+
     if (!annotation.language().equals(DemoSource.DEFAULT_VALUE)) {
       builder.language(annotation.language());
     }
@@ -255,10 +254,10 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     }
 
     builder.sourcePosition(annotation.sourcePosition());
-    
+
     return Optional.of(builder.build());
   }
-  
+
   public static String lookupGithubBranch(Class<? extends TabbedDemo> clazz) {
     GithubBranch branch = clazz.getAnnotation(GithubBranch.class);
     if (branch == null) {
@@ -323,16 +322,62 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     orientationCB.setValue(Orientation.HORIZONTAL.equals(orientation));
   }
 
-  private static final String THEME_NAME = TabbedDemo.class.getName() + "#THEME_NAME";
-
+  /**
+   * Returns the theme attribute value.
+   * <p>
+   * The "theme attribute" is either an empty string (light) or "dark".
+   * </p>
+   *
+   * @deprecated Use {@link #getColorScheme()}
+   * @return the theme attribute value
+   */
+  @Deprecated
   public static String getThemeAttribute() {
-    return (String) Optional.ofNullable(VaadinSession.getCurrent().getAttribute(THEME_NAME))
-        .orElse("");
+    ColorScheme scheme = getColorScheme();
+    return scheme == ColorScheme.LIGHT ? "" : scheme.getValue();
   }
 
-  public static void applyThemeAttribute(Element element, String theme) {
-    VaadinSession.getCurrent().setAttribute(THEME_NAME, theme);
+  /**
+   * Returns the current color scheme.
+   *
+   * @return the current color scheme
+   */
+  public static ColorScheme getColorScheme() {
+    return Optional.ofNullable(VaadinSession.getCurrent().getAttribute(ColorScheme.class))
+        .orElse(ColorScheme.LIGHT);
+  }
 
+  /**
+   * Applies the theme attribute to the given element.
+   * <p>
+   * The "theme attribute" is either an empty string (light) or "dark".
+   * </p>
+   *
+   * @param element the element to apply the theme to
+   * @param theme   the theme attribute value
+   * @deprecated Use {@link #setColorScheme(Component, ColorScheme)}
+   */
+  @Deprecated
+  public static void applyThemeAttribute(Element element, String theme) {
+    Component c = element.getComponent().get();
+    if (theme.isEmpty()) {
+      setColorScheme(c, ColorScheme.LIGHT);
+    } else if (theme.equals("dark")) {
+      setColorScheme(c, ColorScheme.DARK);
+    }
+  }
+
+  /**
+   * Sets the color scheme for the given component.
+   *
+   * @param component   the component to apply the color scheme to
+   * @param colorScheme the color scheme to apply
+   */
+  public static void setColorScheme(Component component, @NonNull ColorScheme colorScheme) {
+    VaadinSession.getCurrent().setAttribute(ColorScheme.class, colorScheme);
+    String theme = colorScheme.getValue();
+
+    Element element = component.getElement();
     String script;
     if (element.getTag().equalsIgnoreCase("iframe")) {
       script = "let e = this.contentWindow.document.documentElement;";
@@ -347,8 +392,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
 
     element.executeJs(script, theme);
 
-    Component c = element.getComponent().get();
-    collectThemeChangeObservers(c).forEach(observer -> observer.onThemeChange(theme));
+    collectThemeChangeObservers(component).forEach(observer -> observer.onThemeChange(theme));
   }
 
   private static Stream<ThemeChangeObserver> collectThemeChangeObservers(Component c) {
