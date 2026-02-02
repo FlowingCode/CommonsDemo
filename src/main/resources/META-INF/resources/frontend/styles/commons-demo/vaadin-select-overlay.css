@@ -1,0 +1,4 @@
+/** Needed in order to prevent vaadin-select from remaining 'closing' when switching from Lumo to Aura/Base*/
+:host([theme~='demo-footer-theme-select']) vaadin-select-overlay {
+	animation-name: none;
+}

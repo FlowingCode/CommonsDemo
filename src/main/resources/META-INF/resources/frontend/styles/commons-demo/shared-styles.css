@@ -35,6 +35,12 @@ code-highlighter code {
 	bottom: 0;
 	left: 0;
 	background: var(--lumo-base-color);
+	align-items: center;
+}
+
+.demo-footer vaadin-select-value-button {
+	mask-image:none; 
+	padding:0;
 }
 
 .helper-button {

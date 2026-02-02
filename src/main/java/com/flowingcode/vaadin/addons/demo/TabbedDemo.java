@@ -28,11 +28,13 @@ import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.splitlayout.SplitLayout.Orientation;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.router.PageTitle;
@@ -59,6 +61,7 @@ import org.slf4j.LoggerFactory;
  */
 @StyleSheet("context://frontend/styles/commons-demo/shared-styles.css")
 @SuppressWarnings("serial")
+@CssImport(value = "./styles/commons-demo/vaadin-select-overlay.css", themeFor = "vaadin-select")
 public class TabbedDemo extends VerticalLayout implements RouterLayout {
 
   private static final Logger logger = LoggerFactory.getLogger(TabbedDemo.class);
@@ -108,6 +111,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
       boolean useDarkTheme = themeCB.getValue();
       setColorScheme(this, useDarkTheme ? ColorScheme.DARK : ColorScheme.LIGHT);
     });
+
     footer = new HorizontalLayout();
     footer.setWidthFull();
     footer.setJustifyContentMode(JustifyContentMode.END);
@@ -123,6 +127,18 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
       footer.addComponentAsFirst(footerLeft);
 
       footerLeft.add(new Span(title + " " + version));
+    }
+
+    if (DynamicTheme.isFeatureInitialized()) {
+      Select<DynamicTheme> themeSelect = new Select<>();
+      themeSelect.addThemeName("demo-footer-theme-select");
+      themeSelect.addThemeName("small");
+      DynamicTheme.prepare(themeSelect);
+      themeSelect.setItems(DynamicTheme.values());
+      themeSelect.setValue(DynamicTheme.getCurrent());
+      themeSelect.setWidth("85px");
+      themeSelect.addValueChangeListener(ev -> ev.getValue().apply(this));
+      footer.add(themeSelect);
     }
 
     this.add(tabs);
