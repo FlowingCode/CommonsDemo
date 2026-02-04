@@ -43,6 +43,28 @@ By default, help content will be rendered in a `Dialog`.
 
 ![image](https://github.com/FlowingCode/CommonsDemo/assets/11554739/055a447e-a104-4ec7-a98c-fc1df8abef01)
 
+## Dynamic Theme
+
+Available in Vaadin 25+, this feature allows you to verify add-on behavior across the Lumo and Aura themes, as well as with minimal base styles. The theme can be switched at runtime using the theme selector in the footer of the `TabbedDemo` component.
+
+<img width="91" height="106" alt="image" src="https://github.com/user-attachments/assets/cce58a29-f779-477d-89b4-ee845a80b962" />
+
+To enable this feature, the `DynamicTheme` must be initialized in the `AppShellConfigurator` of the application. Ensure that the legacy `@Theme` annotation and any Aura or Lumo `@StyleSheet` references are removed.
+
+```java
+public class AppShellConfiguratorImpl implements AppShellConfigurator {
+
+  @Override
+  public void configurePage(AppShellSettings settings) {
+    if (DynamicTheme.isFeatureSupported()) {
+      DynamicTheme.LUMO.initialize(settings);
+    }
+  }
+
+}
+```
+
+
 ## Code Viewer
 
 The code viewer component (`SourceCodeViewer`) is responsible of rendering a Java source file along the demo.
