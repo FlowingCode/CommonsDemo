@@ -6,8 +6,10 @@ import com.vaadin.flow.component.page.Inline.Position;
 import com.vaadin.flow.server.AppShellSettings;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.Version;
+import com.vaadin.flow.server.communication.IndexHtmlResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.jsoup.nodes.Element;
 
 /**
  * Enumeration representing supported themes for dynamic switching.
@@ -84,12 +86,12 @@ public enum DynamicTheme {
   }
 
   /**
-   * Initializes the theme settings.
+   * Initializes the theme settings into the provided {@code AppShellSettings}.
    * <p>
-   * This method performs a lazy initialization of the {@link DynamicTheme} within the
+   * This method performs a lazy initialization of the {@code DynamicTheme} within the
    * current {@link VaadinSession}. If no theme is present, it registers this instance
    * as the session default. Subsequently, it injects the corresponding CSS stylesheet
-   * link into the {@link AppShellSettings}.
+   * link into the document head.
    * </p>
    *
    * @param settings the application shell settings to be modified
@@ -113,6 +115,47 @@ public enum DynamicTheme {
         break;
       default:
         break;
+    }
+  }
+
+  /**
+   * Initializes the theme settings into the provided {@code IndexHtmlResponse}.
+   * <p>
+   * This method performs a lazy initialization of the {@code DynamicTheme} within the
+   * current {@link VaadinSession}. If no theme is present, it registers this instance
+   * as the session default. Subsequently, it injects the corresponding CSS stylesheet
+   * link into the document head.
+   * </p>
+   *
+   * @param response the index HTML response to be modified
+   * @throws UnsupportedOperationException if the runtime Vaadin version is older than 25
+   */
+  public void initialize(IndexHtmlResponse response) {
+    assertFeatureSupported();
+
+    DynamicTheme theme = getCurrent();
+    if (theme == null) {
+      theme = this;
+      VaadinSession.getCurrent().setAttribute(DynamicTheme.class, theme);
+    }
+
+    String href = null;
+    switch (theme) {
+      case AURA:
+        href = "aura/aura.css";
+        break;
+      case LUMO:
+        href = "lumo/lumo.css";
+        break;
+      default:
+        break;
+    }
+
+    if (href != null) {
+      Element link = response.getDocument().createElement("link");
+      link.attr("rel", "stylesheet");
+      link.attr("href", href);
+      response.getDocument().head().appendChild(link);
     }
   }
 
