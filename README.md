@@ -64,6 +64,11 @@ public class AppShellConfiguratorImpl implements AppShellConfigurator {
 }
 ```
 
+When targeting Vaadin 14-25 or 23-25, the `AppShellConfigurator` approach cannot be used due to framework and library limitations.
+To resolve this, you must create a configuration file `src/test/resources/META-INF/dynamic-theme.properties` with the following content:
+```properties
+theme=LUMO
+```
 
 ## Code Viewer
 
