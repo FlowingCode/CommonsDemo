@@ -2,11 +2,16 @@ package com.flowingcode.vaadin.addons.demo;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasElement;
+import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.component.page.Inline.Position;
+import com.vaadin.flow.server.AppShellRegistry;
 import com.vaadin.flow.server.AppShellSettings;
+import com.vaadin.flow.server.VaadinContext;
+import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.Version;
 import com.vaadin.flow.server.communication.IndexHtmlResponse;
+import com.vaadin.flow.theme.Theme;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.nodes.Element;
@@ -74,6 +79,15 @@ public enum DynamicTheme {
         && VaadinSession.getCurrent().getAttribute(DynamicTheme.class) != null;
   }
 
+  private static void assertNotLegacyTheme() {
+    VaadinContext context = VaadinService.getCurrent().getContext();
+    Class<? extends AppShellConfigurator> appShellClass =
+        AppShellRegistry.getInstance(context).getShell();
+    if (appShellClass != null && appShellClass.getAnnotation(Theme.class) != null) {
+      throw new IllegalStateException("App shell is configured with legacy @Theme annotation");
+    }
+  }
+
   /**
    * Return the current dynamic theme.
    *
@@ -96,9 +110,12 @@ public enum DynamicTheme {
    *
    * @param settings the application shell settings to be modified
    * @throws UnsupportedOperationException if the runtime Vaadin version is older than 25
+   * @throws IllegalStateException if the {@link AppShellConfigurator} is configured with the legacy
+   *         {@link Theme} annotation
    */
   public void initialize(AppShellSettings settings) {
     assertFeatureSupported();
+    assertNotLegacyTheme();
 
     DynamicTheme theme = getCurrent();
     if (theme == null) {
@@ -132,6 +149,7 @@ public enum DynamicTheme {
    */
   public void initialize(IndexHtmlResponse response) {
     assertFeatureSupported();
+    assertNotLegacyTheme();
 
     DynamicTheme theme = getCurrent();
     if (theme == null) {
