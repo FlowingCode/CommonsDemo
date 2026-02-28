@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import lombok.NonNull;
 import org.slf4j.Logger;
@@ -198,6 +199,17 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     if (!demo.getId().isPresent()) {
       demo.setId("content");
     }
+
+    Optional.ofNullable(demo.getClass().getAnnotation(Route.class))
+    .map(route -> route.value().replaceFirst("^/+", ""))
+    .filter(Predicate.not(String::isEmpty)).ifPresent(route -> {
+        StringBuilder prefix = new StringBuilder();
+          for (String segment : route.split("/+")) {
+            prefix.append(segment);
+            demo.addClassName(prefix.toString());
+            prefix.append('-');
+        }
+    });
 
     if (helperButton != null) {
       remove(helperButton);
