@@ -202,13 +202,16 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     }
 
     Optional.ofNullable(demo.getClass().getAnnotation(Route.class))
-    .map(route -> route.value().replaceFirst("^/+", ""))
+    .map(route -> route.value().replaceFirst("^/+", "").replaceFirst("^[0-9]", "_$0"))
     .filter(Predicate.not(String::isEmpty)).ifPresent(route -> {
         StringBuilder prefix = new StringBuilder();
           for (String segment : route.split("/+")) {
-            prefix.append(segment);
-            demo.addClassName(prefix.toString());
-            prefix.append('-');
+            segment = segment.replaceAll("[^a-zA-Z0-9_-]+", "-").replaceAll("^-+|-+$", "");
+            if (!segment.isEmpty()) {
+              prefix.append(segment);
+              demo.addClassName(prefix.toString());
+              prefix.append('-');
+            }
         }
     });
 
