@@ -41,6 +41,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLayout;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.server.Version;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -210,6 +211,8 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
             prefix.append('-');
         }
     });
+
+    demo.addClassName("demos-v" + Version.getMajorVersion());
 
     if (helperButton != null) {
       remove(helperButton);
