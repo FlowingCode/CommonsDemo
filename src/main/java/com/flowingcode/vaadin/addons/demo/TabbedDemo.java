@@ -139,7 +139,10 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
       themeSelect.setItems(DynamicTheme.values());
       themeSelect.setValue(DynamicTheme.getCurrent());
       themeSelect.setWidth("85px");
-      themeSelect.addValueChangeListener(ev -> ev.getValue().apply(this));
+      themeSelect.addValueChangeListener(ev -> {
+        ev.getValue().apply(this);
+        observeThemeChange(this);
+      });
       footer.add(themeSelect);
     }
 
@@ -466,7 +469,18 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     element.executeJs(script, theme);
 
     collectThemeChangeObservers(component).forEach(observer -> observer.onThemeChange(theme));
+    observeThemeChange(component);
   }
+
+  private static void observeThemeChange(Component source) {
+    DynamicTheme dynamicTheme = null;
+    if (DynamicTheme.isFeatureSupported()) {
+      dynamicTheme = DynamicTheme.getCurrent();
+    }
+    ThemeChangeEvent event = new ThemeChangeEvent(source, false, getColorScheme(), dynamicTheme);
+    collectThemeChangeObservers(source).forEach(observer -> observer.onThemeChange(event));
+  }
+
 
   private static Stream<ThemeChangeObserver> collectThemeChangeObservers(Component c) {
     Stream<ThemeChangeObserver> children =

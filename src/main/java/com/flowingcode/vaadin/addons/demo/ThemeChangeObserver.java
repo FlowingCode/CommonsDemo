@@ -22,9 +22,31 @@ package com.flowingcode.vaadin.addons.demo;
 /**
  * Any attached component implementing this interface will receive an event when a new theme is
  * applied.
+ * <p>
+ * Observers are notified twice to support backward compatibility:
+ * first via the deprecated
+ * {@link #onThemeChange(String) onThemeChange(String theme)} and then via the
+ * {@link #onThemeChange(ThemeChangeEvent) onThemeChange(ThemeChangeEvent)}.
+ * </p>
  */
 public interface ThemeChangeObserver {
 
-  void onThemeChange(String themeName);
+  /**
+   * Called when a theme change occurs.
+   *
+   * @param themeName the name of the new theme
+   * @deprecated Use {@link #onThemeChange(ThemeChangeEvent)} instead.
+   */
+  @Deprecated(forRemoval = true, since = "5.3.0")
+  default void onThemeChange(String themeName) {
+  };
+
+  /**
+   * Called when a theme change occurs.
+   *
+   * @param event the theme change event
+   */
+  default void onThemeChange(ThemeChangeEvent event) {
+  }
 
 }
