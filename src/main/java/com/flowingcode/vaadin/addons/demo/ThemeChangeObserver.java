@@ -2,7 +2,7 @@
  * #%L
  * Commons Demo
  * %%
- * Copyright (C) 2020 - 2025 Flowing Code
+ * Copyright (C) 2020 - 2026 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ package com.flowingcode.vaadin.addons.demo;
  * Any attached component implementing this interface will receive an event when a new theme is
  * applied.
  */
-@FunctionalInterface
 public interface ThemeChangeObserver {
 
   void onThemeChange(String themeName);
