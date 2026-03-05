@@ -224,26 +224,42 @@ public enum DynamicTheme {
     assertFeatureInitialized();
 
     VaadinSession.getCurrent().setAttribute(DynamicTheme.class, this);
+
+    String document;
+    if (component.getElement().getTag().equalsIgnoreCase("iframe")) {
+      document = "this.contentWindow.document";
+    } else {
+      document = "document";
+    }
+
     component.getElement().executeJs("""
+        const _document = %s;
         const applyTheme = () => {
           ["lumo/lumo.css", "aura/aura.css"].forEach(href=> {
-            let link = document.querySelector(`link[href='${href}']`);
-            if (!link) return;
+            let link = _document.querySelector(`link[href='${href}']`);
             if (href === $0) {
-               if (link.rel === 'preload') link.rel = 'stylesheet';
-               if (link.disabled) link.disabled = false;
-            } else if (link.rel === 'stylesheet' && !link.disabled) {
+               if (!link) {
+                   link = _document.createElement("link");
+                   link.href = href;
+                   link.as   = 'style';
+                   link.rel  = 'stylesheet';
+                   _document.head.prepend(link);
+               } else {
+                   if (link.rel === 'preload') link.rel = 'stylesheet';
+                   if (link.disabled) link.disabled = false;
+               }
+            } else if (link && link.rel === 'stylesheet' && !link.disabled) {
                link.disabled = true;
             }
           });
         };
 
-        if (document.startViewTransition) {
-          document.startViewTransition(applyTheme);
+        if (_document.startViewTransition) {
+          _document.startViewTransition(applyTheme);
         } else {
           applyTheme();
         }
-        """, href);
+        """.formatted(document), href);
   }
 
 }
