@@ -4,6 +4,13 @@ This library provides UI classes used in [Flowing Code Add-ons](https://addonsv2
 
 ![image](https://github.com/FlowingCode/CommonsDemo/assets/11554739/7ef88475-85a1-4552-a16b-13a2d03e5eec)
 
+## Supported versions
+
+| Vaadin Version | Add-on Version |
+|---|---|
+| 24-25 | 5.x |
+| 14-23 | 3.x |
+
 ## Tabbed Demo
 
 The central component is the `TabbedDemo` layout, where a `SplitLayout` showcases add-on examples and, optionally, their corresponding source code.  The layout accommodates the inclusion of multiple demonstrations in tab form, which allows users to easily switch between different examples for a comprehensive exploration of the add-on features. `TabbedDemo` also has options for choosing between light and dark themes (enabling evaluation of styles in both scenarios), hiding the source code, and switching the orientation of the split layout (by default, it automatically adjusts to vertical or horizontal based on the screen ratio).
