@@ -146,6 +146,8 @@ public enum DynamicTheme {
    *
    * @param response the index HTML response to be modified
    * @throws UnsupportedOperationException if the runtime Vaadin version is older than 25
+   * @throws IllegalStateException if the {@link AppShellConfigurator} is configured with
+   * the legacy {@link Theme} annotation
    */
   public void initialize(IndexHtmlResponse response) {
     assertFeatureSupported();
