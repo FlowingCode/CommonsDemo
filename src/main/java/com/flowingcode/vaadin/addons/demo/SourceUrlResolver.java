@@ -31,7 +31,7 @@ public interface SourceUrlResolver {
   /**
    * Resolves the source URL for a given demo class and annotation.
    *
-   * @param demo The {@link TabbedDemo} instance associated with the source.
+   * @param demo The {@code TabbedDemo} view requesting the URL resolution.
    * @param annotatedClass The class that is annotated with {@link DemoSource}.
    * @param annotation The {@link DemoSource} annotation providing source metadata.
    * @return An {@link Optional} containing the resolved URL if available, otherwise an empty
