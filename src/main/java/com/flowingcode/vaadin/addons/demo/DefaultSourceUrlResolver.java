@@ -35,7 +35,7 @@ import java.util.Optional;
  *
  * @author Javier Godoy / Flowing Code
  */
-class DefaultSourceUrlResolver implements SourceUrlResolver {
+public class DefaultSourceUrlResolver implements SourceUrlResolver {
 
   @Override
   public Optional<String> resolveURL(TabbedDemo demo, Class<?> annotatedClass,
