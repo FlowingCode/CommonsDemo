@@ -29,7 +29,7 @@ import java.util.Locale;
  * @author Javier Godoy / Flowing Code
  */
 public enum CommonsDemoIcons implements IconFactory {
-  ROTATE, FLIP, HIDE_SOURCE, SHOW_SOURCE;
+  ROTATE, FLIP, HIDE_SOURCE, SHOW_SOURCE, GITHUB, HOME;
 
   /**
    * The Iconset name, i.e. {@code "commons-demo"}.
