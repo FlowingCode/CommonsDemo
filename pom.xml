@@ -9,6 +9,13 @@
 
   <name>Commons Demo Aggregator</name>
 
+  <scm>
+    <url>https://github.com/FlowingCode/CommonsDemo</url>
+    <connection>scm:git:git://github.com/FlowingCode/CommonsDemo.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com:/FlowingCode/CommonsDemo.git</developerConnection>
+    <tag>master</tag>
+  </scm>
+
   <build>
     <plugins>
       <plugin>
