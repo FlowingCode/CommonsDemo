@@ -25,6 +25,7 @@
           <version>3.0.1</version>
           <configuration>
             <releaseProfiles>release</releaseProfiles>
+            <tagNameFormat>commons-demo-@{project.version}</tagNameFormat>
           </configuration>
         </plugin>
         <plugin>
