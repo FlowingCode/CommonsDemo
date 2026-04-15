@@ -230,7 +230,8 @@ public class DemoSourceProcessor extends AbstractProcessor {
               Diagnostic.Kind.NOTE,
               "Copying " + count + " demo-source " + (count == 1 ? "file" : "files") + " to class output");
     }
-    for (String sourcePath : collectedPaths) {
+    for (String rawPath : collectedPaths) {
+      String sourcePath = rawPath.startsWith("/") ? rawPath.substring(1) : rawPath;
       // Files under META-INF/resources/ are already packaged into the JAR by Maven's
       // resource-processing phase; the processor does not need to copy them.
       if (isFromMetaInfResources(sourcePath)) {
