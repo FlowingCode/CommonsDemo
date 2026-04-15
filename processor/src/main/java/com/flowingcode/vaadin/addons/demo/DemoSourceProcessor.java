@@ -219,6 +219,8 @@ public class DemoSourceProcessor extends AbstractProcessor {
 
   private static final String[] SOURCE_ROOTS = {"src/test/java/", "src/main/java/"};
 
+  private static final String[] RESOURCE_ROOTS = {"src/test/resources/", "src/main/resources/"};
+
   private void writeResource() {
     int count = collectedPaths.size();
     if (count > 0) {
@@ -229,6 +231,11 @@ public class DemoSourceProcessor extends AbstractProcessor {
               "Copying " + count + " demo-source " + (count == 1 ? "file" : "files") + " to class output");
     }
     for (String sourcePath : collectedPaths) {
+      // Files under META-INF/resources/ are already packaged into the JAR by Maven's
+      // resource-processing phase; the processor does not need to copy them.
+      if (isFromMetaInfResources(sourcePath)) {
+        continue;
+      }
       try {
         FileObject source = openSourceFile(sourcePath);
         FileObject resource =
@@ -248,12 +255,33 @@ public class DemoSourceProcessor extends AbstractProcessor {
     }
   }
 
+  private static boolean isFromMetaInfResources(String normalizedPath) {
+    for (String root : RESOURCE_ROOTS) {
+      if (normalizedPath.startsWith(root)) {
+        String relative = normalizedPath.substring(root.length());
+        return relative.startsWith("META-INF/resources/") || relative.equals("META-INF/resources");
+      }
+    }
+    return false;
+  }
+
   private FileObject openSourceFile(String path) throws IOException {
     for (String root : SOURCE_ROOTS) {
       if (path.startsWith(root)) {
         return processingEnv
             .getFiler()
             .getResource(StandardLocation.SOURCE_PATH, "", path.substring(root.length()));
+      }
+    }
+    // Resource files (src/test/resources/, src/main/resources/) are copied to CLASS_OUTPUT
+    // by Maven's process-*-resources phase, which runs before test-compile (and therefore
+    // before annotation processors). Read them from CLASS_OUTPUT using the path relative to
+    // the resources root.
+    for (String root : RESOURCE_ROOTS) {
+      if (path.startsWith(root)) {
+        return processingEnv
+            .getFiler()
+            .getResource(StandardLocation.CLASS_OUTPUT, "", path.substring(root.length()));
       }
     }
     return processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, "", path);
