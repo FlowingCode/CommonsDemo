@@ -324,6 +324,15 @@ pre[class*="language-"] {
         if (!guards.every(x=>x=='istrue')) {
             lines[i] = null;
         }
+
+        if (lines[i] !== null && lines[i]!.startsWith('@DemoSource')) {
+            let open = lines[i]!.includes('(');
+            do {
+                open &&= !(lines[i] || '').includes(')');
+                lines[i++] = null;
+            } while (open && i < lines.length);
+            i--;
+        }
     }
     
     return lines.filter(line=>line!==null)
@@ -332,7 +341,6 @@ pre[class*="language-"] {
        !line.match("//\\s*hide-source(\\s|$)")
     && !line.startsWith('@Route')
     && !line.startsWith('@PageTitle')
-    && !line.startsWith('@DemoSource')
     && !line.startsWith('@SuppressWarnings')
     && !line.startsWith('@Ignore')
     && !line.startsWith('package ')
