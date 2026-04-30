@@ -40,6 +40,11 @@ public class DefaultSourceUrlResolver implements SourceUrlResolver {
   @Override
   public Optional<String> resolveURL(TabbedDemo demo, Class<?> annotatedClass,
       DemoSource annotation) {
+    return resolveURL(demo.getClass(), annotatedClass, annotation);
+  }
+
+  public Optional<String> resolveURL(Class<? extends TabbedDemo> viewClass, Class<?> annotatedClass,
+      DemoSource annotation) {
     String demoFile;
     String url = annotation.value();
     if (url.equals(DemoSource.DEFAULT_VALUE)) {
@@ -57,8 +62,8 @@ public class DefaultSourceUrlResolver implements SourceUrlResolver {
     }
 
     if (demoFile != null) {
-      String branch = TabbedDemo.lookupGithubBranch(demo.getClass());
-      return Optional.ofNullable(demo.getClass().getAnnotation(GithubLink.class))
+      String branch = TabbedDemo.lookupGithubBranch(viewClass);
+      return Optional.ofNullable(viewClass.getAnnotation(GithubLink.class))
           .map(githubLink -> String.format("%s/blob/%s/%s", githubLink.value(), branch, demoFile));
     } else {
       return Optional.empty();
