@@ -83,7 +83,7 @@ public class EnhancedRouteTabs extends Composite<EnhancedTabs> implements Before
     return first.isPresent() ? first.get() : null;
   }
 
-  @Deprecated
+  @Deprecated(forRemoval = true, since = "4.1.0")
   public void addLegacyTab(String label, Component content) {
     Tab tab = new Tab(label);
     getContent().add(tab);

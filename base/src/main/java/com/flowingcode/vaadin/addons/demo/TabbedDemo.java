@@ -407,7 +407,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
    * @deprecated Use {@link #getColorScheme()}
    * @return the theme attribute value
    */
-  @Deprecated
+  @Deprecated(forRemoval = true, since = "5.2.0")
   public static String getThemeAttribute() {
     ColorScheme scheme = getColorScheme();
     return scheme == ColorScheme.LIGHT ? "" : scheme.getValue();
@@ -433,7 +433,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
    * @param theme   the theme attribute value
    * @deprecated Use {@link #setColorScheme(Component, ColorScheme)}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true, since = "5.2.0")
   public static void applyThemeAttribute(Element element, String theme) {
     Component c = element.getComponent().get();
     if (theme.isEmpty()) {
