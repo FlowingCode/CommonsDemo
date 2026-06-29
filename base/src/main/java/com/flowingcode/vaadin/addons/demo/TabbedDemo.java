@@ -21,6 +21,7 @@ package com.flowingcode.vaadin.addons.demo;
 
 import com.flowingcode.vaadin.addons.GithubBranch;
 import com.flowingcode.vaadin.addons.demo.events.SourceCollapseChangedEvent;
+import com.flowingcode.vaadin.addons.demo.events.SourcePositionChangedEvent;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -112,7 +113,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     codePositionCB = new Checkbox("Toggle Code Position");
     codePositionCB.setValue(true);
     codePositionCB.addClassName("smallcheckbox");
-    codePositionCB.addValueChangeListener(ev -> toggleSourcePosition());
+    codePositionCB.addValueChangeListener(ev -> toggleSourcePosition(ev.isFromClient()));
     themeCB = new Checkbox("Dark Theme");
     themeCB.setValue(false);
     themeCB.addClassName("smallcheckbox");
@@ -365,8 +366,28 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
    * Toggles the position of the source code relative to the demo content.
    */
   public void toggleSourcePosition() {
+    toggleSourcePosition(false);
+  }
+
+  private void toggleSourcePosition(boolean fromClient) {
     if (currentLayout != null) {
-      currentLayout.toggleSourcePosition();
+      setSourcePosition(currentLayout.getSourcePosition().toggle(), fromClient);
+    }
+  }
+
+  /**
+   * Sets the position of the source code relative to the demo content.
+   *
+   * @param sourcePosition the new source position
+   */
+  public void setSourcePosition(SourcePosition sourcePosition) {
+    setSourcePosition(sourcePosition, false);
+  }
+
+  private void setSourcePosition(SourcePosition sourcePosition, boolean fromClient) {
+    if (currentLayout != null) {
+      currentLayout.setSourcePosition(sourcePosition);
+      fireSourcePositionChangedEvent(sourcePosition, fromClient);
     }
   }
 
@@ -574,8 +595,22 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     ComponentUtil.addListener(this, SourceCollapseChangedEvent.class, listener);
   }
 
+  /**
+   * Adds a listener for {@link SourcePositionChangedEvent}.
+   *
+   * @param listener the listener to add
+   */
+  public void addSourcePositionChangedListener(
+      ComponentEventListener<SourcePositionChangedEvent> listener) {
+    ComponentUtil.addListener(this, SourcePositionChangedEvent.class, listener);
+  }
+
   private void fireSourceCollapseChangedEvent(boolean collapsed, boolean fromClient) {
     fireEvent(new SourceCollapseChangedEvent(this, fromClient, collapsed));
+  }
+
+  private void fireSourcePositionChangedEvent(SourcePosition sourcePosition, boolean fromClient) {
+    fireEvent(new SourcePositionChangedEvent(this, fromClient, sourcePosition));
   }
 
 }

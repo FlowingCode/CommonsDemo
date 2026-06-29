@@ -59,7 +59,11 @@ class SplitLayoutDemo extends Composite<SplitLayout> {
     return code.isEmpty();
   }
 
-  private void setSourcePosition(SourcePosition position) {
+  public SourcePosition getSourcePosition() {
+    return sourcePosition;
+  }
+
+  public void setSourcePosition(SourcePosition position) {
     if (!position.equals(sourcePosition)) {
       getContent().removeAll();
       switch (position) {
@@ -74,10 +78,6 @@ class SplitLayoutDemo extends Composite<SplitLayout> {
       }
       sourcePosition = position;
     }
-  }
-
-  public void toggleSourcePosition() {
-    setSourcePosition(sourcePosition.toggle());
   }
 
   public void setOrientation(Orientation o) {
