@@ -20,6 +20,7 @@
 package com.flowingcode.vaadin.addons.demo;
 
 import com.flowingcode.vaadin.addons.GithubBranch;
+import com.flowingcode.vaadin.addons.demo.events.OrientationChangedEvent;
 import com.flowingcode.vaadin.addons.demo.events.SourceCollapseChangedEvent;
 import com.flowingcode.vaadin.addons.demo.events.SourcePositionChangedEvent;
 import com.vaadin.flow.component.AttachEvent;
@@ -98,7 +99,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     orientationCB.addClassName("smallcheckbox");
     orientationCB.addValueChangeListener(ev -> {
       if (ev.isFromClient()) {
-        toggleSplitterOrientation();
+        toggleSplitterOrientation(ev.isFromClient());
       }
     });
     codeCB = new Checkbox("Show Source Code");
@@ -391,7 +392,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     }
   }
 
-  private void toggleSplitterOrientation() {
+  private void toggleSplitterOrientation(boolean fromClient) {
     if (currentLayout == null) {
       return;
     }
@@ -400,7 +401,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     } else {
       splitOrientation = Orientation.HORIZONTAL;
     }
-    setOrientation(splitOrientation);
+    setOrientation(splitOrientation, fromClient);
   }
 
   /**
@@ -418,12 +419,17 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
    * @param orientation the new orientation
    */
   public void setOrientation(Orientation orientation) {
+    setOrientation(orientation, false);
+  }
+
+  private void setOrientation(Orientation orientation, boolean fromClient) {
     splitOrientation = orientation;
     if (currentLayout != null) {
       currentLayout.setOrientation(orientation);
       currentLayout.setSplitterPosition(50);
     }
     orientationCB.setValue(Orientation.HORIZONTAL.equals(orientation));
+    fireOrientationChangedEvent(orientation, fromClient);
   }
 
   /**
@@ -605,12 +611,26 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     ComponentUtil.addListener(this, SourcePositionChangedEvent.class, listener);
   }
 
+  /**
+   * Adds a listener for {@link OrientationChangedEvent}.
+   *
+   * @param listener the listener to add
+   */
+  public void addOrientationChangedListener(
+      ComponentEventListener<OrientationChangedEvent> listener) {
+    ComponentUtil.addListener(this, OrientationChangedEvent.class, listener);
+  }
+
   private void fireSourceCollapseChangedEvent(boolean collapsed, boolean fromClient) {
     fireEvent(new SourceCollapseChangedEvent(this, fromClient, collapsed));
   }
 
   private void fireSourcePositionChangedEvent(SourcePosition sourcePosition, boolean fromClient) {
     fireEvent(new SourcePositionChangedEvent(this, fromClient, sourcePosition));
+  }
+
+  private void fireOrientationChangedEvent(Orientation orientation, boolean fromClient) {
+    fireEvent(new OrientationChangedEvent(this, fromClient, orientation));
   }
 
 }
