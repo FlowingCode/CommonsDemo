@@ -20,6 +20,7 @@
 package com.flowingcode.vaadin.addons.demo;
 
 import com.flowingcode.vaadin.addons.GithubBranch;
+import com.flowingcode.vaadin.addons.demo.events.SourceCollapseChangedEvent;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -70,6 +71,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
 
   private static final int MOBILE_DEVICE_BREAKPOINT_WIDTH = 768;
   private boolean autoVisibility;
+  private boolean sourceCollapsed;
   private EnhancedRouteTabs tabs;
   private HorizontalLayout footer;
   private SplitLayoutDemo currentLayout;
@@ -101,7 +103,12 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     codeCB = new Checkbox("Show Source Code");
     codeCB.setValue(true);
     codeCB.addClassName("smallcheckbox");
-    codeCB.addValueChangeListener(ev -> updateSplitterPosition());
+    codeCB.addValueChangeListener(
+        ev -> fireSourceCollapseChangedEvent(!ev.getValue(), ev.isFromClient()));
+    addSourceCollapseListener(ev -> {
+      sourceCollapsed = ev.isCollapsed();
+      updateSplitterPosition();
+    });
     codePositionCB = new Checkbox("Toggle Code Position");
     codePositionCB.setValue(true);
     codePositionCB.addClassName("smallcheckbox");
@@ -334,13 +341,13 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
 
   private void updateSplitterPosition() {
     if (currentLayout != null) {
-      if (codeCB.getValue()) {
-        currentLayout.showSourceCode();
-      } else {
+      if (sourceCollapsed) {
         currentLayout.hideSourceCode();
+      } else {
+        currentLayout.showSourceCode();
       }
-      orientationCB.setEnabled(codeCB.getValue());
-      codePositionCB.setEnabled(codeCB.getValue());
+      orientationCB.setEnabled(!sourceCollapsed);
+      codePositionCB.setEnabled(!sourceCollapsed);
     }
   }
 
@@ -512,8 +519,8 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     super.onAttach(attachEvent);
     getUI().ifPresent(ui -> ui.getPage().retrieveExtendedClientDetails(receiver -> {
       boolean mobile = receiver.getBodyClientWidth() <= MOBILE_DEVICE_BREAKPOINT_WIDTH;
-      codeCB.setValue(codeCB.getValue() && !mobile);
-      codePositionCB.setValue(codeCB.getValue() && !mobile);
+      codeCB.setValue(!sourceCollapsed && !mobile);
+      codePositionCB.setValue(!sourceCollapsed && !mobile);
 
       boolean portraitOrientation = receiver.getBodyClientHeight() > receiver.getBodyClientWidth();
       adjustSplitOrientation(portraitOrientation);
@@ -555,6 +562,20 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
         logger.error("Error creating an instance", e);
       }
     }
+  }
+
+  /**
+   * Adds a listener for {@link SourceCollapseChangedEvent}.
+   *
+   * @param listener the listener to add
+   */
+  public void addSourceCollapseListener(
+      ComponentEventListener<SourceCollapseChangedEvent> listener) {
+    ComponentUtil.addListener(this, SourceCollapseChangedEvent.class, listener);
+  }
+
+  private void fireSourceCollapseChangedEvent(boolean collapsed, boolean fromClient) {
+    fireEvent(new SourceCollapseChangedEvent(this, fromClient, collapsed));
   }
 
 }
