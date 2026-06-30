@@ -26,6 +26,8 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.dom.Element;
@@ -51,13 +53,130 @@ public class SourceCodeViewer extends Div implements HasSize {
   }
 
   public SourceCodeViewer(String url, String language, Map<String, String> properties) {
+    addClassName("source-code-viewer");
+    addClassName("has-code-viewer-gutter");
+
     codeViewer = new Element("code-viewer");
-    getElement().appendChild(codeViewer);
-    getElement().getStyle().set("overflow", "auto");
-    getElement().getStyle().set("display", "flex");
-    codeViewer.getStyle().set("flex-grow", "1");
+
+    Div codeViewerWrapper = new Div();
+    codeViewerWrapper.addClassName("source-code-viewer-codeviewer-wrapper");
+    codeViewerWrapper.getElement().appendChild(codeViewer);
+
+    Button showButton = new Button(CommonsDemoIcons.SHOW_SOURCE.create());
+    showButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_TERTIARY_INLINE);
+    showButton.setAriaLabel("Show source code");
+    showButton.addClickListener(ev -> setSourceCollapsed(false));
+    showButton.addClassName("source-code-viewer-button");
+    showButton.addClassName("source-code-viewer-show-button");
+
+    Button hideButton = new Button(CommonsDemoIcons.HIDE_SOURCE.create());
+    hideButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_TERTIARY_INLINE);
+    hideButton.setAriaLabel("Hide source code");
+    hideButton.addClickListener(ev -> setSourceCollapsed(true));
+    hideButton.addClassName("source-code-viewer-button");
+    hideButton.addClassName("source-code-viewer-hide-button");
+
+    Button rotateButton = new Button(CommonsDemoIcons.ROTATE.create());
+    rotateButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_TERTIARY_INLINE);
+    rotateButton.setAriaLabel("Rotate source code");
+    rotateButton.addClickListener(ev -> rotateSource());
+    rotateButton.addClassName("source-code-viewer-button");
+    rotateButton.addClassName("source-code-viewer-rotate-button");
+
+    Button flipButton = new Button(CommonsDemoIcons.FLIP.create());
+    flipButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_TERTIARY_INLINE);
+    flipButton.setAriaLabel("Flip source code");
+    flipButton.addClickListener(ev -> flipSource());
+    flipButton.addClassName("source-code-viewer-button");
+    flipButton.addClassName("source-code-viewer-flip-button");
+
+    Div buttons = new Div(showButton, hideButton, flipButton, rotateButton);
+    buttons.addClassName("source-code-viewer-buttons");
+
+    // Non-scrolling overlay so the buttons stay pinned while the code scrolls
+    Div buttonsWrapper = new Div(buttons);
+    buttonsWrapper.addClassName("source-code-viewer-buttons-wrapper");
+
+    add(codeViewerWrapper, buttonsWrapper);
+
     setProperties(properties);
-    addAttachListener(ev -> fetchContents(url, language));
+    addAttachListener(ev -> {
+      fetchContents(url, language);
+      observeScrollbar();
+    });
+  }
+
+  /**
+   * Observes the scrollable wrapper. Whenever the vertical scrollbar appears or disappears, sets (or
+   * clears) the {@code --code-viewer-gutter} custom property on the nearest ancestor (or self)
+   * carrying the {@code has-code-viewer-gutter} class. Whenever the wrapper collapses below 24px in
+   * either axis, sets {@code --source-code-viewer-show-button-display} so the show button becomes
+   * visible (and clears it otherwise).
+   */
+  private void observeScrollbar() {
+    getElement().executeJs(
+        """
+        const root = this;
+        const wrapper = root.querySelector('.source-code-viewer-codeviewer-wrapper');
+        if (!wrapper) return;
+        root.__scrollbarObserver?.disconnect();
+        root.__scrollbarMutation?.disconnect();
+        let hasScrollbar = null;
+        const update = () => {
+          if (wrapper.offsetWidth < 24 || wrapper.offsetHeight < 10) {
+            root.style.setProperty('--source-code-viewer-show-button-display', 'block');
+          } else {
+            root.style.removeProperty('--source-code-viewer-show-button-display');
+          }
+          const current = wrapper.scrollHeight > wrapper.clientHeight;
+          if (current === hasScrollbar) return;
+          hasScrollbar = current;
+          let target = root;
+          while (target && !target.classList.contains('has-code-viewer-gutter')) {
+            target = target.parentElement;
+          }
+          if (target) {
+            if (current) {
+              const scrollbarWidth = wrapper.offsetWidth - wrapper.clientWidth;
+              target.style.setProperty('--code-viewer-gutter', scrollbarWidth + 'px');
+            } else {
+              target.style.removeProperty('--code-viewer-gutter');
+            }
+          }
+        };
+        let frame = 0;
+        const scheduleUpdate = () => {
+          if (frame) return;
+          frame = requestAnimationFrame(() => { frame = 0; update(); });
+        };
+        const resizeObserver = new ResizeObserver(scheduleUpdate);
+        resizeObserver.observe(wrapper);
+        root.__scrollbarObserver = resizeObserver;
+        const codeViewer = root.querySelector('code-viewer');
+        if (codeViewer) {
+          const mutationObserver = new MutationObserver(scheduleUpdate);
+          mutationObserver.observe(codeViewer, {childList: true, subtree: true});
+          root.__scrollbarMutation = mutationObserver;
+        }
+        update();
+        """);
+  }
+
+  private void setSourceCollapsed(boolean collapsed) {
+    getElement().executeJs(
+        "this.dispatchEvent(new CustomEvent('source-collapse-changed',"
+            + " {bubbles: true, detail: {collapsed: $0}}))",
+        collapsed);
+  }
+
+  private void rotateSource() {
+    getElement().executeJs(
+        "this.dispatchEvent(new CustomEvent('source-rotate', {bubbles: true}))");
+  }
+
+  private void flipSource() {
+    getElement().executeJs(
+        "this.dispatchEvent(new CustomEvent('source-flip', {bubbles: true}))");
   }
 
   public void fetchContents(String url, String language) {
