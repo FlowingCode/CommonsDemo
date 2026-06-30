@@ -48,7 +48,7 @@ class SplitLayoutDemo extends Composite<SplitLayout> {
     properties.put("vaadin", VaadinVersion.getVaadinVersion());
     properties.put("flow", Version.getFullVersion());
 
-    code = new MultiSourceCodeViewer(tabs, properties);
+    code = new MultiSourceCodeViewer(tabs, properties).withButtons();
     this.demo = demo;
     setSourcePosition(code.getSourcePosition());
 
