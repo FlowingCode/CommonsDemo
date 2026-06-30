@@ -76,6 +76,20 @@ public class MultiSourceCodeViewer extends Div {
     getStyle().set("flex-direction", "column");
   }
 
+  /**
+   * Adds the overlay controls to the underlying source code viewer. See
+   * {@link SourceCodeViewer#withButtons()} for the events they fire and the coordination they
+   * require from the enclosing layout.
+   *
+   * @return this viewer, for method chaining
+   */
+  public MultiSourceCodeViewer withButtons() {
+    if (codeViewer != null) {
+      codeViewer.withButtons();
+    }
+    return this;
+  }
+
   public boolean isEmpty() {
     return selectedTab == null;
   }

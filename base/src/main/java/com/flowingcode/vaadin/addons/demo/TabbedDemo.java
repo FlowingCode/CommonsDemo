@@ -77,9 +77,6 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   private EnhancedRouteTabs tabs;
   private HorizontalLayout footer;
   private SplitLayoutDemo currentLayout;
-  private Checkbox orientationCB;
-  private Checkbox codeCB;
-  private Checkbox codePositionCB;
   private Checkbox themeCB;
   private Orientation splitOrientation;
   private Button helperButton;
@@ -93,28 +90,14 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
 
     tabs = new EnhancedRouteTabs();
 
-    // Footer
-    orientationCB = new Checkbox("Toggle Orientation");
-    orientationCB.setValue(true);
-    orientationCB.addClassName("smallcheckbox");
-    orientationCB.addValueChangeListener(ev -> {
-      if (ev.isFromClient()) {
-        toggleSplitterOrientation(ev.isFromClient());
-      }
-    });
-    codeCB = new Checkbox("Show Source Code");
-    codeCB.setValue(true);
-    codeCB.addClassName("smallcheckbox");
-    codeCB.addValueChangeListener(
-        ev -> fireSourceCollapseChangedEvent(!ev.getValue(), ev.isFromClient()));
+    // The source controls live inside SourceCodeViewer and signal across components
+    // via bubbling DOM events; collapse carries data, so it uses SourceCollapseChangedEvent.
     addSourceCollapseListener(ev -> {
       sourceCollapsed = ev.isCollapsed();
       updateSplitterPosition();
     });
-    codePositionCB = new Checkbox("Toggle Code Position");
-    codePositionCB.setValue(true);
-    codePositionCB.addClassName("smallcheckbox");
-    codePositionCB.addValueChangeListener(ev -> toggleSourcePosition(ev.isFromClient()));
+    getElement().addEventListener("source-flip", ev -> toggleSourcePosition(true));
+    getElement().addEventListener("source-rotate", ev -> toggleSplitterOrientation(true));
     themeCB = new Checkbox("Dark Theme");
     themeCB.setValue(false);
     themeCB.addClassName("smallcheckbox");
@@ -126,7 +109,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     footer = new HorizontalLayout();
     footer.setWidthFull();
     footer.setJustifyContentMode(JustifyContentMode.END);
-    footer.add(codeCB, codePositionCB, orientationCB, themeCB);
+    footer.add(themeCB);
     footer.setClassName("demo-footer");
 
     Package pkg = this.getClass().getPackage();
@@ -348,8 +331,6 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
       } else {
         currentLayout.showSourceCode();
       }
-      orientationCB.setEnabled(!sourceCollapsed);
-      codePositionCB.setEnabled(!sourceCollapsed);
     }
   }
 
@@ -359,8 +340,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
    * @param visible {@code true} to make the source code visible, {@code false} otherwise
    */
   public void setSourceVisible(boolean visible) {
-    codeCB.setValue(visible);
-    codePositionCB.setVisible(visible);
+    fireSourceCollapseChangedEvent(!visible, false);
   }
 
   /**
@@ -428,7 +408,6 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
       currentLayout.setOrientation(orientation);
       currentLayout.setSplitterPosition(50);
     }
-    orientationCB.setValue(Orientation.HORIZONTAL.equals(orientation));
     fireOrientationChangedEvent(orientation, fromClient);
   }
 
@@ -525,9 +504,6 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   private void updateFooterButtonsVisibility() {
     boolean hasSourceCode = currentLayout != null;
     ComponentUtil.fireEvent(this, new TabbedDemoSourceEvent(this, hasSourceCode));
-    orientationCB.setVisible(hasSourceCode);
-    codeCB.setVisible(hasSourceCode);
-    codePositionCB.setVisible(hasSourceCode);
   }
 
   /**
@@ -546,8 +522,10 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     super.onAttach(attachEvent);
     getUI().ifPresent(ui -> ui.getPage().retrieveExtendedClientDetails(receiver -> {
       boolean mobile = receiver.getBodyClientWidth() <= MOBILE_DEVICE_BREAKPOINT_WIDTH;
-      codeCB.setValue(!sourceCollapsed && !mobile);
-      codePositionCB.setValue(!sourceCollapsed && !mobile);
+      boolean shouldCollapse = sourceCollapsed || mobile;
+      if (shouldCollapse != sourceCollapsed) {
+        fireSourceCollapseChangedEvent(shouldCollapse, false);
+      }
 
       boolean portraitOrientation = receiver.getBodyClientHeight() > receiver.getBodyClientWidth();
       adjustSplitOrientation(portraitOrientation);

@@ -51,5 +51,122 @@ code-highlighter code {
 	cursor: pointer;
 }
 
+.source-code-viewer {
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	overflow: hidden;
+}
+
+.source-code-viewer-codeviewer-wrapper {
+	display: flex;
+	flex-grow: 1;
+	overflow: auto;
+}
+
+.source-code-viewer-codeviewer-wrapper > code-viewer {
+	flex-grow: 1;
+}
+
+.source-code-viewer-buttons-wrapper {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+source-code-viewer-buttons {
+	position: absolute;
+	z-index: 1;
+	right: calc(0.25rem + var(--code-viewer-gutter, 0px));
+	top: 0.25rem;
+	display: flex;
+	gap: var(--lumo-space-xs, 0.25rem);
+	container-type: inline-size;
+	width: 100%;
+	justify-content: end;
+	pointer-events: none;
+}
+
+vaadin-button.source-code-viewer-button {
+	color: color-mix(in srgb, #f8f8f2 70%, transparent);
+	pointer-events: auto;
+	background: transparent;
+	display: none;
+	padding: 0;
+}
+
+vaadin-button.source-code-viewer-button vaadin-icon {
+    --vaadin-icon-size: 20px;
+    padding: 0.125em;
+}
+
+@container style(--lumo-size-m) {
+  vaadin-button.source-code-viewer-button vaadin-icon {
+    padding: 0.25em;
+  }
+}
+
+
+vaadin-button.source-code-viewer-show-button {
+	display: var(--source-code-viewer-show-button-display, none);
+	color: var(--lumo-body-text-color, var(--vaadin-text-color));
+	position: fixed;
+}
+
+[orientation="horizontal"] [slot="primary"] vaadin-button.source-code-viewer-show-button {
+	right: 0;
+}
+
+[orientation="horizontal"] [slot="secondary"] vaadin-button.source-code-viewer-show-button {
+	right: 0.5rem;
+}
+
+[orientation="vertical"] [slot="primary"] vaadin-button.source-code-viewer-show-button {
+	top: 0.5rem;
+}
+
+[orientation="vertical"] [slot="secondary"] vaadin-button.source-code-viewer-show-button {
+	top: 0;
+}
+
+/* Rotate the icons to match the layout disposition. */
+[orientation="horizontal"] [slot="secondary"] vaadin-button.source-code-viewer-button{
+	transform: rotate(0deg);
+	&.source-code-viewer-rotate-button { transform: scaleX(-1) rotate(90deg); }
+}
+
+[orientation="horizontal"] [slot="primary"] vaadin-button.source-code-viewer-button {
+	transform: rotate(180deg);
+	&.source-code-viewer-rotate-button { transform: rotate(0deg); }	
+}
+
+[orientation="vertical"] [slot="secondary"] vaadin-button.source-code-viewer-button {
+	transform: rotate(90deg);
+	&.source-code-viewer-rotate-button { transform: rotate(0deg); }
+}
+
+[orientation="vertical"] [slot="primary"] vaadin-button.source-code-viewer-button {
+	transform: rotate(270deg);
+	&.source-code-viewer-rotate-button { transform: scaleX(-1) rotate(90deg); }
+}
+
+@container (min-width: 82px) {
+	vaadin-button.source-code-viewer-flip-button {
+		display: block;
+	}
+}
+
+@container (min-width: 53px) {
+	vaadin-button.source-code-viewer-rotate-button {
+		display: block;
+	}
+}
+
+@container (min-width: 24px) {
+	vaadin-button.source-code-viewer-hide-button {
+		display: block;
+	}
+}
+
 .commons-demo-split-layout { overflow: hidden }
 .commons-demo-split-layout > [slot] { overflow: auto; }
