@@ -78,7 +78,6 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   private HorizontalLayout footer;
   private SplitLayoutDemo currentLayout;
   private Checkbox themeCB;
-  private Orientation splitOrientation;
   private Button helperButton;
   private DemoHelperViewer demoHelperViewer;
 
@@ -221,6 +220,11 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     List<SourceCodeTab> sourceTabs = new ArrayList<>(demoSources.length);
     for (DemoSource demoSource : demoSources) {
       createSourceCodeTab(demo.getClass(), demoSource).ifPresent(sourceTabs::add);
+    }
+
+    Orientation splitOrientation = null;
+    if (currentLayout != null) {
+      splitOrientation = currentLayout.getOrientation();
     }
 
     if (!sourceTabs.isEmpty()) {
@@ -376,6 +380,8 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     if (currentLayout == null) {
       return;
     }
+
+    Orientation splitOrientation = getOrientation();
     if (Orientation.HORIZONTAL.equals(splitOrientation)) {
       splitOrientation = Orientation.VERTICAL;
     } else {
@@ -403,12 +409,11 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   }
 
   private void setOrientation(Orientation orientation, boolean fromClient) {
-    splitOrientation = orientation;
-    if (currentLayout != null) {
-      currentLayout.setOrientation(orientation);
-      currentLayout.setSplitterPosition(50);
+    if (currentLayout != null && orientation != getOrientation()) {
+        currentLayout.setOrientation(orientation);
+        currentLayout.showSourceCode();
+        fireOrientationChangedEvent(orientation, fromClient);
     }
-    fireOrientationChangedEvent(orientation, fromClient);
   }
 
   /**
@@ -534,11 +539,10 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
 
   private void adjustSplitOrientation(boolean portraitOrientation) {
     if (portraitOrientation) {
-      splitOrientation = Orientation.VERTICAL;
+      setOrientation(Orientation.VERTICAL);
     } else {
-      splitOrientation = Orientation.HORIZONTAL;
+      setOrientation(Orientation.HORIZONTAL);
     }
-    setOrientation(splitOrientation);
   }
 
   /**
