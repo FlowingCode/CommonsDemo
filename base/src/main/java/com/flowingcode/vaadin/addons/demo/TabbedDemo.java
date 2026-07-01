@@ -78,7 +78,6 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   private HorizontalLayout footer;
   private SplitLayoutDemo currentLayout;
   private Checkbox themeCB;
-  private Orientation splitOrientation;
   private Button helperButton;
   private DemoHelperViewer demoHelperViewer;
 
@@ -223,6 +222,11 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
       createSourceCodeTab(demo.getClass(), demoSource).ifPresent(sourceTabs::add);
     }
 
+    Orientation splitOrientation = null;
+    if (currentLayout != null) {
+      splitOrientation = currentLayout.getOrientation();
+    }
+
     if (!sourceTabs.isEmpty()) {
       currentLayout = new SplitLayoutDemo(demo, sourceTabs);
       if (currentLayout.isEmpty()) {
@@ -326,11 +330,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
 
   private void updateSplitterPosition() {
     if (currentLayout != null) {
-      if (sourceCollapsed) {
-        currentLayout.hideSourceCode();
-      } else {
-        currentLayout.showSourceCode();
-      }
+      currentLayout.setSourceCollapsed(sourceCollapsed);
     }
   }
 
@@ -376,6 +376,8 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     if (currentLayout == null) {
       return;
     }
+
+    Orientation splitOrientation = getOrientation();
     if (Orientation.HORIZONTAL.equals(splitOrientation)) {
       splitOrientation = Orientation.VERTICAL;
     } else {
@@ -403,12 +405,11 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   }
 
   private void setOrientation(Orientation orientation, boolean fromClient) {
-    splitOrientation = orientation;
-    if (currentLayout != null) {
-      currentLayout.setOrientation(orientation);
-      currentLayout.showSourceCode();
+    if (currentLayout != null && orientation != getOrientation()) {
+        currentLayout.setOrientation(orientation);
+        currentLayout.setSourceCollapsed(false);
+        fireOrientationChangedEvent(orientation, fromClient);
     }
-    fireOrientationChangedEvent(orientation, fromClient);
   }
 
   /**
@@ -534,11 +535,10 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
 
   private void adjustSplitOrientation(boolean portraitOrientation) {
     if (portraitOrientation) {
-      splitOrientation = Orientation.VERTICAL;
+      setOrientation(Orientation.VERTICAL);
     } else {
-      splitOrientation = Orientation.HORIZONTAL;
+      setOrientation(Orientation.HORIZONTAL);
     }
-    setOrientation(splitOrientation);
   }
 
   /**

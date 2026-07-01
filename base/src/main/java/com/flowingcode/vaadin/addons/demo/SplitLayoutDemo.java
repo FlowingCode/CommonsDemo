@@ -97,18 +97,18 @@ class SplitLayoutDemo extends Composite<SplitLayout> {
     getContent().setSizeFull();
   }
 
-  public void showSourceCode() {
-    getContent().setSplitterPosition(50);
-  }
-
-  public void hideSourceCode() {
-    switch (sourcePosition) {
-      case PRIMARY:
-        getContent().setSplitterPosition(0);
-        break;
-      case SECONDARY:
-        getContent().setSplitterPosition(100);
-        break;
+  public void setSourceCollapsed(boolean collapsed) {
+    if (!collapsed) {
+      getContent().setSplitterPosition(50);
+    } else {
+      switch (sourcePosition) {
+        case PRIMARY:
+          getContent().setSplitterPosition(0);
+          break;
+        case SECONDARY:
+          getContent().setSplitterPosition(100);
+          break;
+      }
     }
   }
 
