@@ -22,6 +22,7 @@ package com.flowingcode.vaadin.addons.demo;
 import com.flowingcode.vaadin.addons.GithubBranch;
 import com.flowingcode.vaadin.addons.GithubLink;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -44,6 +45,7 @@ import java.lang.annotation.Target;
 @Repeatable(DemoSources.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@Inherited
 public @interface DemoSource {
 
   static final String DEFAULT_VALUE = "__DEFAULT__";
