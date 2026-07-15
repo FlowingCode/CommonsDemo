@@ -45,6 +45,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLayout;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.Version;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -480,7 +481,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
         e.style.colorScheme = $0;
         """;
 
-    element.executeJs(script, theme);
+    element.executeJs(script, new Serializable[] {theme});
 
     collectThemeChangeObservers(component).forEach(observer -> observer.onThemeChange(theme));
     observeThemeChange(component);
