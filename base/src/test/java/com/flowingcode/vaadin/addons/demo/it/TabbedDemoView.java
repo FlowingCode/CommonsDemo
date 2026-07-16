@@ -22,6 +22,7 @@ package com.flowingcode.vaadin.addons.demo.it;
 import com.flowingcode.vaadin.addons.GithubLink;
 import com.flowingcode.vaadin.addons.demo.AdHocDemo;
 import com.flowingcode.vaadin.addons.demo.DemoSource;
+import com.flowingcode.vaadin.addons.demo.SourcePosition;
 import com.flowingcode.vaadin.addons.demo.TabbedDemo;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
@@ -34,6 +35,7 @@ public class TabbedDemoView extends TabbedDemo {
   public TabbedDemoView() {
     addDemo(TabbedDemoViewNoSource.class);
     addDemo(TabbedDemoViewSingleSource.class);
+    addDemo(TabbedDemoViewPrimarySource.class);
     addDemo(TabbedDemoViewMultiSource.class);
     addDemo(TabbedDemoViewConditionalTrue.class);
     addDemo(TabbedDemoViewConditionalFalse.class);
@@ -51,6 +53,10 @@ public class TabbedDemoView extends TabbedDemo {
   @DemoSource(clazz = TabbedDemoView.class)
   @Route(value = "it/tabbed-demo-single-source", layout = TabbedDemoView.class)
   public static class TabbedDemoViewSingleSource extends AbstractDemoView { }
+
+  @DemoSource(clazz = TabbedDemoView.class, sourcePosition = SourcePosition.PRIMARY)
+  @Route(value = "it/tabbed-demo-primary-source", layout = TabbedDemoView.class)
+  public static class TabbedDemoViewPrimarySource extends AbstractDemoView { }
 
   @DemoSource(clazz = TabbedDemoView.class)
   @DemoSource(clazz = AdHocDemo.class)

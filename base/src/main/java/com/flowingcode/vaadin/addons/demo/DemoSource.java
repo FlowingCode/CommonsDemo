@@ -76,8 +76,13 @@ public @interface DemoSource {
    */
   String language() default DEFAULT_VALUE;
 
-  /** Source code position in the layout */
-  SourcePosition sourcePosition() default SourcePosition.SECONDARY;
+  /**
+   * Source code position in the layout. Defaults to {@link SourcePosition#DEFAULT}, which adopts the
+   * position carried over from the previously shown demo, or {@link SourcePosition#SECONDARY} if
+   * there is none. An explicit {@link SourcePosition#PRIMARY} or {@link SourcePosition#SECONDARY}
+   * always takes precedence over the carried-over position.
+   */
+  SourcePosition sourcePosition() default SourcePosition.DEFAULT;
 
   String condition() default "";
 

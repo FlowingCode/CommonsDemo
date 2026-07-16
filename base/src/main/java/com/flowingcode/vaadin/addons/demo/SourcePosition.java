@@ -21,15 +21,17 @@ package com.flowingcode.vaadin.addons.demo;
 
 public enum SourcePosition {
 
-  PRIMARY, SECONDARY;
+  PRIMARY, SECONDARY, DEFAULT;
 
   public SourcePosition toggle() {
     switch (this) {
       case SECONDARY:
+      case DEFAULT:
         return PRIMARY;
       case PRIMARY:
-      default:
         return SECONDARY;
+      default:
+        return this;
     }
   }
 
