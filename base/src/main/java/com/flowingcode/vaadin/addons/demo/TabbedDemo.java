@@ -224,8 +224,10 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     }
 
     Orientation splitOrientation = null;
+    SourcePosition previousPosition = null;
     if (currentLayout != null) {
       splitOrientation = currentLayout.getOrientation();
+      previousPosition = currentLayout.getSourcePosition();
     }
 
     if (!sourceTabs.isEmpty()) {
@@ -238,6 +240,13 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
 
     if (currentLayout != null) {
       content = currentLayout;
+
+      // A DEFAULT position is soft: it adopts the position carried over from the previously shown
+      // demo (SECONDARY if there is none). An explicit PRIMARY/SECONDARY always wins.
+      if (currentLayout.getSourcePosition() == SourcePosition.DEFAULT) {
+        currentLayout.setSourcePosition(resolveDefaultPosition(previousPosition));
+      }
+
       if (splitOrientation != null) {
         setOrientation(splitOrientation);
         updateSplitterPosition();
@@ -369,8 +378,24 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   private void setSourcePosition(SourcePosition sourcePosition, boolean fromClient) {
     if (currentLayout != null) {
       currentLayout.setSourcePosition(sourcePosition);
-      fireSourcePositionChangedEvent(sourcePosition, fromClient);
+      SourcePosition resolvedPosition = sourcePosition == SourcePosition.DEFAULT
+          ? resolveDefaultPosition(currentLayout.getSourcePosition())
+          : sourcePosition;
+      fireSourcePositionChangedEvent(resolvedPosition, fromClient);
     }
+  }
+
+  /**
+   * Resolves a {@link SourcePosition#DEFAULT} position against the position carried over from the
+   * previously shown demo.
+   *
+   * @param previous the carried-over position, or {@code null} if there is none
+   * @return {@code previous} when it is a concrete position, otherwise {@link SourcePosition#SECONDARY}
+   */
+  private static SourcePosition resolveDefaultPosition(SourcePosition previous) {
+    return (previous == null || previous == SourcePosition.DEFAULT)
+        ? SourcePosition.SECONDARY
+        : previous;
   }
 
   private void toggleSplitterOrientation(boolean fromClient) {

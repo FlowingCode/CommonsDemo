@@ -29,6 +29,7 @@ import com.flowingcode.vaadin.addons.demo.events.SourceCollapseChangedEvent;
 import com.flowingcode.vaadin.addons.demo.events.SourcePositionChangedEvent;
 import com.flowingcode.vaadin.addons.demo.it.TabbedDemoView.TabbedDemoViewMultiSource;
 import com.flowingcode.vaadin.addons.demo.it.TabbedDemoView.TabbedDemoViewNoSource;
+import com.flowingcode.vaadin.addons.demo.it.TabbedDemoView.TabbedDemoViewPrimarySource;
 import com.flowingcode.vaadin.addons.demo.it.TabbedDemoView.TabbedDemoViewSingleSource;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.splitlayout.SplitLayout.Orientation;
@@ -113,6 +114,28 @@ public class TabbedDemoUIUnitTest extends UIUnit4Test {
     assertEquals(2, events.size());
     assertEquals(SourcePosition.SECONDARY, events.get(1).getSourcePosition());
     assertNotEquals(events.get(0).getSourcePosition(), events.get(1).getSourcePosition());
+  }
+
+  // --- a DEFAULT position inherits the position carried over from the previous demo -
+
+  @Test
+  public void defaultPositionInheritsFromPreviousDemo() {
+    TabbedDemoView demo = new TabbedDemoView();
+    Component first = new TabbedDemoViewPrimarySource();
+    demo.showRouterLayoutContent(first);
+
+    // TabbedDemoViewSingleSource has no explicit position (DEFAULT), so it should adopt
+    // the PRIMARY position carried over from the previous demo.
+    demo.removeRouterLayoutContent(first);
+    demo.showRouterLayoutContent(new TabbedDemoViewSingleSource());
+
+    List<SourcePositionChangedEvent> events = new ArrayList<>();
+    demo.addSourcePositionChangedListener(events::add);
+
+    demo.toggleSourcePosition();
+    assertEquals(1, events.size());
+    // Inherited PRIMARY, so the first toggle yields SECONDARY.
+    assertEquals(SourcePosition.SECONDARY, events.get(0).getSourcePosition());
   }
 
   // --- setOrientation changes state and fires the event; same value is a no-op ------

@@ -106,8 +106,8 @@ class SplitLayoutDemo extends Composite<SplitLayout> {
           getContent().setSplitterPosition(0);
           break;
         case SECONDARY:
+        default:
           getContent().setSplitterPosition(100);
-          break;
       }
     }
   }

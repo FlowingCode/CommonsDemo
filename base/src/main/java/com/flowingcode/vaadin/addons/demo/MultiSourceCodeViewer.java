@@ -162,7 +162,7 @@ public class MultiSourceCodeViewer extends Div {
     if (selectedTab != null) {
       return (SourcePosition) ComponentUtil.getData(selectedTab, DATA_POSITION);
     } else {
-      return SourcePosition.SECONDARY;
+      return SourcePosition.DEFAULT;
     }
 
   }
