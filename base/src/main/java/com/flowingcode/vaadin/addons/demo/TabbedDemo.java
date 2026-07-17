@@ -79,6 +79,10 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   private HorizontalLayout footer;
   private SplitLayoutDemo currentLayout;
   private Checkbox themeCB;
+  // The desired split orientation. Mirrors the current layout's orientation when one exists, and
+  // outlives it while no layout is present, so a device-driven adjustment (e.g. portrait -> VERTICAL
+  // made on a source-less demo) is carried over to the next source-bearing demo.
+  private Orientation splitOrientation = Orientation.HORIZONTAL;
   private Button helperButton;
   private DemoHelperViewer demoHelperViewer;
 
@@ -223,10 +227,8 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
       createSourceCodeTab(demo.getClass(), demoSource).ifPresent(sourceTabs::add);
     }
 
-    Orientation splitOrientation = null;
     SourcePosition previousPosition = null;
     if (currentLayout != null) {
-      splitOrientation = currentLayout.getOrientation();
       previousPosition = currentLayout.getSourcePosition();
     }
 
@@ -247,10 +249,11 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
         currentLayout.setSourcePosition(resolveDefaultPosition(previousPosition));
       }
 
-      if (splitOrientation != null) {
-        setOrientation(splitOrientation);
-        updateSplitterPosition();
-      }
+      // A freshly created layout defaults to HORIZONTAL; adopt the orientation remembered across
+      // demos (which may have changed while no layout was present). This is initialization, not a
+      // state change, so it does not fire an OrientationChangedEvent.
+      currentLayout.setOrientation(splitOrientation);
+      updateSplitterPosition();
 
       setupDemoHelperButton(currentLayout.getContent().getPrimaryComponent().getClass());
     } else {
@@ -421,7 +424,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
    * @return the current orientation
    */
   public Orientation getOrientation() {
-    return currentLayout.getOrientation();
+    return splitOrientation;
   }
 
   /**
@@ -434,11 +437,15 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   }
 
   private void setOrientation(Orientation orientation, boolean fromClient) {
-    if (currentLayout != null && orientation != getOrientation()) {
-        currentLayout.setOrientation(orientation);
-        updateSplitterPosition();
-        fireOrientationChangedEvent(orientation, fromClient);
+    if (orientation == splitOrientation) {
+      return;
     }
+    splitOrientation = orientation;
+    if (currentLayout != null) {
+      currentLayout.setOrientation(orientation);
+      updateSplitterPosition();
+    }
+    fireOrientationChangedEvent(orientation, fromClient);
   }
 
   /**

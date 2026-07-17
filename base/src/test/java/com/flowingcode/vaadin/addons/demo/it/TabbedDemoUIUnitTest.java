@@ -183,6 +183,23 @@ public class TabbedDemoUIUnitTest extends UIUnit4Test {
     assertEquals(Orientation.VERTICAL, demo.getOrientation());
   }
 
+  @Test
+  public void orientationSetWithoutLayoutCarriesOverToNextDemo() {
+    // A source-less demo has no layout; setting the orientation there (as a device-driven portrait
+    // adjustment does on attach) must be remembered and applied to the next source-bearing demo.
+    TabbedDemoView demo = new TabbedDemoView();
+    Component noSource = new TabbedDemoViewNoSource();
+    demo.showRouterLayoutContent(noSource);
+
+    demo.setOrientation(Orientation.VERTICAL);
+    assertEquals(Orientation.VERTICAL, demo.getOrientation());
+
+    demo.removeRouterLayoutContent(noSource);
+    demo.showRouterLayoutContent(new TabbedDemoViewSingleSource());
+
+    assertEquals(Orientation.VERTICAL, demo.getOrientation());
+  }
+
   /** Counts elements with the given tag in the subtree rooted at {@code root} (inclusive). */
   private static long count(Element root, String tag) {
     long self = tag.equals(root.getTag()) ? 1 : 0;
