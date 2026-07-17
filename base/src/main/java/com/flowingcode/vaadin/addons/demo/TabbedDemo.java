@@ -378,6 +378,9 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   private void setSourcePosition(SourcePosition sourcePosition, boolean fromClient) {
     if (currentLayout != null) {
       currentLayout.setSourcePosition(sourcePosition);
+      if (sourceCollapsed) {
+        updateSplitterPosition();
+      }
       SourcePosition resolvedPosition = sourcePosition == SourcePosition.DEFAULT
           ? resolveDefaultPosition(currentLayout.getSourcePosition())
           : sourcePosition;
