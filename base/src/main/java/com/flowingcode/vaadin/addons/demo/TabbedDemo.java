@@ -436,7 +436,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   private void setOrientation(Orientation orientation, boolean fromClient) {
     if (currentLayout != null && orientation != getOrientation()) {
         currentLayout.setOrientation(orientation);
-        currentLayout.setSourceCollapsed(false);
+        updateSplitterPosition();
         fireOrientationChangedEvent(orientation, fromClient);
     }
   }
