@@ -1,0 +1,9 @@
+/* begin-block fragment */
+.foo {
+  color: red;
+}
+/* end-block */
+
+.bar {
+  color: blue;
+}

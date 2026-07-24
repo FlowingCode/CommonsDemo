@@ -46,7 +46,8 @@ public class SourceCodeViewerView extends Div implements HasUrlParameter<String>
     }
 
     String url = event.getLocation().getQueryParameters().getQueryString();
-    add(new SourceCodeViewer(url, properties));
+    String language = url.endsWith(".css") ? "css" : "java";
+    add(new SourceCodeViewer(url, language, properties));
   }
 
 }

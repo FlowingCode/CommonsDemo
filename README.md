@@ -230,8 +230,8 @@ The highlighted fragment is automatically scrolled into view.
 
 A fragment is highlighted either by calling `SourceCodeViewer.highlight(filenameAndId)` or when clicking/hovering a component that has been configured with `SourceCodeViewer.highlightOnClick` or `SourceCodeViewer.highlightOnHover`, where `filenameAndId` is the name of the fragment. If the component is in an additional source file, `filenameAndId` can be given as a string in the format `filename#id`. If no `'#'` is present, it is assumed that the identifier corresponds to a block in the first source panel. `SourceCodeViewer.highlight(null)` turns off the highlighting.
 
-In the source code, a fragment is delimited by `// begin-block filenameAndId` and `// end-block` comments. Nested fragments are not supported.
-The `// begin-block` and `// end-block` comments are removed after post-processing.
+In the source code, a fragment is delimited by `// begin-block id` and `// end-block` comments. Nested fragments are not supported.
+The begin-block and end-block comments are removed after post-processing.
 
 ```
     // begin-block first
@@ -243,6 +243,16 @@ The `// begin-block` and `// end-block` comments are removed after post-processi
     Div other = new Div(new Text("Highlight additional source"));
     SourceCodeViewer.highlightOnHover(other, "AdditionalSource.java#other");
     add(other);
+```
+
+The delimiters can also be written as block comments, which is the only option in languages that have no line comments, such as CSS.
+
+```css
+/* begin-block dashed */
+.dashed {
+	border: 1px dashed black;
+}
+/* end-block */
 ```
 
 <!-- FROM https://github.com/FlowingCode/CommonsDemo/pull/62 -->
