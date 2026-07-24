@@ -59,4 +59,10 @@ public class SourceCodeViewerIT extends AbstractSourceCodeViewerIT {
     assertEquals(expected(), open());
   }
 
+  @Test
+  public void testCssFragment() {
+    assertEquals(expected(), openCss());
+    assertEquals("css", viewer.getLanguage());
+  }
+
 }

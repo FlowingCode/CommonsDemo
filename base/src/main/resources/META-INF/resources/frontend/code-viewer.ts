@@ -436,15 +436,24 @@ pre[class*="language-"] {
             trimStart(i+1);
         }
     }
-      
+
+    //return the body of a line (//...) or block (/*...*/) comment, or undefined if the
+    //text is not a comment. Block comments are used by languages that lack line comments.
+    const commentBody = (text:string) : string|undefined => {
+        const m = text.match("^//(.*)") ?? text.match("^/\\*((?:[^*]|\\*(?!/))*)\\*/");
+        return m ? m[1] : undefined;
+    }
+
     var last : string|undefined;
     for (var i=0; i<nodes.length; i++) {
         //process instructions in element nodes
         if (nodes[i].nodeType!=1) continue;
-          
-        const text = nodes[i].textContent!;
-        var m = text.match("^//\\s*begin-block\\s+(\\S+)\\s*");
-        
+
+        const text = commentBody(nodes[i].textContent!);
+        if (text===undefined) continue;
+
+        const m = text.match("^\\s*begin-block\\s+(\\S+)\\s*");
+
         if (m) {
             last = m[1];
             (nodes[i] as HTMLElement).classList.add('begin-'+m[1]);
@@ -452,8 +461,8 @@ pre[class*="language-"] {
             trimDelimiter(i);
             continue;
         }
-        
-        if (text.match("^//\\s*end-block\\s*") && last) {
+
+        if (text.match("^\\s*end-block\\s*") && last) {
             (nodes[i] as HTMLElement).classList.add('end-'+last);
             nodes[i].textContent='';
             trimDelimiter(i);
