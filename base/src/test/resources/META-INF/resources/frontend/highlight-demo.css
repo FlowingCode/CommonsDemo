@@ -1,8 +1,10 @@
+/* begin-block dashed */
 .dashed {
 	border: 1px dashed black;
 	padding: 1ex;
 	margin: 1ex;
 }
+/* end-block */
 
 .dashed:hover {
     background: var(--lumo-contrast-10pct);

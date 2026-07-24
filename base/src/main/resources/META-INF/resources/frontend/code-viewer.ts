@@ -427,24 +427,34 @@ pre[class*="language-"] {
         }
     }
 
-    //remove the line of the delimiter at node i. When the delimiter is the first
-    //node there is no preceding text node, so the following one is trimmed instead.
+    //remove the line of the delimiter at node i. When the delimiter is not preceded by
+    //a text node (it is the first node, or it follows the license header), the following
+    //one is trimmed instead.
     const trimDelimiter = (i:number) => {
-        if (i>0) {
+        if (i>0 && nodes[i-1].nodeType==3) {
             trimEnd(i-1);
         } else {
             trimStart(i+1);
         }
     }
-      
+
+    //return the body of a line (//...) or block (/*...*/) comment, or undefined if the
+    //text is not a comment. Block comments are used by languages that lack line comments.
+    const commentBody = (text:string) : string|undefined => {
+        const m = text.match("^//(.*)") ?? text.match("^/\\*((?:[^*]|\\*(?!/))*)\\*/");
+        return m ? m[1] : undefined;
+    }
+
     var last : string|undefined;
     for (var i=0; i<nodes.length; i++) {
         //process instructions in element nodes
         if (nodes[i].nodeType!=1) continue;
-          
-        const text = nodes[i].textContent!;
-        var m = text.match("^//\\s*begin-block\\s+(\\S+)\\s*");
-        
+
+        const text = commentBody(nodes[i].textContent!);
+        if (text===undefined) continue;
+
+        const m = text.match("^\\s*begin-block\\s+(\\S+)\\s*");
+
         if (m) {
             last = m[1];
             (nodes[i] as HTMLElement).classList.add('begin-'+m[1]);
@@ -452,8 +462,8 @@ pre[class*="language-"] {
             trimDelimiter(i);
             continue;
         }
-        
-        if (text.match("^//\\s*end-block\\s*") && last) {
+
+        if (text.match("^\\s*end-block\\s*") && last) {
             (nodes[i] as HTMLElement).classList.add('end-'+last);
             nodes[i].textContent='';
             trimDelimiter(i);
