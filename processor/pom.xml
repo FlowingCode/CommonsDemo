@@ -5,7 +5,7 @@
 
   <groupId>com.flowingcode.vaadin.addons.demo</groupId>
   <artifactId>commons-demo-processor</artifactId>
-  <version>5.4.0</version>
+  <version>5.4.1-SNAPSHOT</version>
 
   <name>Commons Demo Processor</name>
   <description>Annotation processor for Commons Demo: copies @DemoSource-referenced files into the class output</description>
@@ -42,7 +42,7 @@
     <url>https://github.com/FlowingCode/CommonsDemo</url>
     <connection>scm:git:git://github.com/FlowingCode/CommonsDemo.git</connection>
     <developerConnection>scm:git:ssh://git@github.com:/FlowingCode/CommonsDemo.git</developerConnection>
-    <tag>commons-demo-5.4.0</tag>
+    <tag>master</tag>
   </scm>
 
   <dependencies>
