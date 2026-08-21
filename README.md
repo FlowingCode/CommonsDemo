@@ -50,6 +50,22 @@ By default, help content will be rendered in a `Dialog`.
 
 ![image](https://github.com/FlowingCode/CommonsDemo/assets/11554739/055a447e-a104-4ec7-a98c-fc1df8abef01)
 
+### Styling the demo pane
+
+The demo pane is named after the segments of the demo's `@Route`, one class name per segment, each one qualified by the segments preceding it. For `@Route("foo/bar")` the pane is:
+
+```html
+<div id="content" class="foo foo-bar demo-foo demo-foo-bar demos-v25">
+```
+
+Prefer the `demo-` prefixed names in demo stylesheets. The unprefixed names are deprecated: they are not namespaced, so they can collide with global selectors in the add-on's own stylesheet (a demo under the `foo` base path gets a bare `foo` class, and a global `.foo` rule then applies to the whole pane). An add-on facing such a collision can opt out of them, after migrating its own demo stylesheet to the prefixed names:
+
+```java
+TabbedDemo.disableLegacyRouteClassNames();
+```
+
+The unprefixed names, along with that method, will be removed in a future release.
+
 ## Dynamic Theme
 
 Available in Vaadin 25+, this feature allows you to verify add-on behavior across the Lumo and Aura themes, as well as with minimal base styles. The theme can be switched at runtime using the theme selector in the footer of the `TabbedDemo` component.

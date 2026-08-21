@@ -24,6 +24,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import com.flowingcode.vaadin.addons.demo.SourcePosition;
+import com.flowingcode.vaadin.addons.demo.TabbedDemo;
 import com.flowingcode.vaadin.addons.demo.events.OrientationChangedEvent;
 import com.flowingcode.vaadin.addons.demo.events.SourceCollapseChangedEvent;
 import com.flowingcode.vaadin.addons.demo.events.SourcePositionChangedEvent;
@@ -36,8 +37,11 @@ import com.vaadin.flow.component.splitlayout.SplitLayout.Orientation;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.testbench.unit.UIUnit4Test;
 import com.vaadin.testbench.unit.ViewPackages;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.SneakyThrows;
+import org.junit.After;
 import org.junit.Test;
 
 @ViewPackages(classes = TabbedDemoView.class)
@@ -198,6 +202,45 @@ public class TabbedDemoUIUnitTest extends UIUnit4Test {
     demo.showRouterLayoutContent(new TabbedDemoViewSingleSource());
 
     assertEquals(Orientation.VERTICAL, demo.getOrientation());
+  }
+
+  // --- route-derived class names are namespaced, the unprefixed ones can be turned off ---
+
+  /**
+   * Restores the legacy class names for the next test. {@code disableLegacyRouteClassNames()} is a
+   * one-way switch by design, so the flag behind it is reset reflectively.
+   */
+  @After
+  @SneakyThrows
+  public void restoreLegacyRouteClassNames() {
+    Field field = TabbedDemo.class.getDeclaredField("legacyRouteClassNames");
+    field.setAccessible(true);
+    field.set(null, true);
+  }
+
+  @Test
+  public void routeClassNamesAreEmittedPrefixedAndUnprefixed() {
+    TabbedDemoViewNoSource content = new TabbedDemoViewNoSource();
+    new TabbedDemoView().showRouterLayoutContent(content);
+
+    // @Route("it/tabbed-demo-no-source"): one class name per segment, each qualified by the
+    // segments preceding it.
+    assertTrue(content.getClassNames().containsAll(
+        List.of("it", "it-tabbed-demo-no-source", "demo-it", "demo-it-tabbed-demo-no-source")));
+  }
+
+  @Test
+  @SuppressWarnings("removal")
+  public void disablingLegacyRouteClassNamesLeavesOnlyThePrefixedOnes() {
+    TabbedDemo.disableLegacyRouteClassNames();
+
+    TabbedDemoViewNoSource content = new TabbedDemoViewNoSource();
+    new TabbedDemoView().showRouterLayoutContent(content);
+
+    assertTrue(content.getClassNames()
+        .containsAll(List.of("demo-it", "demo-it-tabbed-demo-no-source")));
+    assertFalse(content.getClassNames().contains("it"));
+    assertFalse(content.getClassNames().contains("it-tabbed-demo-no-source"));
   }
 
   /** Counts elements with the given tag in the subtree rooted at {@code root} (inclusive). */

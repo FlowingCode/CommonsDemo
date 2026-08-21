@@ -73,6 +73,12 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
   private static final Logger logger = LoggerFactory.getLogger(TabbedDemo.class);
 
   private static final int MOBILE_DEVICE_BREAKPOINT_WIDTH = 768;
+
+  /** Namespace for the class names derived from the segments of the demo's {@link Route}. */
+  private static final String ROUTE_CLASS_NAME_PREFIX = "demo-";
+
+  private static boolean legacyRouteClassNames = true;
+
   private boolean autoVisibility;
   private boolean sourceCollapsed;
   private EnhancedRouteTabs tabs;
@@ -200,19 +206,7 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
       demo.setId("content");
     }
 
-    Optional.ofNullable(demo.getClass().getAnnotation(Route.class))
-    .map(route -> route.value().replaceFirst("^/+", "").replaceFirst("^[0-9]", "_$0"))
-    .filter(Predicate.not(String::isEmpty)).ifPresent(route -> {
-        StringBuilder prefix = new StringBuilder();
-          for (String segment : route.split("/+")) {
-            segment = segment.replaceAll("[^a-zA-Z0-9_-]+", "-").replaceAll("^-+|-+$", "");
-            if (!segment.isEmpty()) {
-              prefix.append(segment);
-              demo.addClassName(prefix.toString());
-              prefix.append('-');
-            }
-        }
-    });
+    addRouteClassNames(demo);
 
     demo.addClassName("demos-v" + Version.getMajorVersion());
 
@@ -266,6 +260,68 @@ public class TabbedDemo extends VerticalLayout implements RouterLayout {
     getElement().insertChild(1, content.getElement());
 
     setColorScheme(this, getColorScheme());
+  }
+
+  /**
+   * Names the demo pane after the segments of its {@link Route}, both in the {@code demo-}
+   * namespace and (unless {@link #disableLegacyRouteClassNames()} was called) as the legacy
+   * unprefixed names.
+   */
+  private static void addRouteClassNames(Component demo) {
+    List<String> classNames = routeClassNames(demo.getClass());
+    if (legacyRouteClassNames) {
+      classNames.forEach(demo::addClassName);
+    }
+    classNames.stream().map(ROUTE_CLASS_NAME_PREFIX::concat).forEach(demo::addClassName);
+  }
+
+  /**
+   * Returns the unprefixed class names derived from the segments of the demo's {@link Route}, each
+   * one qualified by the preceding segments. For {@code @Route("foo/bar")} the names are
+   * {@code foo} and {@code foo-bar}.
+   *
+   * @param demoClass the class of the routed demo view component
+   * @return the route-derived class names, in outermost-segment-first order; empty when the class
+   *         has no {@link Route} annotation or the route contributes no usable segment
+   */
+  private static List<String> routeClassNames(Class<?> demoClass) {
+    List<String> classNames = new ArrayList<>();
+    Optional.ofNullable(demoClass.getAnnotation(Route.class))
+    .map(route -> route.value().replaceFirst("^/+", "").replaceFirst("^[0-9]", "_$0"))
+    .filter(Predicate.not(String::isEmpty)).ifPresent(route -> {
+        StringBuilder prefix = new StringBuilder();
+          for (String segment : route.split("/+")) {
+            segment = segment.replaceAll("[^a-zA-Z0-9_-]+", "-").replaceAll("^-+|-+$", "");
+            if (!segment.isEmpty()) {
+              prefix.append(segment);
+              classNames.add(prefix.toString());
+              prefix.append('-');
+            }
+        }
+    });
+    return classNames;
+  }
+
+  /**
+   * Stops emitting the legacy, unprefixed route-derived class names on the demo pane, leaving only
+   * the {@code demo-} prefixed ones.
+   * <p>
+   * The pane is named after the segments of the demo's {@link Route}. Each name is emitted in the
+   * {@code demo-} namespace and, unless this method is called, also without prefix, so that
+   * {@code @Route("foo/bar")} yields {@code foo foo-bar demo-foo demo-foo-bar}. The unprefixed
+   * names are entirely up to the add-on's base path and are not namespaced, so they can collide
+   * with global selectors in the add-on's own stylesheet: a demo under the {@code foo} base path
+   * gets a bare {@code foo} class, and a global {@code .foo} rule then applies to the whole pane
+   * rather than to the component it was written for. Opting out is what an add-on facing such a
+   * collision should do, after migrating its own demo stylesheet to the prefixed names.
+   * </p>
+   *
+   * @deprecated The unprefixed class names are deprecated and will be removed along with this
+   *             method. Target the {@code demo-} prefixed names instead.
+   */
+  @Deprecated(forRemoval = true, since = "5.4.1")
+  public static void disableLegacyRouteClassNames() {
+    legacyRouteClassNames = false;
   }
 
   private static SourceUrlResolver resolver = null;
