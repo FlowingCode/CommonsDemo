@@ -36,7 +36,7 @@ import com.vaadin.flow.router.Route;
 @DemoSource("/src/test/resources/META-INF/resources/frontend/multi-source-demo.css")
 @DemoSource(value="/src/test/resources/META-INF/resources/frontend/condition-true.css", condition = "vaadin ge 14")
 @DemoSource(value="/src/test/resources/META-INF/resources/frontend/condition-false.css", condition = "vaadin eq 0")
-@StyleSheet("./multi-source-demo.css")
+@StyleSheet("context://frontend/multi-source-demo.css")
 public class MultiSourceDemo extends Div {
   public MultiSourceDemo() {
 
