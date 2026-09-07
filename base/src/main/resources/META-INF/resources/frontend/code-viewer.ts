@@ -415,7 +415,25 @@ pre[class*="language-"] {
         //remove trailing \n and spaces from text node i
         const node = nodes[i]
         if (node && node.nodeType==3) {
-            node.textContent=(node.textContent as any).replaceAll(/\n[\t\x20]+$/g,'');
+            node.textContent=(node.textContent as any).replaceAll(/\n[\t\x20]*$/g,'');
+        }
+    }
+
+    const trimStart = (i:number) => {
+        //remove the leading \n from text node i
+        const node = nodes[i]
+        if (node && node.nodeType==3) {
+            node.textContent=(node.textContent as any).replace(/^\n/,'');
+        }
+    }
+
+    //remove the line of the delimiter at node i. When the delimiter is the first
+    //node there is no preceding text node, so the following one is trimmed instead.
+    const trimDelimiter = (i:number) => {
+        if (i>0) {
+            trimEnd(i-1);
+        } else {
+            trimStart(i+1);
         }
     }
       
@@ -431,14 +449,14 @@ pre[class*="language-"] {
             last = m[1];
             (nodes[i] as HTMLElement).classList.add('begin-'+m[1]);
             nodes[i].textContent='';
-            trimEnd(i-1);
+            trimDelimiter(i);
             continue;
         }
         
         if (text.match("^//\\s*end-block\\s*") && last) {
             (nodes[i] as HTMLElement).classList.add('end-'+last);
             nodes[i].textContent='';
-            trimEnd(i-1);
+            trimDelimiter(i);
             continue;
         }
     }
