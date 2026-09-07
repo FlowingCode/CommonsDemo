@@ -32,7 +32,7 @@ import com.vaadin.flow.router.Route;
 @PageTitle("Highlight")
 @DemoSource
 @DemoSource("/src/test/resources/META-INF/resources/frontend/highlight-demo.css")
-@StyleSheet("./highlight-demo.css")
+@StyleSheet("context://frontend/highlight-demo.css")
 public class SampleDemoHighlight extends Div {
 
   public SampleDemoHighlight() {
