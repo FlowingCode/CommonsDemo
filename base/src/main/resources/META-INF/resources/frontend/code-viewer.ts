@@ -338,7 +338,9 @@ pre[class*="language-"] {
     return lines.filter(line=>line!==null)
     .map(line=>line!)
     .filter(line=>
-       !line.match("//\\s*hide-source(\\s|$)")
+       //a trailing show-source comment overrides the boilerplate removal
+       line.match(/\/\/\s*show-source\s*$/)!=null
+    || (!line.match("//\\s*hide-source(\\s|$)")
     && !line.startsWith('@Route')
     && !line.startsWith('@PageTitle')
     && !line.startsWith('@SuppressWarnings')
@@ -350,10 +352,13 @@ pre[class*="language-"] {
     && line != 'import com.vaadin.flow.router.PageTitle;'
     && line != 'import com.vaadin.flow.router.Route;'
     && line != 'import com.flowingcode.vaadin.addons.demo.DemoSource;'
-    && line != 'import org.junit.Ignore;'
+    && line != 'import org.junit.Ignore;')
     ).map(line=>{
         let m= line!.match("^(?<spaces>\\s*)//\\s*show-source\\s(?<line>.*)");
-        return m?m.groups!.spaces+m.groups!.line : line;
+        if (m) return m.groups!.spaces+m.groups!.line;
+        //remove a trailing show-source comment
+        const suffix = /\/\/\s*show-source\s*$/.exec(line!);
+        return suffix ? line!.slice(0,suffix.index).trimEnd() : line!;
     })
     .join('\n');
   }
