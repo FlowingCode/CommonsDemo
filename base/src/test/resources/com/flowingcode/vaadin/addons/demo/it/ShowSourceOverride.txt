@@ -1,0 +1,6 @@
+class MyClass {
+
+  SourceCodeViewer.highlight(null);
+  SourceCodeViewer.highlightOnHover(div, "first");
+
+}

@@ -40,6 +40,11 @@ public class SourceCodeViewerIT extends AbstractSourceCodeViewerIT {
   }
 
   @Test
+  public void testShowSourceOverride() {
+    assertEquals(expected(), open());
+  }
+
+  @Test
   public void testPackageCleanup() {
     assertEquals(expected(), open());
   }

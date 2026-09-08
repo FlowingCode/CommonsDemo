@@ -167,7 +167,7 @@ Commonly used boilerplate code from source snippets is automatically hidden:
   - `@org.junit.Ignore`
 - Calls to `SourceCodeViewer.highlight`, `SourceCodeViewer.highlightOnHover` and `SourceCodeViewer.highlightOnClick`
 
-This feature cannot be disabled.
+This feature cannot be disabled, but a line ending with a `// show-source` comment is always rendered. The comment itself is removed, so the line is rendered as it is written.
 
 <!-- FROM https://github.com/FlowingCode/CommonsDemo/pull/37 -->
 ![image](https://github.com/FlowingCode/CommonsDemo/assets/11554739/083cf7ec-0f36-4db8-ab61-6c24650f4f13)
