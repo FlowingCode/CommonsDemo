@@ -338,7 +338,9 @@ pre[class*="language-"] {
     return lines.filter(line=>line!==null)
     .map(line=>line!)
     .filter(line=>
-       !line.match("//\\s*hide-source(\\s|$)")
+       //a trailing show-source comment overrides the boilerplate removal
+       line.match(/\/\/\s*show-source\s*$/)!=null
+    || (!line.match("//\\s*hide-source(\\s|$)")
     && !line.startsWith('@Route')
     && !line.startsWith('@PageTitle')
     && !line.startsWith('@SuppressWarnings')
@@ -350,10 +352,13 @@ pre[class*="language-"] {
     && line != 'import com.vaadin.flow.router.PageTitle;'
     && line != 'import com.vaadin.flow.router.Route;'
     && line != 'import com.flowingcode.vaadin.addons.demo.DemoSource;'
-    && line != 'import org.junit.Ignore;'
+    && line != 'import org.junit.Ignore;')
     ).map(line=>{
         let m= line!.match("^(?<spaces>\\s*)//\\s*show-source\\s(?<line>.*)");
-        return m?m.groups!.spaces+m.groups!.line : line;
+        if (m) return m.groups!.spaces+m.groups!.line;
+        //remove a trailing show-source comment
+        const suffix = /\/\/\s*show-source\s*$/.exec(line!);
+        return suffix ? line!.slice(0,suffix.index).trimEnd() : line!;
     })
     .join('\n');
   }
@@ -415,30 +420,57 @@ pre[class*="language-"] {
         //remove trailing \n and spaces from text node i
         const node = nodes[i]
         if (node && node.nodeType==3) {
-            node.textContent=(node.textContent as any).replaceAll(/\n[\t\x20]+$/g,'');
+            node.textContent=(node.textContent as any).replaceAll(/\n[\t\x20]*$/g,'');
         }
     }
-      
+
+    const trimStart = (i:number) => {
+        //remove the leading \n from text node i
+        const node = nodes[i]
+        if (node && node.nodeType==3) {
+            node.textContent=(node.textContent as any).replace(/^\n/,'');
+        }
+    }
+
+    //remove the line of the delimiter at node i. When the delimiter is the first
+    //node there is no preceding text node, so the following one is trimmed instead.
+    const trimDelimiter = (i:number) => {
+        if (i>0) {
+            trimEnd(i-1);
+        } else {
+            trimStart(i+1);
+        }
+    }
+
+    //return the body of a line (//...) or block (/*...*/) comment, or undefined if the
+    //text is not a comment. Block comments are used by languages that lack line comments.
+    const commentBody = (text:string) : string|undefined => {
+        const m = text.match("^//(.*)") ?? text.match("^/\\*((?:[^*]|\\*(?!/))*)\\*/");
+        return m ? m[1] : undefined;
+    }
+
     var last : string|undefined;
     for (var i=0; i<nodes.length; i++) {
         //process instructions in element nodes
         if (nodes[i].nodeType!=1) continue;
-          
-        const text = nodes[i].textContent!;
-        var m = text.match("^//\\s*begin-block\\s+(\\S+)\\s*");
-        
+
+        const text = commentBody(nodes[i].textContent!);
+        if (text===undefined) continue;
+
+        const m = text.match("^\\s*begin-block\\s+(\\S+)\\s*");
+
         if (m) {
             last = m[1];
             (nodes[i] as HTMLElement).classList.add('begin-'+m[1]);
             nodes[i].textContent='';
-            trimEnd(i-1);
+            trimDelimiter(i);
             continue;
         }
-        
-        if (text.match("^//\\s*end-block\\s*") && last) {
+
+        if (text.match("^\\s*end-block\\s*") && last) {
             (nodes[i] as HTMLElement).classList.add('end-'+last);
             nodes[i].textContent='';
-            trimEnd(i-1);
+            trimDelimiter(i);
             continue;
         }
     }

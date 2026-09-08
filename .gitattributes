@@ -1,0 +1,4 @@
+# Store all text files with LF in the repository, and check them out with LF
+# on every platform. The source code viewer compares lines verbatim against
+# the expected output of the integration tests, which fails on a CRLF checkout.
+* text=auto eol=lf

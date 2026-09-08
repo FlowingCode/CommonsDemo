@@ -31,36 +31,42 @@ import com.vaadin.flow.router.Route;
 @Route(value = "demo/highlight", layout = Demo.class)
 @PageTitle("Highlight")
 @DemoSource
-@StyleSheet("./highlight-demo.css")
+@DemoSource("/src/test/resources/META-INF/resources/frontend/highlight-demo.css")
+@StyleSheet("context://frontend/highlight-demo.css")
 public class SampleDemoHighlight extends Div {
 
   public SampleDemoHighlight() {
     add(new Span("Highlight source fragments"));
 
     // begin-block first
-    Div first = new Div(new Text("First"));
-    SourceCodeViewer.highlightOnHover(first, "first");
-    first.addClassName("dashed"); // hide-source
+    Div first = new Div(new Text("Highlight on hover (first)"));
+    SourceCodeViewer.highlightOnHover(first, "first"); // show-source
+    first.addClassName("dashed");
     add(first);
     // end-block
 
     // begin-block second
-    Div second = new Div(new Text("Second"));
-    SourceCodeViewer.highlightOnHover(second, "second");
-    second.addClassName("dashed"); // hide-source
+    Div second = new Div(new Text("Highlight on hover (second)"));
+    SourceCodeViewer.highlightOnHover(second, "second"); // show-source
+    second.addClassName("dashed");
     add(second);
     // end-block
+
+    Div third = new Div(new Text("Highlight on hover (CSS)"));
+    SourceCodeViewer.highlightOnHover(third, "highlight-demo.css#dashed"); // show-source
+    third.addClassName("dashed");
+    add(third);
 
     HorizontalLayout hl = new HorizontalLayout();
 
     // begin-block button
-    Button button = new Button("Click me");
-    SourceCodeViewer.highlightOnClick(button, "button");
+    Button button = new Button("Highlight on click");
+    SourceCodeViewer.highlightOnClick(button, "button"); // show-source
     add(button);
     // end-block
 
     hl.add(new Button("Highlight Off", ev -> {
-      SourceCodeViewer.highlight(null);
+      SourceCodeViewer.highlight(null); // show-source
     }));
 
     add(hl);

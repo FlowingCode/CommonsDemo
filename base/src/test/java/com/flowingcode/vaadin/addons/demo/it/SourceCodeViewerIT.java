@@ -40,6 +40,11 @@ public class SourceCodeViewerIT extends AbstractSourceCodeViewerIT {
   }
 
   @Test
+  public void testShowSourceOverride() {
+    assertEquals(expected(), open());
+  }
+
+  @Test
   public void testPackageCleanup() {
     assertEquals(expected(), open());
   }
@@ -57,6 +62,12 @@ public class SourceCodeViewerIT extends AbstractSourceCodeViewerIT {
   @Test
   public void testCleanupOverride() {
     assertEquals(expected(), open());
+  }
+
+  @Test
+  public void testCssFragment() {
+    assertEquals(expected(), openCss());
+    assertEquals("css", viewer.getLanguage());
   }
 
 }
