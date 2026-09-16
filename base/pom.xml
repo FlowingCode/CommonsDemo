@@ -56,6 +56,17 @@
       </snapshots>
     </repository>
   </repositories>
+
+  <pluginRepositories>
+    <?dev-only?>
+    <pluginRepository>
+      <id>flowing-code-snapshots</id>
+      <url>https://maven.flowingcode.com/snapshots</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
   	
   <dependencyManagement>
         <dependencies>
@@ -122,6 +133,7 @@
     </dependency>
     
     <dependency>
+        <?dev-only?>
         <groupId>com.vaadin</groupId>
         <artifactId>vaadin-testbench</artifactId>
         <scope>test</scope>
@@ -134,6 +146,7 @@
     </dependency>
 
     <dependency>
+        <?dev-only?>
         <groupId>com.flowingcode.vaadin.test</groupId>
         <artifactId>testbench-rpc</artifactId>
         <version>1.5.0</version>
@@ -210,6 +223,19 @@
     </pluginManagement>
     
     <plugins>
+        <plugin>
+            <?dev-only?>
+            <groupId>com.flowingcode.maven</groupId>
+            <artifactId>dev-nuke-maven-plugin</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>dev-nuke</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-jar-plugin</artifactId>
