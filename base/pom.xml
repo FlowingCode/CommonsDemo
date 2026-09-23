@@ -57,17 +57,6 @@
     </repository>
   </repositories>
 
-  <pluginRepositories>
-    <?dev-only?>
-    <pluginRepository>
-      <id>flowing-code-snapshots</id>
-      <url>https://maven.flowingcode.com/snapshots</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
-  	
   <dependencyManagement>
         <dependencies>
             <dependency>
