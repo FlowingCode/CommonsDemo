@@ -82,6 +82,7 @@
     </dependency>
     
     <dependency>
+        <?dev-only?>
         <groupId>com.vaadin</groupId>
         <artifactId>vaadin</artifactId>
         <scope>test</scope>
