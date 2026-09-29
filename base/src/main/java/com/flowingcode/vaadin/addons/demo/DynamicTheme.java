@@ -233,10 +233,14 @@ public enum DynamicTheme {
     }
 
     if (href != null) {
-      Element link = response.getDocument().createElement("link");
-      link.attr("rel", "stylesheet");
-      link.attr("href", href);
-      response.getDocument().head().appendChild(link);
+      // skip the link if it was already added through AppShellSettings
+      String selector = "link[rel=stylesheet][href=\"" + href + "\"]";
+      if (response.getDocument().selectFirst(selector) == null) {
+        Element link = response.getDocument().createElement("link");
+        link.attr("rel", "stylesheet");
+        link.attr("href", href);
+        response.getDocument().head().appendChild(link);
+      }
     }
   }
 
