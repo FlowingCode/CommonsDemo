@@ -169,7 +169,12 @@ public enum DynamicTheme {
    * @throws UnsupportedOperationException if the runtime Vaadin version is older than 25
    * @throws IllegalStateException if the {@link AppShellConfigurator} is configured with the legacy
    *         {@link Theme} annotation
+   * @deprecated Annotate the {@link AppShellConfigurator} with {@link DefaultDynamicTheme} instead.
+   *             This method is only invoked when {@code index.html} is generated, therefore the
+   *             default theme is unknown to sessions that did not load {@code index.html} until it
+   *             has been served at least once.
    */
+  @Deprecated(since = "5.5.0", forRemoval = true)
   public void initialize(AppShellSettings settings) {
     assertFeatureSupported();
     assertNotLegacyTheme();
