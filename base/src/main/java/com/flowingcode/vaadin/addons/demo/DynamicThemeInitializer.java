@@ -19,6 +19,8 @@
  */
 package com.flowingcode.vaadin.addons.demo;
 
+import com.vaadin.flow.component.page.AppShellConfigurator;
+import com.vaadin.flow.server.AppShellRegistry;
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;
 import com.vaadin.flow.server.communication.IndexHtmlRequestListener;
@@ -34,10 +36,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Service initialization listener that automatically applies a dynamic theme.
  * <p>
- * If the dynamic theme feature is supported, this listener checks for the presence of a
- * {@code /META-INF/dynamic-theme.properties} file. If found, it reads the {@code theme} property
- * (e.g., {@code theme=LUMO}), registers it as the default theme of the application, and registers
- * an {@link IndexHtmlRequestListener} to initialize the theme for all requests.
+ * If the dynamic theme feature is supported, this listener checks whether the
+ * {@link AppShellConfigurator} is annotated with {@link DefaultDynamicTheme}. Otherwise, it checks
+ * for the presence of a {@code /META-INF/dynamic-theme.properties} file, and if found, it reads the
+ * {@code theme} property (e.g., {@code theme=LUMO}). The theme is registered as the default theme
+ * of the application, and an {@link IndexHtmlRequestListener} is registered to initialize the theme
+ * for all requests.
  * </p>
  */
 @SuppressWarnings("serial")
@@ -50,6 +54,23 @@ public class DynamicThemeInitializer implements VaadinServiceInitListener {
   @Override
   public void serviceInit(ServiceInitEvent event) {
     if (DynamicTheme.isFeatureSupported()) {
+      Class<? extends AppShellConfigurator> appShellClass =
+          AppShellRegistry.getInstance(event.getSource().getContext()).getShell();
+      if (appShellClass == null) {
+        logger.debug("No AppShellConfigurator is registered, @DefaultDynamicTheme is not applied");
+      }
+      DefaultDynamicTheme annotation = appShellClass != null
+          ? appShellClass.getAnnotation(DefaultDynamicTheme.class)
+          : null;
+      if (annotation != null) {
+        DynamicTheme.assertNotLegacyTheme(appShellClass);
+        DynamicTheme theme = annotation.value();
+        logger.info("Applying dynamic theme '{}' from {}", theme, appShellClass.getName());
+        theme.setDefault(event.getSource().getContext());
+        event.addIndexHtmlRequestListener(theme::initialize);
+        return;
+      }
+
       try {
         Enumeration<URL> resources = getClass().getClassLoader().getResources(PROPERTIES_PATH);
         boolean hasDefault = false;

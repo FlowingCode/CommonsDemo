@@ -131,8 +131,10 @@ public enum DynamicTheme {
 
   private static void assertNotLegacyTheme() {
     VaadinContext context = VaadinService.getCurrent().getContext();
-    Class<? extends AppShellConfigurator> appShellClass =
-        AppShellRegistry.getInstance(context).getShell();
+    assertNotLegacyTheme(AppShellRegistry.getInstance(context).getShell());
+  }
+
+  static void assertNotLegacyTheme(Class<? extends AppShellConfigurator> appShellClass) {
     if (appShellClass != null && appShellClass.getAnnotation(Theme.class) != null) {
       throw new IllegalStateException("App shell is configured with legacy @Theme annotation");
     }

@@ -56,7 +56,18 @@ Available in Vaadin 25+, this feature allows you to verify add-on behavior acros
 
 <img width="91" height="106" alt="image" src="https://github.com/user-attachments/assets/cce58a29-f779-477d-89b4-ee845a80b962" />
 
-To enable this feature, the `DynamicTheme` must be initialized in the `AppShellConfigurator` of the application. Ensure that the legacy `@Theme` annotation and any Aura or Lumo `@StyleSheet` references are removed.
+To enable this feature, annotate the `AppShellConfigurator` of the application with `@DefaultDynamicTheme`. Ensure that the legacy `@Theme` annotation and any Aura or Lumo `@StyleSheet` references are removed.
+
+```java
+@DefaultDynamicTheme(DynamicTheme.LUMO)
+public class AppShellConfiguratorImpl implements AppShellConfigurator {
+
+}
+```
+
+The annotation is read when the application starts, so the default theme also applies to sessions that did not load `index.html` (for example, after the server restarts while a page is open, or when `index.html` is served from a cache).
+
+Alternatively, `DynamicTheme` can be initialized in the `configurePage` method of the `AppShellConfigurator`. With this approach, the default theme is only known after `index.html` has been served at least once.
 
 ```java
 public class AppShellConfiguratorImpl implements AppShellConfigurator {
