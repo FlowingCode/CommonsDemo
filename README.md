@@ -67,20 +67,7 @@ public class AppShellConfiguratorImpl implements AppShellConfigurator {
 
 The annotation is read when the application starts, so the default theme also applies to sessions that did not load `index.html` (for example, after the server restarts while a page is open, or when `index.html` is served from a cache).
 
-Alternatively, `DynamicTheme` can be initialized in the `configurePage` method of the `AppShellConfigurator`. With this approach, the default theme is only known after `index.html` has been served at least once.
-
-```java
-public class AppShellConfiguratorImpl implements AppShellConfigurator {
-
-  @Override
-  public void configurePage(AppShellSettings settings) {
-    if (DynamicTheme.isFeatureSupported()) {
-      DynamicTheme.LUMO.initialize(settings);
-    }
-  }
-
-}
-```
+Initializing `DynamicTheme` from the `configurePage` method of the `AppShellConfigurator` (i.e. calling `DynamicTheme.LUMO.initialize(settings)`) is deprecated, because the default theme is only known after `index.html` has been served at least once. Replace that call by annotating the `AppShellConfigurator` with `@DefaultDynamicTheme`.
 
 When targeting Vaadin 14-25 or 23-25, the `AppShellConfigurator` approach cannot be used due to framework and library limitations.
 To resolve this, you must create a configuration file `src/test/resources/META-INF/dynamic-theme.properties` with the following content:
