@@ -90,12 +90,43 @@ public enum DynamicTheme {
 
   /**
    * Checks if the dynamic theme feature has been initialized for the current session.
+   * <p>
+   * The feature is initialized if a theme has been set for the current session, or if a default
+   * theme has been registered for the application.
+   * </p>
    *
    * @return {@code true} if the feature is supported and initialized; {@code false} otherwise.
    */
   public static boolean isFeatureInitialized() {
     return isFeatureSupported()
-        && VaadinSession.getCurrent().getAttribute(DynamicTheme.class) != null;
+        && (getSessionTheme() != null
+            || getDefault(VaadinService.getCurrent().getContext()) != null);
+  }
+
+  private static DynamicTheme getSessionTheme() {
+    return VaadinSession.getCurrent().getAttribute(DynamicTheme.class);
+  }
+
+  private static DynamicTheme getDefault(VaadinContext context) {
+    DefaultTheme defaultTheme = context.getAttribute(DefaultTheme.class);
+    return defaultTheme != null ? defaultTheme.theme : null;
+  }
+
+  // Registers this theme as the application-wide default, which is used for sessions that did not
+  // go through the initialization of index.html (e.g. after a server restart, or when index.html
+  // was served from a cache).
+  void setDefault(VaadinContext context) {
+    context.setAttribute(DefaultTheme.class, new DefaultTheme(this));
+  }
+
+  private void setDefaultIfAbsent(VaadinContext context) {
+    // getAttribute(type, supplier) stores the supplied value when the attribute is absent
+    context.getAttribute(DefaultTheme.class, () -> new DefaultTheme(this));
+  }
+
+  @RequiredArgsConstructor
+  private static final class DefaultTheme {
+    private final DynamicTheme theme;
   }
 
   private static void assertNotLegacyTheme() {
@@ -115,7 +146,8 @@ public enum DynamicTheme {
    */
   public static DynamicTheme getCurrent() {
     assertFeatureSupported();
-    return VaadinSession.getCurrent().getAttribute(DynamicTheme.class);
+    DynamicTheme theme = getSessionTheme();
+    return theme != null ? theme : getDefault(VaadinService.getCurrent().getContext());
   }
 
   /**
@@ -125,6 +157,10 @@ public enum DynamicTheme {
    * current {@link VaadinSession}. If no theme is present, it registers this instance
    * as the session default. Subsequently, it injects the corresponding CSS stylesheet
    * link into the document head.
+   * </p>
+   * <p>
+   * If no application-wide default has been registered, this instance is also registered
+   * as the default for sessions that did not go through this initialization.
    * </p>
    *
    * @param settings the application shell settings to be modified
@@ -136,7 +172,8 @@ public enum DynamicTheme {
     assertFeatureSupported();
     assertNotLegacyTheme();
 
-    DynamicTheme theme = getCurrent();
+    setDefaultIfAbsent(VaadinService.getCurrent().getContext());
+    DynamicTheme theme = getSessionTheme();
     if (theme == null) {
       theme = this;
       VaadinSession.getCurrent().setAttribute(DynamicTheme.class, theme);
@@ -162,6 +199,10 @@ public enum DynamicTheme {
    * as the session default. Subsequently, it injects the corresponding CSS stylesheet
    * link into the document head.
    * </p>
+   * <p>
+   * If no application-wide default has been registered, this instance is also registered
+   * as the default for sessions that did not go through this initialization.
+   * </p>
    *
    * @param response the index HTML response to be modified
    * @throws UnsupportedOperationException if the runtime Vaadin version is older than 25
@@ -172,7 +213,8 @@ public enum DynamicTheme {
     assertFeatureSupported();
     assertNotLegacyTheme();
 
-    DynamicTheme theme = getCurrent();
+    setDefaultIfAbsent(VaadinService.getCurrent().getContext());
+    DynamicTheme theme = getSessionTheme();
     if (theme == null) {
       theme = this;
       VaadinSession.getCurrent().setAttribute(DynamicTheme.class, theme);

@@ -36,8 +36,8 @@ import org.slf4j.LoggerFactory;
  * <p>
  * If the dynamic theme feature is supported, this listener checks for the presence of a
  * {@code /META-INF/dynamic-theme.properties} file. If found, it reads the {@code theme} property
- * (e.g., {@code theme=LUMO}) and registers an {@link IndexHtmlRequestListener} to initialize the
- * theme for all requests.
+ * (e.g., {@code theme=LUMO}), registers it as the default theme of the application, and registers
+ * an {@link IndexHtmlRequestListener} to initialize the theme for all requests.
  * </p>
  */
 @SuppressWarnings("serial")
@@ -52,13 +52,19 @@ public class DynamicThemeInitializer implements VaadinServiceInitListener {
     if (DynamicTheme.isFeatureSupported()) {
       try {
         Enumeration<URL> resources = getClass().getClassLoader().getResources(PROPERTIES_PATH);
+        boolean hasDefault = false;
         while (resources.hasMoreElements()) {
           URL url = resources.nextElement();
-          String source = getSourceName(url);
-          readTheme(url).ifPresent(theme -> {
-            logger.info("Applying dynamic theme '{}' from {}", theme, source);
-            event.addIndexHtmlRequestListener(theme::initialize);
-          });
+          Optional<DynamicTheme> theme = readTheme(url);
+          if (theme.isPresent()) {
+            logger.info("Applying dynamic theme '{}' from {}", theme.get(), getSourceName(url));
+            // the first listener initializes the session, so its theme is the default
+            if (!hasDefault) {
+              theme.get().setDefault(event.getSource().getContext());
+              hasDefault = true;
+            }
+            event.addIndexHtmlRequestListener(theme.get()::initialize);
+          }
         }
       } catch (IOException e) {
         throw new RuntimeException("Error reading dynamic-theme.properties", e);
