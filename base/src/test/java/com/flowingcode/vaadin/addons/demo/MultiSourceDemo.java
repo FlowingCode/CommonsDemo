@@ -28,15 +28,15 @@ import com.vaadin.flow.router.Route;
 @PageTitle("Demo with multiple sources")
 // show-source @DemoSource
 // show-source @DemoSource(clazz = AdditionalSources.class)
-// show-source @DemoSource("/src/test/resources/META-INF/resources/frontend/multi-source-demo.css")
-// show-source @DemoSource(value="/src/test/resources/META-INF/resources/frontend/condition-true.css", condition = "vaadin ge 14")
-// show-source @DemoSource(value="/src/test/resources/META-INF/resources/frontend/condition-false.css", condition = "vaadin eq 0")
+// show-source @DemoSource("/src/test/resources/META-INF/resources/multi-source-demo.css")
+// show-source @DemoSource(value="/src/test/resources/META-INF/resources/condition-true.css", condition = "vaadin ge 14")
+// show-source @DemoSource(value="/src/test/resources/META-INF/resources/condition-false.css", condition = "vaadin eq 0")
 @DemoSource
 @DemoSource(clazz = AdditionalSources.class)
-@DemoSource("/src/test/resources/META-INF/resources/frontend/multi-source-demo.css")
-@DemoSource(value="/src/test/resources/META-INF/resources/frontend/condition-true.css", condition = "vaadin ge 14")
-@DemoSource(value="/src/test/resources/META-INF/resources/frontend/condition-false.css", condition = "vaadin eq 0")
-@StyleSheet("context://frontend/multi-source-demo.css")
+@DemoSource("/src/test/resources/META-INF/resources/multi-source-demo.css")
+@DemoSource(value="/src/test/resources/META-INF/resources/condition-true.css", condition = "vaadin ge 14")
+@DemoSource(value="/src/test/resources/META-INF/resources/condition-false.css", condition = "vaadin eq 0")
+@StyleSheet("context://multi-source-demo.css")
 public class MultiSourceDemo extends Div {
   public MultiSourceDemo() {
 

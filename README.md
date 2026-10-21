@@ -215,7 +215,7 @@ The `@DemoSource` annotation also supports a `condition` attribute to control th
 
 
 ```java
-@DemoSource(value = "/src/test/resources/META-INF/resources/frontend/example.css", condition = "vaadin ge 24")
+@DemoSource(value = "/src/test/resources/META-INF/frontend/example.css", condition = "vaadin ge 24")
 public class MyDemo extends Div {
  ...
 }
