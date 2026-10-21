@@ -31,8 +31,8 @@ import com.vaadin.flow.router.Route;
 @Route(value = "demo/highlight", layout = Demo.class)
 @PageTitle("Highlight")
 @DemoSource
-@DemoSource("/src/test/resources/META-INF/resources/frontend/highlight-demo.css")
-@StyleSheet("context://frontend/highlight-demo.css")
+@DemoSource("/src/test/resources/META-INF/resources/highlight-demo.css")
+@StyleSheet("context://highlight-demo.css")
 public class SampleDemoHighlight extends Div {
 
   public SampleDemoHighlight() {

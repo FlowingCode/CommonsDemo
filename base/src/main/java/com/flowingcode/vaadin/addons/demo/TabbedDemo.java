@@ -65,7 +65,7 @@ import org.slf4j.LoggerFactory;
  * toggling the source code visibility, orientation, and theme.
  * </p>
  */
-@StyleSheet("context://frontend/styles/commons-demo/shared-styles.css")
+@StyleSheet("context://styles/commons-demo/shared-styles.css")
 @SuppressWarnings("serial")
 @CssImport(value = "./styles/commons-demo/vaadin-select-overlay.css", themeFor = "vaadin-select")
 public class TabbedDemo extends VerticalLayout implements RouterLayout {

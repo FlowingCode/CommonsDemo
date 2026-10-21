@@ -187,8 +187,8 @@
             <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
               <excludes>
                 <exclude>**/AppShellConfiguratorImpl.class</exclude>
-                <exclude>**/main/resources/META-INF/resources/frontend/prism.js</exclude>
-                <exclude>**/main/resources/META-INF/resources/frontend/prism.css</exclude>
+                <exclude>**/main/resources/META-INF/frontend/prism.js</exclude>
+                <exclude>**/main/resources/META-INF/frontend/prism.css</exclude>
                 <exclude>**/test/resources/**</exclude>
                 <exclude>**/main/dev-bundle/**</exclude>
               </excludes>
